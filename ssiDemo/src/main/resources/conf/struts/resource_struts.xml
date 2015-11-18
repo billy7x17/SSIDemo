@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+	
+	<package name="com.cloudmaster.cmp.unifyresource" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+		
+		<!-- 初始化left -->
+		<action name="unifyinitleft" class="unifyInitAction">
+			<result name="success">/WEB-INF/pages/resource/left.jsp</result>
+		</action>
+
+		<!-- 进入设备浏览页面 -->
+		<action name="deviceList" class="deviceListAction" method="base">
+			<result name="base">/WEB-INF/pages/resource/device/list.jsp</result>
+		</action>
+		
+		<!-- 进入设备浏览页面 -->
+		<action name="deviceBaseList" class="deviceListAction" method="deviceList">
+			<result name="SUCCESS">/WEB-INF/pages/resource/device/list.jsp</result>
+		</action>
+		
+		<!-- 删除 -->
+		<action name="deviceDelete" class="deviceDeleteAction" method="delete">
+			<result name="SUCCESS" type="redirectAction">
+					<param name="actionName">deviceList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<!-- 详细 -->
+		<action name="deviceDetail" class="deviceDetailAction" method="detail">
+			<result name="SUCCESS">/WEB-INF/pages/resource/device/detail.jsp</result>
+		</action>
+		
+		<!-- 添加初始化 -->
+		<action name="deviceBeforeAdd" class="deviceBeforeAddAction" method="beforeAdd">
+			<result name="SUCCESS">/WEB-INF/pages/resource/device/add.jsp</result>
+		</action>
+		<!-- 添加 -->
+		<action name="deviceAdd" class="deviceAddAction" method="add">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">deviceList</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="INPUT" type="redirectAction">
+				<param name="actionName">deviceBeforeAdd</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<!-- 修改初始化 -->
+		<action name="deviceBeforeUpdate" class="deviceBeforeUpdateAction" method="beforeUpdate">
+			<result name="SUCCESS">/WEB-INF/pages/resource/device/update.jsp</result>
+		</action>
+		<!-- 修改 -->
+		<action name="deviceUpdate" class="deviceUpdateAction" method="update">
+			<result name="SUCCESS" type="redirectAction">
+					<param name="actionName">deviceList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="INPUT" type="redirectAction">
+				<param name="actionName">deviceBeforeUpdate</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<!-- 导出模板 -->
+		<action name="deviceExportTemplate" class="deviceBatchInto" method="exportTemplate">
+			<result name="error" type="redirectAction">
+				<param name="actionName">deviceList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<!-- 导入 -->
+		<action name="deviceBatchinto" class="deviceBatchInto" method="batchInto">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">deviceList</param>
+				<param name="msg">${msg}</param>
+				<param name="domain.importDeviceFlag">${deviceDomain.importDeviceFlag}</param>
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">deviceList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<!-- 设备是否已存在，设备编码相同 -->
+        <action name="deviceDuplicateIDCheck" class="deviceAddAction"
+            method="deviceDuplicateIDCheck">       
+        </action>
+		
+		<!-- 设备是否已存在，采集IP相同 -->
+        <action name="deviceDuplicateIPCheck" class="deviceAddAction"
+            method="deviceDuplicateIPCheck">       
+        </action>
+        
+        <!-- 设备是否已存在，交换机端口和设备名称相同 -->
+        <action name="deviceDuplicateCheckAdd" class="deviceAddAction"
+            method="deviceDuplicateCheckAdd">       
+        </action>
+        
+        <!-- 设备是否已存在，采集IP和交换机端口相同 -->
+        <action name="deviceDuplicateCheckEdit" class="deviceUpdateAction"
+            method="deviceDuplicateCheckEdit">       
+        </action>
+        
+        <!-- Zone部分 start -->
+        <!-- 机房列表 -->
+		<action name="zoneResourceInit" class="zoneResourceListAction" method="init">
+			<result name="success">/WEB-INF/pages/resource/zone/view/zone_list.jsp</result>
+		</action>
+        <!-- 机房列表 -->
+		<action name="zoneResource" class="zoneResourceListAction" method="list">
+		</action>
+		<!-- 机房添加前 -->
+		<action name="zoneBeforeAdd" class="zoneResourceAddAction" method="beforeAdd">
+			<result name="add">/WEB-INF/pages/resource/zone/view/zone_add.jsp</result>
+			<result name="error">/WEB-INF/pages/resource/zone/view/zone_list.jsp</result>
+		</action>
+		<!-- 机房添加 -->
+		<action name="zoneAdd" class="zoneResourceAddAction" method="add">
+			<result name="addsuccess"  type="redirectAction">
+				<param name="actionName">zoneResourceInit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="adderror" type="redirectAction">
+				<param name="actionName">zoneBeforeAdd</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		<!-- 机房 验证同站点机房重名 -->
+		<action name="validZoneName" class="zoneResourceAddAction" method="validZoneName"></action>
+		
+		<!-- 机房删除 -->
+		<action name="zoneDelete" class="zoneResourceDelAction" method="delete">
+			<result name="delete"  type="redirectAction">
+				<param name="actionName">zoneResourceInit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result> 
+		</action>
+		
+		<!-- 机房修改前 -->
+		<action name="zoneBeforeEdit" class="zoneResourceEditAction" method="beforeEdit">
+			<result name="edit">/WEB-INF/pages/resource/zone/view/zone_edit.jsp</result> 
+			<result name="error">/WEB-INF/pages/resource/zone/view/zone_list.jsp</result>
+		</action>
+		<!-- 机房修改 -->
+		<action name="zoneEdit" class="zoneResourceEditAction" method="edit">
+			<result name="editsuccess" type="redirectAction">
+				<param name="actionName">zoneResourceInit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result> 
+			<result name="editerror" type="redirectAction">
+				<param name="actionName">zoneBeforeEdit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+				<param name="zoneId">${zoneId}</param>
+			</result>
+		</action>
+        <!-- Zone部分 end -->
+        
+        <!-- Cluster部分 start -->
+        <!-- 机柜列表 -->
+		<action name="clusterResourceInit" class="clusterResourceListAction" method="init">
+			<result name="success">/WEB-INF/pages/resource/cluster/view/cluster_list.jsp</result>
+		</action>
+        <!-- 机柜列表 -->
+		<action name="clusterResource" class="clusterResourceListAction" method="list">
+		</action>
+		<!-- 机柜添加前 -->
+		<action name="clusterBeforeAdd" class="clusterResourceAddAction" method="beforeAdd">
+			<result name="add">/WEB-INF/pages/resource/cluster/view/cluster_add.jsp</result>
+			<result name="error">/WEB-INF/pages/resource/cluster/view/cluster_list.jsp</result>
+		</action>
+		<!-- 查询机房信息 -->
+		<action name="getZoneList" class="clusterResourceAddAction" method="getZone">
+		</action>
+		<!-- 验证机柜同名 -->
+		<action name="validSameClusterName" class="clusterResourceAddAction" method="validClusterName">
+		</action>
+		
+		<!-- 机柜添加 -->
+		<action name="clusterAdd" class="clusterResourceAddAction" method="add">
+			<result name="addsuccess"  type="redirectAction">
+				<param name="actionName">clusterResourceInit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="adderror" type="chain">
+				<param name="actionName">clusterBeforeAdd</param>
+			</result>
+		</action>
+		<!-- 机柜删除 -->
+		<action name="clusterDelete" class="clusterResourceDelAction" method="delete">
+			<result name="delete"  type="redirectAction">
+				<param name="actionName">clusterResourceInit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result> 
+		</action>
+		<!-- 机柜详细 -->
+		<action name="clusterDetail" class="clusterResourceDetailAction" method="detail">
+			<result name="detail">/WEB-INF/pages/resource/cluster/view/cluster_detail.jsp</result> 
+		</action>
+		
+		<!-- 机柜修改前 -->
+		<action name="clusterBeforeEdit" class="clusterResourceEditAction" method="beforeEdit">
+			<result name="edit">/WEB-INF/pages/resource/cluster/view/cluster_edit.jsp</result> 
+			<result name="error">/WEB-INF/pages/resource/cluster/view/cluster_list.jsp</result>
+		</action>
+		<!-- 机柜修改 -->
+		<action name="clusterEdit" class="clusterResourceEditAction" method="edit">
+			<result name="editsuccess" type="redirectAction">
+				<param name="actionName">clusterResourceInit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result> 
+			<result name="editerror" type="redirectAction">
+				<param name="actionName">clusterBeforeEdit</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param>
+				<param name="clusterId">${clusterId}</param>
+			</result>
+		</action>
+        <!-- Cluster部分 end -->
+        
+        <!-- 地铁站点 浏览 -->
+        <action name="siteList" class="siteListAction" method="init">
+        	<result name="success">/WEB-INF/pages/resource/site/site_list.jsp</result>
+        </action>
+        
+        <action name="list" class="siteListAction" method="list"></action>
+        
+        <!-- 地铁站点  添加 -->
+        <action name="addSiteBefore" class="siteAddAction" method="addBefore">
+        	<result name="success">/WEB-INF/pages/resource/site/site_add.jsp</result>
+        </action>
+        
+        <action name="addSite" class="siteAddAction" method="addSite">
+        	<result name="success" type="redirectAction">
+        		<param name="actionName">siteList</param>
+        		<param name="msg">${msg}</param>
+        	</result>
+        	<result name="error" type="redirectAction">
+        		<param name="actionName">addSiteBefore</param>
+				<param name="errorMsg">${errorMsg}</param>
+        	</result>
+        </action>
+        <!-- 判断重名问题 -->
+		<action name="validSameSiteName" class="siteAddAction" method="validSameName">
+		</action>
+		        
+        <!--地铁站点  删除  -->
+        <action name="delSite" class="siteDeleteAction" method="deleteSite">
+        	<result name="success" type="redirectAction">
+        		<param name="actionName">siteList</param>
+        		<param name="msg">${msg}</param>
+        	</result>
+        	<result name="error" type="redirectAction">
+        		<param name="actionName">siteList</param>
+        		<param name="errorMsg">${errorMsg}</param>
+        	</result>
+        </action>
+        
+        <!--地铁站点  修改  -->
+        <action name="editSiteBefore" class="siteEditAction" method="editBefore">
+        	<result name="success">/WEB-INF/pages/resource/site/site_edit.jsp</result>
+        </action>
+        <action name="editSite" class="siteEditAction" method="edit">
+        	<result name="success" type="redirectAction">
+        		<param name="actionName">siteList</param>
+        		<param name="msg">${msg}</param>
+        	</result>
+        	<result name="error" type="redirectAction">
+        		<param name="actionName">editSiteBefore</param>
+        		<param name="siteId">${siteId}</param>
+        		<param name="errorMsg">${errorMsg}</param>
+        	</result>
+        </action>
+        
+        <!-- 地铁站点详细 -->
+		<action name="siteDetail" class="siteDetailAction" method="detail">
+			<result name="SUCCESS">/WEB-INF/pages/resource/site/site_detail.jsp</result>
+		</action>
+		
+		<action name="moreInfo" class="siteDetailAction" method="moreInfo">
+			<result name="SUCCESS">/WEB-INF/pages/welcome.jsp</result>
+		</action>
+	</package>
+</struts>

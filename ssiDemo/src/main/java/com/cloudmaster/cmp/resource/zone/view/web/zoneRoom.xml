@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="zoneRoom">
+	<typeAlias alias="user" type="com.cloudmaster.cmp.web.authority.user.UserInfo" />
+	<typeAlias alias="room" type="com.cloudmaster.cmp.resource.zone.view.dao.ZoneRoomDomain" />
+	<typeAlias alias="int" type="java.lang.Integer"/>
+	<typeAlias alias="string" type="java.lang.String"/>
+	<!-- 查站点信息 -->
+	<select id="findSiteInfo" parameterClass="user" resultClass="room">
+		SELECT
+			site_id AS siteId,
+			site_name AS siteName
+		FROM
+		honeywell_site_tab
+		<dynamic prepend="WHERE">
+			<isEqual property="roleType" compareValue="2" prepend="AND">
+				site_id = #siteId#
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询机房信息 -->
+	<select id="getList" parameterClass="room" resultClass="room">
+		SELECT
+			zone_id as zoneId,
+			zone_name as zoneName,
+			z.Site_id as siteId,
+			s.site_name as siteName,
+			z.principal,
+			z.Address,
+			z.description 
+		FROM
+			honeywell_zone_tab z,
+			honeywell_site_tab s
+		WHERE z.site_id = s.site_id
+			<isNotEmpty property="zoneName" prepend="AND">
+				z.zone_name like '%$zoneName$%'
+			</isNotEmpty>
+			<isNotEmpty property="siteId" prepend="AND">
+				z.site_id = #siteId#
+			</isNotEmpty>
+			<isNotEmpty property="principal" prepend="AND">
+				z.principal like '%$principal$%'
+			</isNotEmpty>
+			<isNotEmpty property="address" prepend="AND">
+				z.address like '%$address$%'
+			</isNotEmpty>
+		    <isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+		    ORDER BY  $sortName$ $sortOrder$
+	</select>
+	
+	<!-- 查询机房信息总数 -->
+	<select id="getCount" resultClass="int" parameterClass="room">
+		SELECT 
+			COUNT(1)
+		FROM 
+			honeywell_zone_tab z,
+			honeywell_site_tab s
+		WHERE z.site_id = s.site_id
+			<isNotEmpty property="zoneName" prepend="AND">
+				z.zone_name like '%$zoneName$%'
+			</isNotEmpty>
+			<isNotEmpty property="siteId" prepend="AND">
+				z.site_id = #siteId#
+			</isNotEmpty>
+			<isNotEmpty property="principal" prepend="AND">
+				z.principal like '%$principal$%'
+			</isNotEmpty>
+			<isNotEmpty property="address" prepend="AND">
+				z.address like '%$address$%'
+			</isNotEmpty>
+	</select>
+	<!-- 添加机房信息 -->
+	<insert id="insert" parameterClass="room">
+		INSERT INTO 
+		honeywell_zone_tab
+		(
+			zone_id,
+			zone_name,
+			Site_id,
+			principal,
+			Address,
+			description,
+			createTime
+		)
+		VALUES
+		(
+			#zoneId#,
+			#zoneName#,
+			#siteId#,
+			#principal#,
+			#address#,
+			#description#,
+			now()
+		)
+	</insert>
+	
+	<!-- 验证 同一站点机房是否同名 -->
+	<select id="validZoneName" resultClass="int" parameterClass="room">
+		 SELECT
+			COUNT(1)
+		 FROM
+			honeywell_zone_tab
+		 WHERE
+		 	site_id = #siteId#
+		    AND zone_name = #zoneName#
+		  <isNotEmpty property="zoneId" prepend="AND">
+		  	 zone_id <![CDATA[<> #zoneId#]]>
+		  </isNotEmpty>
+	</select>
+	<!-- 详细信息 -->
+	<select id="detail" resultClass="room" parameterClass="string">
+		SELECT 
+			zone_id as zoneId,
+			zone_name as zoneName,
+			z.site_id as siteId,
+			s.site_name as siteName,
+			principal ,
+			address,
+			z.description
+		FROM 
+			honeywell_zone_tab z,
+			honeywell_site_tab s
+		WHERE z.site_id = s.site_id AND z.zone_id = #siteId#
+	</select>
+	
+	<!-- 查询机房里面是否存在机柜 -->
+	<select id="findClusterByZoneId" resultClass="int" parameterClass="string">
+		SELECT
+			COUNT(1)
+		FROM
+			honeywell_cluster_tab
+		WHERE
+			zone_id = #zone_id#
+	</select>
+	<!-- 删除机房信息 -->
+	<delete id="delete" parameterClass="string">
+		DELETE FROM honeywell_zone_tab WHERE zone_id = #zoneId#
+	</delete>
+	<!-- 修改机房信息 -->
+	<update id="update" parameterClass="room">
+		UPDATE honeywell_zone_tab
+		 SET 
+			 zone_name =#zoneName#,
+			 Site_id = #siteId#,
+			 principal = #principal#,
+			 Address = #address#,
+			 description = #description#,
+			 createTime = NOW()
+		 WHERE
+			zone_id =#zoneId#
+	</update>
+</sqlMap>

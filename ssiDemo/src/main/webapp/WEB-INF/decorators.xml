@@ -1,0 +1,189 @@
+<?xml version="1.0" encoding="utf-8"?>
+<decorators defaultdir="/decorators">
+	<!--  定义那些不使用sitemesh的模板效果     -->
+	<excludes>
+		<!-- 拓扑图 -->
+		<pattern>/twaver/*</pattern>
+		<!-- 登录页 -->
+		<pattern>/login.jsp</pattern>
+		<pattern>/pages/*</pattern>
+
+		<pattern>/Login.action*</pattern>
+		<pattern>/showTree.action*</pattern>
+		<pattern>/getTemplate.action*</pattern>
+		<pattern>/moreInfo.action*</pattern>
+        <!-- 组件服务 -->
+        <pattern>/service/*</pattern>
+		<pattern>/userList.jsp*</pattern>
+		<pattern>/getUsersAction.action*</pattern>
+		<pattern>/getUsers.action*</pattern>
+
+		<!-- 日期控件 -->
+		<pattern>/scripts/validate/datepicker/*</pattern>
+
+		<!-- 个人信息 -->
+		<pattern>/personalEdit.action*</pattern>
+		<pattern>/personalEditSuccess.action*</pattern>
+
+	    <!-- performance树 -->
+		<pattern>/performanceTree.action*</pattern>
+		<pattern>/presearchPMResource.action*</pattern>
+		<pattern>/searchPMResource.action*</pattern>
+		<pattern>/searchPMProperty.action*</pattern>
+		<pattern>/presearchVMResource.action*</pattern>
+		<pattern>/searchSTResource.action*</pattern>
+		<pattern>/presearchMmResource.action*</pattern>
+		<pattern>/presearchMvmResource.action*</pattern>
+		<pattern>/searchASResource.action*</pattern>
+		<pattern>/searchBSResource.action*</pattern>
+		<pattern>/searchObjResource.action*</pattern>
+        <pattern>/deviceTreeData.action*</pattern>
+        <pattern>/serviceTreeData.action*</pattern>
+		<!-- 机柜图 -->
+		<pattern>/PreTopologyAction1.action*</pattern>
+		<pattern>/PreTopologyAction.action*</pattern>
+		<pattern>/TopologyAction.action*</pattern>
+		<!-- 公有云拓扑图 -->
+		<pattern>/PreTopologyActionPC.action*</pattern>
+		<pattern>/TopologyActionPCZYC.action*</pattern>
+		<pattern>/TopologyActionPCM.action*</pattern>
+		<pattern>/twaverTopo.action*</pattern>
+		<pattern>/twaver/flex/*</pattern>
+		<!-- 业务拓扑图 -->
+		<pattern>/ServiceTopologyAction.action*</pattern>
+		<pattern>/getLBCPUAndMemPercnet.action*</pattern>
+
+		<!-- 服务管理，ajax级联下拉框，获取机柜 -->
+		<pattern>/getCabinet.action*</pattern>
+		<!-- 自动探测物理机服务管理，ajax级联下拉框，获取ip -->
+		<pattern>/getIP.action*</pattern>
+		<!-- 花名册管理，ajax级联下拉框，获取OID -->
+		<pattern>/getOID.action*</pattern>
+		<!-- 块存储服务，ajax级联下拉框，获取资源 -->
+		<pattern>/getDevice.action*</pattern>
+		<!-- 告警设备信息，查询关联项 -->
+		<pattern>/getRelationDevice.action*</pattern>
+
+		<pattern>/Flexigrid/test.jsp</pattern>
+		<pattern>/HomePage.action*</pattern>
+
+		<!-- 日期控件 -->
+		<pattern>/javascript/My97DatePicker/*</pattern>
+		<pattern>/FirstPage.action*</pattern>
+
+		<!-- 事件流转历史 -->
+		<pattern>/flowHistory.action*</pattern>
+
+	</excludes>
+	
+	<decorator name="flexigrid" page="header_cmp_flexigrid_js.jsp">
+		<pattern>/alarmHistoryList.action*</pattern>
+		<pattern>/alarmHistoryListBase.action*</pattern>
+		<pattern>/deviceList.action*</pattern>
+		<pattern>/mibList.action*</pattern>
+		<pattern>/mibBaseList.action*</pattern>
+		<pattern>/alarmrulesList.action*</pattern>
+		<pattern>/alarmrulesBaseList.action*</pattern>
+		<pattern>/systemparameterList.action*</pattern>
+		<pattern>/systemparameterBaseList.action*</pattern>
+		<pattern>/thresholdList.action*</pattern>
+		<pattern>/thresholdBaseList.action*</pattern>
+		<pattern>/alarmrosterList.action*</pattern>
+		<pattern>/alarmrosterBaseList.action*</pattern>
+		<pattern>/alarmFilterList.action*</pattern>
+		<pattern>/alarmBaseFilterList.action*</pattern>
+		<pattern>/alarmOIDSelect.action*</pattern>
+		<pattern>/alarmOIDBaseSelect.action*</pattern>
+		<pattern>/zoneResourceInit.action*</pattern>
+		<pattern>/siteList.action*</pattern>
+		<pattern>/clusterResourceInit.action*</pattern>
+		<pattern>/getbase.action*</pattern>
+		<pattern>/getattribute.action*</pattern>
+		<pattern>/asResourceBase.action*</pattern>
+		<pattern>/asResourceAttribute.action*</pattern>
+		<pattern>/zoneResourceBase.action*</pattern>
+		<pattern>/zoneResourceAttribute.action*</pattern>
+		<pattern>/clusterResourceBase.action*</pattern>
+		<pattern>/clusterResourceAttribute.action*</pattern>
+        <pattern>/roleBrowser.action*</pattern>
+        <pattern>/userBrowser.action*</pattern>
+        <pattern>/logBrowse.action*</pattern>
+        <pattern>/relatedOperation.action*</pattern>
+        <pattern>/cronExpressionList.action*</pattern>
+        <pattern>/cronExpressionTasklog.action*</pattern>
+		<pattern>/alarmView.action*</pattern>
+		<!-- 历史性能管理开始-->
+		<pattern>/pmhistoryList.action*</pattern>
+		<pattern>/vmhistoryList.action*</pattern>
+		<pattern>/performancehistoryList.action*</pattern>
+		<!-- 历史性能管理结束-->
+
+        <pattern>/alarmRegulationBase.action*</pattern>
+        <pattern>/alarmRegulationList.action*</pattern>
+        <pattern>/selectPersonBase.action*</pattern>
+        <pattern>/selectPersonData.action*</pattern>
+
+         <!-- 拓扑分组设备管理 	begin -->
+         <pattern>/topologyGroupBeforeList*</pattern>
+         <pattern>/topologyGroupList*</pattern>
+         <pattern>/topologyDeviceBeforeList*</pattern>
+         <pattern>/topologyDeviceList*</pattern>
+         <pattern>/topologyUPDeviceBeforeList*</pattern>
+         <pattern>/topologyUPDeviceList*</pattern>
+         <pattern>/groupDeviceBeforeAdd*</pattern>
+         <pattern>/groupDeviceAdd*</pattern>
+         <!-- 拓扑分组设备管理 	end -->
+
+         <pattern>/taskInfoListBase.action*</pattern>
+         <pattern>/taskInfoList.action*</pattern>
+         
+		 <pattern>/alarmTitleList.action*</pattern>
+		 <pattern>/alarmBaseTitleList.action*</pattern>
+		 
+		 <!-- IPSAN -->
+		 <pattern>/searchIPSANResource.action*</pattern>
+		 <!-- IPC -->
+		 <pattern>/ipcResource.action*</pattern>
+		 <!-- Encoder -->
+		 <pattern>/encoderResouce.action*</pattern>
+		 <pattern>/decoderResource.action*</pattern>
+		 
+	</decorator>
+	
+	<!-- 解决点击下一步（ajax.load）页面加载慢 -->
+	<decorator name="flexgridnext" page="header_cmp_flexigrid_next_js.jsp">
+	</decorator>
+	
+	<!-- 左侧树页面 -->
+	<decorator name="js" page="header_cmp.jsp">
+		<pattern>/unifyinitleft.action*</pattern>
+		<pattern>/serviceManager.action*</pattern>
+		<pattern>/performanceList.action*</pattern>
+		<pattern>/alarmManager.action*</pattern>
+		<pattern>/frame.action*</pattern>
+	</decorator>
+	
+	<decorator name="detail" page="header_cmp_detail.jsp">
+	    <pattern>/alarmHistoryDetail.action*</pattern>
+     	<pattern>/alarmrulesDetail.action*</pattern>
+        <pattern>/deviceDetail.action*</pattern>
+        <pattern>/mibInfoDetail.action*</pattern>
+        <pattern>/thresholdDetail.action*</pattern>
+		<pattern>/alarmrosterDetail.action*</pattern>
+		<pattern>/alarmFilterDetail.action*</pattern>
+	    <pattern>/clusterDetail.action*</pattern>
+	    <pattern>/zoneDetail.action*</pattern>
+		<pattern>/siteDetail.action*</pattern>
+        <pattern>/userMoreInfo.action*</pattern>
+        <pattern>/logSearchDetail.action*</pattern>
+        <pattern>/cronExpressionDetail.action*</pattern>
+		<pattern>/alarmDetail.action*</pattern>
+        <pattern>/alarmRegulationDetail*</pattern>
+	</decorator>
+
+	<!-- js和css引用的 decorator -->
+	<decorator name="header" page="header_cmp_js.jsp">
+		<pattern>/*</pattern>
+	</decorator>
+
+</decorators>

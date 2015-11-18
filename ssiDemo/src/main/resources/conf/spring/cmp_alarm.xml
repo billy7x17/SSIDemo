@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 告警管理
+	<bean id="alarmViewAction"
+		class="com.cloudmaster.cmp.alarm.view.web.AlarmViewAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmView.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmviewList.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	 -->
+	 <bean id="reverseNewAlarm" class="com.cloudmaster.cmp.alarm.view.web.ReverseNewAlarm"
+	singleton="false">
+	 <property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="pollTime">
+			<value>${alarm.newAlarm.pollTime}</value>
+		</property>
+		<property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	 </bean>
+	 <!-- 告警管理 -->
+	<bean id="alarmMangerAction"
+		class="com.cloudmaster.cmp.alarm.view.web.AlarmManagerAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarm.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	 
+	<!-- 告警管理 -->
+	<bean id="alarmViewAction"
+		class="com.cloudmaster.cmp.alarm.view.web.AlarmViewAction"
+		singleton="false" >
+		<property name="authId">
+			<value>${alarmViewList.authID}</value>
+		</property>
+		<property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+	</bean>
+	
+	<!-- 告警列表 -->
+	<bean id="alarmViewListAction"
+		class="com.cloudmaster.cmp.alarm.view.web.AlarmViewListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewList.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+        <property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	</bean>
+	
+	<!-- 告警清除 -->
+	<bean id="alarmViewClearAction"
+		class="com.cloudmaster.cmp.alarm.view.web.AlarmViewClearAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewClear.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${other}</value>
+        </property>	
+        <property name="alarmNotify">
+            <ref bean="alarmNotify"/>
+        </property>
+        <property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	</bean>
+	
+	<!-- 告警确认 -->
+	<bean id="alarmViewConfirmAction"
+		class="com.cloudmaster.cmp.alarm.view.web.AlarmViewConfirmAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewConfirm.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${other}</value>
+        </property>	
+        <property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	</bean>
+	
+	<!-- 告警详细 -->
+	<bean id="alarmViewDetailAction"
+		class="com.cloudmaster.cmp.alarm.view.web.AlarmViewDetailAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewList.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+        <property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	</bean>
+	
+	<!-- 邮件通知前准备 -->
+	<bean id="beforeMailNotifyAction"
+		class="com.cloudmaster.cmp.alarm.view.web.BeforeMailNotifyAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewMail.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${other}</value>
+        </property>	
+        <property name="sysParaService">
+			<ref bean="SystemParameterService" />
+		</property>
+	</bean>
+	
+	<!-- 短信通知前准备 -->
+	<bean id="beforeSmsNotifyAction"
+		class="com.cloudmaster.cmp.alarm.view.web.BeforeSmsNotifyAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewSms.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${other}</value>
+        </property>	
+        <property name="sysParaService">
+			<ref bean="SystemParameterService" />
+		</property>
+	</bean>
+	
+	<!-- 邮件通知 -->
+	<bean id="mailNotifyAction"
+		class="com.cloudmaster.cmp.alarm.view.web.MailNotifyAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewMail.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${other}</value>
+        </property>	
+	</bean>
+	
+	<!-- 短信通知 -->
+	<bean id="smsNotifyAction"
+		class="com.cloudmaster.cmp.alarm.view.web.SmsNotifyAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewSms.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${other}</value>
+        </property>	
+        <property name="ssmmClientManager">
+			<ref bean="ssmmclientmanager" />
+		</property>
+	</bean>
+	
+	<!-- 选择通知人员 -->
+	<bean id="selectNotifyMember"
+		class="com.cloudmaster.cmp.alarm.view.web.SelectNotifyMemberAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	
+	<!-- 设备信息 -->
+	<bean id="beforeDeviceInfoAction"
+		class="com.cloudmaster.cmp.alarm.view.web.DeviceInfoAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmViewDevice.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmview.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${other}</value>
+        </property>	
+	</bean>
+	
+</beans>

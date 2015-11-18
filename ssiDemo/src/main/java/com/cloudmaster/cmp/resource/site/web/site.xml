@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SiteInfo">
+
+	<typeAlias alias="site" type="com.cloudmaster.cmp.resource.site.dao.SiteInfo" />
+	<typeAlias alias="int" type="java.lang.Integer"/>
+	<typeAlias alias="string" type="java.lang.String"/>
+	
+	<select id="getSiteName" resultClass="site">
+		SELECT 
+			site_id as siteId, site_name as siteName , site_type as siteType , line_num as lineNum , description
+		FROM
+			honeywell_site_tab 
+		order by 
+			site_id; 
+	</select>
+	
+	<!-- 查询列表 -->
+	<select id="getList" parameterClass="site" resultClass="site">
+		SELECT
+			site_id as siteId,
+			site_name as siteName,
+			line_num as  lineNum,
+		 	site_type as siteType,
+		  	description
+		FROM
+			honeywell_site_tab
+	   <dynamic prepend="WHERE">
+	   	   <isNotEmpty property="siteId" prepend="AND">
+	   	   		site_id = #siteId#
+	   	   </isNotEmpty>
+	   	   <isNotEmpty property="siteName" prepend="AND">
+	   	   		site_name LIKE '%$siteName$%'
+	   	   </isNotEmpty>
+	   	   <isNotEmpty property="siteType" prepend="AND">
+	   	   		site_type = #siteType#
+	   	   </isNotEmpty>
+	   	   <isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+	   </dynamic>
+	   ORDER BY  $sortName$ $sortOrder$
+	</select>
+	<!-- 查询总数 -->
+	<select id="getCount" parameterClass="site" resultClass="int">
+		SELECT
+			COUNT(1)
+		FROM
+			honeywell_site_tab
+	   <dynamic prepend="WHERE">
+	   	   <isNotEmpty property="siteId" prepend="AND">
+	   	   		site_id = #siteId#
+	   	   </isNotEmpty>
+	   	   <isNotEmpty property="siteName" prepend="AND">
+	   	   		site_name LIKE '%$siteName$%'
+	   	   </isNotEmpty>
+	   	   <isNotEmpty property="siteType" prepend="AND">
+	   	   		site_type = #siteType#
+	   	   </isNotEmpty>
+	   </dynamic>
+	</select>
+	
+	<!-- 插入站点 -->
+	<insert id="insertSite" parameterClass="site">
+		INSERT INTO 
+		 honeywell_site_tab 
+			(
+				site_name,
+				line_num,
+				site_type,
+				description,
+				createTime
+			)
+		 VALUES
+			(
+				#siteName#,
+				#lineNum#,
+				#siteType#,
+				#description#,
+				 NOW()
+			)
+	</insert>
+	<!-- 验证站点重名 -->
+	<select id="findSiteName" parameterClass="site" resultClass="int">
+		SELECT
+			COUNT(1)
+		FROM
+			honeywell_site_tab
+		WHERE
+			site_name = #siteName# 
+		AND line_num =#lineNum#
+		<isNotEmpty property="siteId" prepend="AND">
+			site_id <![CDATA[ <>#siteId#  ]]>
+		</isNotEmpty>
+	</select>
+	
+	<!-- 依据主键查询站点信息 -->
+	<select id="detail" parameterClass="string" resultClass="site">
+		SELECT
+			site_id as siteId,
+			site_name as siteName,
+			line_num as lineNum,
+			site_type as siteType,
+			description
+		FROM
+			honeywell_site_tab
+		WHERE
+			site_id = #siteId#
+	</select>
+	
+	<!-- 依据主键更新站点数据 -->
+	<update id="updateSite" parameterClass="site">
+		UPDATE honeywell_site_tab 
+		SET
+			site_name = #siteName#,
+			line_num = #lineNum#,
+			site_type = #siteType#,
+			description = #description#,
+			createTime = now()
+		WHERE
+			site_id = #siteId#
+	</update>
+	
+	<!-- 删除站点信息 -->
+	<delete id="deleteSite" parameterClass="string">
+		DELETE FROM honeywell_site_tab
+		WHERE site_id =#siteId#
+	</delete>
+	<!-- 查询站点下是否存在机房 -->
+	<select id="findZoneBySiteId" parameterClass="string" resultClass="int">
+		SELECT
+			COUNT(1)
+		FROM
+			honeywell_zone_tab
+		WHERE
+			Site_id = #siteId#
+	</select>
+	
+	<!-- 查询站点下是否存在用户 -->
+	<select id="findUserBySiteId" resultClass="int" parameterClass="string">
+		SELECT
+			COUNT(1)
+		FROM
+			km_user_t
+		WHERE 
+			site_id = #siteId#
+	</select>
+	
+	<!-- 查询站点列表 -->
+	<select id="findSiteByLine" resultClass="site">
+		SELECT
+			site_id AS siteId,
+			site_name AS siteName
+		FROM
+			honeywell_site_tab
+		WHERE
+			line_num = '2'
+	</select>
+</sqlMap>

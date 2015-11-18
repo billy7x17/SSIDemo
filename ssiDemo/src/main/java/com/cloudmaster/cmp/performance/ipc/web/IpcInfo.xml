@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="IpcInfo">
+	
+	<typeAlias alias="string" type="java.lang.String"/>
+	<typeAlias alias="mibInfo" type="com.cloudmaster.cmp.performance.mibinfo.dao.MibinfoDomain"/>
+	<typeAlias alias="perfInfo" type="com.cloudmaster.cmp.performance.ipsan.dao.PerfInfoDomain"/>
+	
+	<!-- 查询设备类型tab项 -->
+	<select id="findMibInfo" resultClass="string" parameterClass="string">
+		SELECT
+			mib_group_name AS mibName
+		FROM
+			mals_nm_mib_group_t
+		WHERE
+			type_id = #typeId#
+	</select>
+	
+	<!-- 查询IPCTabIndex值 -->
+	<select id="getAlreadyConfTabIndexIpc" resultClass="mibInfo" parameterClass="string">
+		SELECT
+			a.OID AS oid,
+			a.MIB_NAME AS mibName,
+			g.mib_group_name AS indexGroup,
+			CASE a.MIB_UNIT
+					WHEN 0 THEN '%'
+					WHEN 1 THEN'个'
+					WHEN 2 THEN'MHz'
+					WHEN 3 THEN'MB'
+					WHEN 4 THEN'GB'
+					WHEN 5 THEN'Bytes/sec'
+					WHEN 6 THEN 'KB'
+					WHEN 7 THEN 's'
+					WHEN 8 THEN 'packets/sec'
+					WHEN 9 THEN '无单位'
+					WHEN 10 THEN 'degrees C'
+					WHEN 11 THEN 'Volts'
+					WHEN 12 THEN 'RPM'
+					WHEN 13 THEN 'Watts'
+					WHEN 14 THEN 'Mbps'
+					WHEN 15 THEN 'Byte'
+					WHEN 16 THEN '℃'
+					WHEN 17 THEN 'IOPS'
+				END AS indexUnit,
+		 g.mib_group_name AS indexGroup,
+		 a.SHOW_LINE AS ifShowLine
+		FROM
+			mals_nm_mib_t a,
+			mals_nm_mib_group_t g
+		WHERE
+			a.type_id = g.type_id
+		AND a.MIB_GROUP = g.mib_group_id
+		AND g.type_id = #typeId#
+	</select>
+	
+	<!-- 查询IPC性能值 -->
+	<select id="searchIPCResource" resultClass="perfInfo" parameterClass="perfInfo">
+		SELECT 
+			TAGET_VALUE AS tagetValue,
+			c.mib_group_name AS mibName,
+			CREATE_TIME AS showTime
+		FROM mals_nm_perf_info_t p,
+			(
+				SELECT
+					m.OID,
+					g.*
+				FROM
+					mals_nm_mib_t m,
+					mals_nm_mib_group_t g
+				WHERE
+					m.type_id =#mibType#
+				AND m.type_id = g.type_id
+				AND m.MIB_GROUP = g.mib_group_id
+			) c
+		WHERE AGENT_IP=#agentIp#
+			AND <![CDATA[(CREATE_TIME >#showTime# AND CREATE_TIME <NOW()) ]]>
+			AND p.MIB_TYPE = c.type_id
+			AND p.OID = c.OID
+	</select>
+	
+	<!-- 查询一周历史数据 -->
+	<select id="getWeekResouceData" resultClass="perfInfo" parameterClass="perfInfo">
+		SELECT
+			TAGET_NAME AS tagetName,
+			TAGET_VALUE AS tagetValue,
+			AGENT_IP AS agentIp,
+			CREATE_TIME AS showTime,
+			MIB_TYPE AS mibType,
+			OID
+		FROM
+			mals_nm_perf_info_hour_t
+		WHERE <![CDATA[CREATE_TIME >=#showTime# and CREATE_TIME <=NOW()]]>
+		AND AGENT_IP = #agentIp#
+		AND MIB_TYPE = #mibType#
+	</select>
+	<!-- 查询一月历史数据 -->
+	<select id="getMonthResouceData" resultClass="perfInfo" parameterClass="perfInfo">
+		SELECT
+			TAGET_NAME AS tagetName,
+			TAGET_VALUE AS tagetValue,
+			AGENT_IP AS agentIp,
+			CREATE_TIME AS showTime,
+			MIB_TYPE AS mibType,
+			OID
+		FROM
+			mals_nm_perf_info_day_t
+		WHERE <![CDATA[CREATE_TIME >=#showTime# and CREATE_TIME <=NOW()]]>
+		AND AGENT_IP = #agentIp#
+		AND MIB_TYPE = #mibType#
+	</select>
+	
+	<select id="getIncreaseResource" parameterClass="perfInfo" resultClass="perfInfo">
+		SELECT
+			TAGET_NAME AS tagetName,
+			TAGET_VALUE AS tagetValue,
+			AGENT_IP AS agentIp,
+			p.CREATE_TIME AS showTime,
+			p.OID,
+			MIB_NAME as mibName,
+			g.mib_group_name AS mibGroup,
+		 	g.mib_group_id AS mibGroupIndex,
+			m.SHOW_LINE AS ifShowLine,
+			CASE MIB_UNIT
+					WHEN 0 THEN '%'
+					WHEN 1 THEN '个'
+					WHEN 2 THEN 'MHz'
+					WHEN 3 THEN 'MB'
+					WHEN 4 THEN 'GB'
+					WHEN 5 THEN 'Bytes/sec'
+					WHEN 6 THEN 'KB'
+					WHEN 7 THEN 's'
+					WHEN 8 THEN 'packets/sec'
+					WHEN 9 THEN '无单位'
+					WHEN 10 THEN 'degrees C'
+					WHEN 11 THEN 'Volts'
+					WHEN 12 THEN 'RPM'
+					WHEN 13 THEN 'Watts'
+					WHEN 14 THEN 'Mbps'
+					WHEN 15 THEN 'Byte'
+					WHEN 16 THEN '℃'
+					WHEN 17 THEN 'IOPS'
+			 END as mibUnit,
+			 INDEX_NUMBER as  indexNumber
+		FROM
+			mals_nm_perf_info_t p,
+			mals_nm_mib_t m,
+			mals_nm_mib_group_t g
+		WHERE
+			<![CDATA[(p.CREATE_TIME>=DATE_SUB(NOW(), INTERVAL #time# SECOND) AND p.CREATE_TIME<NOW())]]>
+			AND AGENT_IP = #agentIp#
+			AND MIB_TYPE = #mibType#
+			AND p.OID=m.OID 
+			AND p.MIB_TYPE = m.type_id
+			AND m.MIB_GROUP = g.mib_group_id
+			AND m.type_id = g.type_id
+	</select>
+	
+</sqlMap>

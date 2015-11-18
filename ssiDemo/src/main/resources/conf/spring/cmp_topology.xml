@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="PreTopologyAction" class="com.cloudmaster.cmp.alarm.topology.web.TopologyAction"
+		singleton="false" parent="abstractAction">
+		<property name="resourceZoneParentid">
+			<value>${resource.zone.parentid}</value>
+		</property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="jobCallback" ref="callbackWithResultGroup"></property>
+		<property name="ibatisDAONagios">
+			<ref bean="ibatisDAOProxyNagios"></ref>
+		</property>
+	</bean>
+	<bean id="PreTopologyAction1"
+		class="com.cloudmaster.cmp.alarm.topology.web.PreTopologyAction"
+		singleton="false" parent="abstractAction">
+	</bean>
+
+
+	<bean id="TopologyPCAction" class="com.cloudmaster.cmp.alarm.topology.web.TopologyPCAction"
+		singleton="false" parent="abstractAction">
+		<property name="functionName">
+			<value>${performance.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+
+	<bean id="ServiceTopologyAction"
+		class="com.cloudmaster.cmp.alarm.topology.web.ServiceTopologyAction"
+		singleton="false" parent="abstractAction">
+	</bean>
+
+	<!-- 新增拓扑分组和设备管理的配置BEAN begin -->
+	<bean id="TopologyGroupListAction"
+		class="com.cloudmaster.cmp.alarm.topology.manageWeb.TopologyGroupListAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${topology.groupDevice.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${topology.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	<bean id="TopologyDeviceListAction"
+		class="com.cloudmaster.cmp.alarm.topology.manageWeb.TopologyDeviceListAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${topology.groupDevice.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${topology.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	<bean id="TopologyUPDeviceListAction"
+		class="com.cloudmaster.cmp.alarm.topology.manageWeb.TopologyUPDeviceListAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${topology.groupDevice.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${topology.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	<bean id="TopologyDeviceAddAction"
+		class="com.cloudmaster.cmp.alarm.topology.manageWeb.TopologyDeviceAddAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${topology.groupDevice.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${topology.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+	</bean>
+	<bean id="TopologyDeviceDelAction"
+		class="com.cloudmaster.cmp.alarm.topology.manageWeb.TopologyDeviceDelAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${topology.groupDevice.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${topology.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+	</bean>
+	<!-- 新增拓扑分组和设备管理的配置BEAN end -->
+
+	<bean id="topoDeviceGraph" class="com.cloudmaster.cmp.topology.buildGraph.DevicesGraph"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+
+	<bean id="topoAlarmGraph" class="com.cloudmaster.cmp.topology.buildGraph.AlarmGraph"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="nmsDBName">
+			<value>${nmsDB_name}</value>
+		</property>
+	</bean>
+
+	<bean id="rightClickMenu" class="com.cloudmaster.cmp.topology.assFunction.RightClickMenu"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="nmsDBName">
+			<value>${nmsDB_name}</value>
+		</property>
+	</bean>
+
+	<bean id="updateDetailByAjax" class="com.cloudmaster.cmp.topology.assFunction.UpdateDetail"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+
+	<bean id="alarmDetail" class="com.cloudmaster.cmp.alarm.view.web.TopoAlarmDetail"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="nmsDBName">
+			<value>${nmsDB_name}</value>
+		</property>
+	</bean>
+
+	<bean id="alarmCount" class="com.cloudmaster.cmp.topology.assFunction.AlarmCount"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="nmsDBName">
+			<value>${nmsDB_name}</value>
+		</property>
+	</bean>
+</beans>

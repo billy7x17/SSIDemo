@@ -1,0 +1,34 @@
+@charset "utf-8";
+/* CSS Document */
+html, body{ margin:0; padding:0; border:none; color:#666; font:12px/18px  'Microsoft Yahei','微软雅黑',Arial,Verdana;}
+img{ border:none;}
+form{ margin:0; padding:0; border:none;}
+div{ overflow:hidden; height:auto;}
+a{ text-decoration:none; color:#333;}
+a:hover{ text-decoration:underline;}
+
+ul, dl{ height:auto; padding:0; margin:0; border:none; list-style:none; display:block;}
+li, dt, dd{ width:100%; padding:0; margin:0; border:none; float:left;  display:block;}
+
+.time_font{ font-size:11px;}
+
+
+
+
+
+
+
+.display_none{ display:none;}
+.display_block{ display:block;}
+.clear{ clear:both;}
+
+.h_20{ width:1px; height:20px; clear:both;}
+.h_10{ width:1px; height:10px; clear:both;}
+
+.lt_0{ position:absolute; left:0; top:0;}
+.rt_0{ position:absolute; right:0; top:0;}
+.lb_0{ position:absolute; left:0; bottom:0;}
+.rb_0{ position:absolute; right:0; bottom:0;}
+
+
+

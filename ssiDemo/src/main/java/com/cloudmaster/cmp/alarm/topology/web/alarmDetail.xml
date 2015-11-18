@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmDetail">
+	<typeAlias alias="STD"
+		type="com.cloudmaster.cmp.alarm.topology.dao.ServiceTopologyDomain" />
+	<typeAlias alias="AD"
+		type="com.cloudmaster.cmp.alarm.view.dao.AlarmViewDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	<typeAlias alias="dynamicRack"
+		type="com.cloudmaster.cmp.alarm.topology.dao.DynamicRackDomain" />
+
+	<!-- 获取所有有告警的节点的告警信息  -->
+	<select id="getAllMessage" resultClass="AD">
+		SELECT 
+			a.Alarm_ID as alarmID,
+			a.Alarm_Identify as alarmIdentify,
+			a.Alarm_Grade as alarmGrade, 
+      		a.device_type as deviceType,
+			a.agent_name as deviceTypeName,
+      		a.Alarm_Title as alarmTitle,
+      		a.Alarm_Content as alarmContent,
+      		DATE_FORMAT(a.Alarm_Time,'%Y-%m-%d %T') as alarmTime,
+      		DATE_FORMAT(a.first_alarm_time,'%Y-%m-%d %T') as firstAlarmTime,
+      		a.count as count,
+			a.Alarm_Type as alarmType,
+			a.Alarm_IP as alarmIP
+		FROM 
+		(SELECT * FROM
+		alarminfo_tab alarm
+				LEFT JOIN mals_nm_agent_type_t type ON alarm.device_type = type.TYPE_ID
+				WHERE clear_status = '1' ORDER BY Alarm_IP,Alarm_Grade ASC) a
+		GROUP BY a.Alarm_IP
+	</select>
+	
+	<!-- 动态生成机房机柜的sql -->
+	<!-- 首先查询出所有的机房（根节点下的一层子节点）-->
+	<select id="getAllRoom" resultClass="dynamicRack" parameterClass="String">
+	select
+	Zone_Cluster_ID AS roomID,
+	Zone_Cluster_Name roomName,
+	Parent_ID AS parentID
+	from
+	zone_cluster_tab
+	WHERE Parent_ID = #resourceZoneParentid#;
+	</select>
+	<!-- 动态生成机房机柜的sql -->
+	<!-- 首先查询出所有的机房（根节点下的一层子节点）-->
+	<select id="getNJRoom" resultClass="dynamicRack" parameterClass="String">
+	select
+	Zone_Cluster_ID AS roomID,
+	Zone_Cluster_Name roomName,
+	Parent_ID AS parentID
+	from
+	zone_cluster_tab
+	WHERE Zone_Cluster_ID = #resourceZoneParentid#;
+	</select>
+	<!-- 查询出一个机房中的所有机柜的集合 -->
+	<select id="getAllRack" resultClass="dynamicRack" parameterClass="dynamicRack">
+	select
+	Zone_Cluster_ID AS rackID,
+	Zone_Cluster_Name rackName,
+	Parent_ID AS parentID
+	from
+	zone_cluster_tab
+	WHERE Parent_ID = #roomID#;
+	</select>
+	<!-- 查询出一个机房中的所有机柜的集合 -->
+	<select id="getAllDevice" resultClass="dynamicRack" parameterClass="dynamicRack">
+	select
+	zci.Zone_Cluster_ID AS rackID,
+	zci.Resource_Type AS deviceType,
+	zci.LocalTable_ID_Ref AS deviceID,
+	zci.Leaf_Name AS deviceIP,
+	pm.PM_Name as pmName,
+	vm.VM_Name AS vmName,
+	bs.BS_Name AS bsName,
+	mm.IP AS mmName,
+	mvm.IP AS mcName,
+	asm.AS_Name AS asName,
+	st.ST_Name AS stName
+	from
+	zone_cluster_instance_tab zci 
+    LEFT JOIN pm_info_tab pm ON zci.LocalTable_ID_Ref = pm.PM_ID
+    LEFT JOIN vm_info_tab vm ON zci.LocalTable_ID_Ref = vm.VM_ID
+	LEFT JOIN bs_message_tab bs ON zci.LocalTable_ID_Ref = bs.BS_ID
+	LEFT JOIN mm_info_tab mm ON zci.LocalTable_ID_Ref = mm.MM_ID
+	LEFT JOIN mvm_info_tab mvm ON zci.LocalTable_ID_Ref= mvm.MVM_ID
+	LEFT JOIN as_message_tab asm ON zci.LocalTable_ID_Ref = asm.AS_ID
+	LEFT JOIN st_info_tab st ON zci.LocalTable_ID_Ref = st.ST_ID
+	WHERE
+	zci.Zone_Cluster_ID = #rackID#
+	AND Resource_Type IN ('CIDC-RT-SRV','CIDC-RT-VM','CIDC-RT-AS','CIDC-RT-BS','CIDC-RT-MM','CIDC-RT-MC','CIDC-RT-SW');
+	</select>
+	
+	
+	<!-- 获取业务拓扑图XML的节点信息 -->
+	<select id="getServiceTopologyXML"  resultClass="STD">
+		SELECT
+		displayName as displayName,
+		ipAddress AS ipAddress
+		FROM topology_xml_tab;
+	</select>
+</sqlMap>
+
+
+

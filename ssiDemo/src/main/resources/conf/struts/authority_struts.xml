@@ -1,0 +1,461 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<!-- 权限管理 -->
+	<package name="uer.city.role" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="logStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="logStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- 异常 -->
+		<action name="ExceptionIntercepor" class="ExceptionIntercepor">
+			<result name="SUCCESS">/WEB-INF/pages/exception/error.jsp</result>
+		</action>
+		<action name="noauthority" class="empty" method="noauthority">
+			<result name="SUCCESS">/WEB-INF/pages/authority/noauthority.jsp</result>
+		</action>
+
+		<action name="Login" class="login">
+			<result name="SUCCESS" type="redirectAction">
+			<param name="actionName">HomePage.action</param>
+			</result>
+			<result name="INVALID">/login.jsp</result>
+			<result name="FAILURE">/login.jsp</result>
+		</action>
+
+		<action name="roleAdd" class="roleAdd">
+			<result name="SUCCESS">/WEB-INF/pages/authority/role/role_add.jsp</result>
+			<result name="INPUT">/WEB-INF/pages/authority/role/role_add.jsp</result>
+		</action>
+		
+		<action name="roleAddSave" class="roleAddSave">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">roleBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			 <result name="INPUT">/WEB-INF/pages/authority/role/role_add.jsp</result>
+		</action>
+		
+		<action name="roleEdit" class="roleEdit">
+			<result name="SUCCESS">/WEB-INF/pages/authority/role/role_edit.jsp</result>
+			<result name="INPUT" type="redirectAction">
+				<param name="actionName">roleBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<action name="roleEditSave" class="roleEditSave">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">roleBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/authority/role/role_edit.jsp</result>
+		</action>
+		
+		<action name="roleDel" class="roleDel">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">roleBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="FAILURE" type="redirectAction">
+				<param name="actionName">roleBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+
+		<action name="roleDels" class="roleDels">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">roleBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="FAILURE" type="redirectAction">
+				<param name="actionName">roleBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<action name="userDels" class="userDels">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="FAILURE" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+	</package>
+
+	<package name="authority.browse" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+	        <interceptor name="logInter" class="loginterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor-stack name="iampStack">
+				<interceptor-ref name="authenticate" />
+		        <interceptor-ref name="logInter" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="iampStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+		
+		<action name="roleBrowser" class="roleBrowser" method="tolist" >
+            <result name="SUCCESS">/WEB-INF/pages/authority/role/role_browser.jsp
+            </result>
+            <result name="ERROR">/WEB-INF/pages/authority/role/role_browser.jsp
+            </result>
+        </action>
+
+		<action name="roleBrowserDate" class="roleBrowser" method="execute">
+		</action>
+	</package>
+	<package name="com.cloudmaster.cmp.authority.user" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+			<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+		<!-- sunwei use start -->
+		<action name="userBrowserData" class="userBrowser" method="execute">
+		</action>
+		
+		<action name="userBrowser" class="userBrowser" method="tolist">
+            <result name="SUCCESS">/WEB-INF/pages/authority/user/user_browser.jsp
+            </result>
+            <result name="FAILURE">/WEB-INF/pages/authority/user/user_browser.jsp
+            </result>
+        </action>
+
+		<action name="userAdd" class="userAdd">
+			<result name="SUCCESS">/WEB-INF/pages/authority/user/user_add.jsp
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		<action name="userAddSave" class="userAddSave">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/authority/user/user_add.jsp
+			</result>
+		</action>
+
+		<action name="userEdit" class="userEdit">
+			<result name="SUCCESS">/WEB-INF/pages/authority/user/user_edit.jsp
+			</result>
+			<result name="firstPage">/WEB-INF/pages/authority/user/first_user_edit.jsp
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		<action name="userEditSave" class="userEditSave">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/authority/user/user_edit.jsp
+			</result>
+		</action>
+			<!-- 删除用户 -->
+		<action name="userDel" class="userDel">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<action name="userMoreInfo" class="userMoreInfo">
+			<result name="SUCCESS">/WEB-INF/pages/authority/user/user_more_info.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/authority/user/user_more_info.jsp</result>
+		</action>
+
+		<action name="personalEdit" class="personalEdit">
+			<result name="SUCCESS">/WEB-INF/pages/authority/user/personalinfo_edit.jsp
+			</result>
+			<result name="FAILURE">/WEB-INF/pages/authority/user/personalinfo_edit.jsp
+			</result>
+		</action>
+		<action name="personalEditSave" class="personalEditSave">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">personalEditSuccess</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="FAILURE" type="redirectAction">
+				<param name="actionName">personalEdit</param>
+				<param name="errorMsg">${errorMsg}</param>
+				<param name="userId">${userId}</param>
+				<param name="userName">${userName}</param>
+				<param name="mobile">${mobile}</param>
+				<param name="email">${email}</param>
+				<param name="address">${address}</param>
+				<param name="description">${description}</param>
+			</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">personalEdit</param>
+				<param name="validateFail">${validateFail}</param>
+				<param name="userId">${userId}</param>
+				<param name="userName">${userName}</param>
+				<param name="mobile">${mobile}</param>
+				<param name="email">${email}</param>
+				<param name="address">${address}</param>
+				<param name="description">${description}</param>
+			</result>
+		</action>
+		<action name="personalEditSuccess" class="personalEdit">
+			<result name="SUCCESS">/WEB-INF/pages/authority/user/personalEditSuccess.jsp
+			</result>
+			<result name="FAILURE">/WEB-INF/pages/authority/user/personalEditSuccess.jsp
+			</result>
+		</action>
+
+		<action name="pswEdit" class="pswEdit">
+			<result name="SUCCESS">/WEB-INF/pages/authority/user/pwd_edit.jsp
+			</result>
+			<result name="FAILURE">/WEB-INF/pages/authority/user/pwd_edit.jsp
+			</result>
+		</action>
+		<action name="pswEditSave" class="pswEditSave">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="ERROR">/WEB-INF/pages/authority/user/pwd_edit.jsp
+			</result>
+		</action>
+
+		<!-- sunwei use end -->
+
+		<action name="userEditByRole" class="userEdit">
+			<result name="SUCCESS">/WEB-INF/pages/authority/user_edit_by_role.jsp
+			</result>
+			<result name="FAILURE">/WEB-INF/pages/authority/user_edit_by_role.jsp
+			</result>
+		</action>
+
+		<!-- ajax获取角色类型 -->
+		<action name="getRoleType" class="roleSiteAsso"></action>
+
+		<!-- 首页  add by sunwei -->
+		<action name="FirstPage" class="empty" method="firstPage">
+			<result name="SUCCESS">/WEB-INF/pages/mapHomePage.jsp</result>
+		</action>
+		<action name="FirstPageKM" class="empty" method="firstPage">
+			<result name="SUCCESS">/WEB-INF/pages/index.jsp</result>
+		</action>
+		<action name="HomePage" class="empty">
+			<result name="SUCCESS">/WEB-INF/pages/index.jsp</result>
+		</action>
+		
+		<action name="getGradesByAjax" class="empty" method="getGradesByAjax"></action>
+	</package>
+
+	<!-- 日志管理 -->
+	<package name="com.cloudmaster.cmp.operationlog" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor-stack name="iampStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="iampStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- 操作日志begin -->
+		<!-- 浏览 -->
+		<action name="logBrowse" class="logbrowse" method="tolist">
+            <result name="SUCCESS">/WEB-INF/pages/system/logmanager/browseLog.jsp</result>
+            <result name="ERROR">/WEB-INF/pages/system/logmanager/browseLog.jsp</result>
+        </action>
+        
+        <action name="logBrowseData" class="logbrowse" method="execute">
+		</action>
+        
+        <!-- 详情 -->
+		<action name="logSearchDetail" class="logsearchdetailaction">
+			<result name="SUCCESS">/WEB-INF/pages/system/logmanager/log_detail.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/system/logmanager/log_detail.jsp</result>
+		</action>
+		
+		<!-- 相关操作 -->
+		<action name="relatedOperation" class="operationaction" method="tolist">
+			<result name="SUCCESS">/WEB-INF/pages/system/logmanager/log_related_opertion.jsp
+			</result>
+			<result name="ERROR">/WEB-INF/pages/system/logmanager/log_related_opertion.jsp
+			</result>
+		</action>
+		<action name="relatedOperationData" class="operationaction" method="execute">
+        </action>
+        
+        <!-- 数据导出 -->
+	    <action name="OperationLogDownLoad" class="logbrowse" method="export">
+	        <result type="stream" name="returnStream">
+	            <!-- 下载文件的类型,假如下载的是其他的，但你又不知道是什么格式，可以去 tomcat\conf\web.xml下找 -->
+	            <param name="contentType">
+	                application/vnd.ms-excel
+	            </param>
+	            <!--  返回流 excelStream为action中的流变量名称 -->
+	            <param name="inputName">excelStream</param>
+	            <!-- attachment 这个位置的参数挺特殊的，可以设置成下载时，是否出现个下载提示框，或者直接下载之类的，怎么设置忘了，那个小本子找不到了
+	                fileName指定生成的文件名字(这种方式合适动态生成文件名，比如做报表时，一般都要说是几月的统计数据之类)为action中变量  -->
+	            <param name="contentDisposition">
+	                attachment;filename=${excelFileName}
+	            </param>
+	            <param name="bufferSize">1024</param>
+	        </result>
+	        <result name="ERROR" type="redirectAction">
+	            <param name="actionName">logbrowse</param>
+	            <param name="errorMsg">${errorMsg}</param>
+	        </result>
+	    </action>
+        <!-- 操作日志end -->
+        
+	</package>
+	<package name="km.logout" extends="struts-default">
+	    <interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor-stack name="kmStack">
+			<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+		
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+		<action name="logout" class="logout">
+			<result name="SUCCESS" type="redirect">/login.jsp</result>
+		</action>
+	</package>
+	<package name="com.cloudmaster.cmp.web" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="logStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="logStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+    
+        <!-- 重置密码 -->
+        <action name="clearPsw" class="clearPsw">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">userBrowser</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+        </action>
+        
+		<!-- 跳转到left页面 -->
+		<action name="frame" class="FrameAction" method="frame">
+		    <result name="SUCCESS">/WEB-INF/pages/authority/left.jsp</result>
+		</action>
+		<!-- 修改密码跳转到left -->
+		<action name="framePwd" class="FramePwdAction" method="frame">
+		    <result name="SUCCESS">/WEB-INF/pages/authority/left.jsp</result>
+		</action>
+		
+		<!-- 邮箱校验Ajax -->	
+		<action name="EmailVerify" class="EmailVerify" method="chechEmail">
+		</action>
+</package>
+</struts>

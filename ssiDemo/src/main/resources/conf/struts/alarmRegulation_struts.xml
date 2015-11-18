@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<!-- 告警规则浏览 -->
+	<package name="alarmRegulation" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+
+		
+		<!-- 告警规则管理 -->
+		
+		<!-- 告警规则浏览 -->
+		<action name="alarmRegulationBase" class="AlarmRegulationListAction"
+			method="base">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmRegulation/list.jsp</result>
+		</action>
+		
+		<!-- 告警规则浏览 -->
+		<action name="alarmRegulationList" class="AlarmRegulationListAction"
+			method="list">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmRegulation/list.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/alarm/alarmRegulation/list.jsp</result>
+		</action>
+		
+		<!-- 告警规则添加前准备 -->
+		<action name="alarmRegulationBeforeAdd" class="AlarmRegulationBeforeAddAction"
+			method="beforeAdd">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmRegulation/add.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/alarm/alarmRegulation/list.jsp</result>			
+		</action>
+		
+		<!-- 告警规则添加前准备 -->
+        <action name="alarmRegulationValidatorName" class="AlarmRegulationAddAction"
+            method="validatorRuleName">       
+        </action>
+        
+		<!-- 告警规则添加 -->
+		<action name="alarmRegulationAdd" class="AlarmRegulationAddAction"
+			method="add">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmRegulationBase</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/alarm/alarmRegulation/add.jsp</result>			
+		</action>
+		
+		<!-- 告警规则修改前准备 -->
+		<action name="alarmRegulationBeforeEdit" class="AlarmRegulationBeforeEditAction"
+			method="beforeEdit">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmRegulation/edit.jsp</result>
+			<result name="INPUT" type="redirectAction">
+				<param name="actionName">alarmRegulationBase</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>	
+		</action>
+		
+		<!-- 告警规则修改 -->
+		<action name="alarmRegulationEdit" class="AlarmRegulationEditAction"
+			method="edit">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmRegulationBase</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/alarm/alarmRegulation/edit.jsp</result>		
+		</action>
+		
+		<!-- 告警规则删除 -->
+		<action name="alarmRegulationDelete" class="AlarmRegulationDeleteAction"
+			method="delete">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmRegulationBase</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">alarmRegulationBase</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>	
+		</action>
+		
+		<!-- 告警规则详细 -->
+		<action name="alarmRegulationDetail" class="AlarmRegulationDetailAction"
+			method="detail">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmRegulation/detail.jsp</result>
+		</action>
+		
+		<!-- 告警规则绑定前准备 -->
+        <action name="alarmRegulationBeforeBind" class="AlarmRegulationBeforeBindAction"
+            method="beforeBind">
+            <result name="SUCCESS">/WEB-INF/pages/alarm/alarmRegulation/bind.jsp</result>
+            <result name="INPUT" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>   
+        </action>
+        
+        <!-- 告警规则绑定 -->
+        <action name="alarmRegulationBind" class="AlarmRegulationBindAction"
+            method="bind">
+            <result name="SUCCESS" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="msg">${msg}</param>
+            </result>
+            <result name="INPUT">/WEB-INF/pages/alarm/alarmRegulation/bind.jsp</result>     
+        </action>
+        
+        <!-- 告警规则解绑 -->
+        <action name="alarmRegulationUnbind" class="AlarmRegulationUnbindAction"
+            method="unbind">
+            <result name="SUCCESS" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="msg">${msg}</param>
+            </result>
+            <result name="ERROR" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>   
+        </action>
+        
+        <action name="selectPersonData" class="userListAction" method="list">
+        </action>
+        
+       <!--  <action name="selectPersonBase" class="userListAction" method="base">
+            <result name="SUCCESS">/WEB-INF/pages/alarm/alarmRegulation/userList.jsp
+            </result>
+            <result name="FAILURE">/WEB-INF/pages/alarm/alarmRegulation/userList.jsp
+            </result>
+        </action> -->
+        
+          <!-- 告警规则中止 -->
+        <action name="alarmRegulationSuspend" class="AlarmRegulationSuspendAction"
+            method="suspend">
+            <result name="SUCCESS" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="msg">${msg}</param>
+            </result>
+            <result name="ERROR" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>   
+        </action>
+        
+          <!-- 告警规则激活 -->
+        <action name="alarmRegulationActivation" class="AlarmRegulationSuspendAction"
+            method="activation">
+            <result name="SUCCESS" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="msg">${msg}</param>
+            </result>
+            <result name="ERROR" type="redirectAction">
+                <param name="actionName">alarmRegulationBase</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>   
+        </action>
+	</package>
+</struts>

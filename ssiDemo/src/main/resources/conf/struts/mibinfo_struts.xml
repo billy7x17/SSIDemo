@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<!-- 阈值信息管理 -->
+	<package name="mibinfoview" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- 手风琴跳到jsp页面-->
+		<action name="mibList" class="mibListAction" method="base">
+			<result name="success">/WEB-INF/pages/performance/mibinfo/list.jsp</result>
+		</action>
+		
+		<!-- 列表页面ajax请求 -->
+		<action name="mibBaseList" class="mibListAction" method="mibinfoList">
+		</action>
+		<!-- 删除 -->
+		<action name="mibInfoDelete" class="mibInfoDeleteAction" method="delete">
+			<result name="success" type="redirectAction">
+					<param name="actionName">mibList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		<!-- 详细 -->
+		<action name="mibInfoDetail" class="mibInfoDetailAction" method="detail">
+			<result name="success">/WEB-INF/pages/performance/mibinfo/detail.jsp</result>
+		</action>
+		<!-- 添加初始化 -->
+		<action name="mibInfoBeforeAdd" class="mibInfoBeforeAddAction" method="beforeAdd">
+			<result name="success">/WEB-INF/pages/performance/mibinfo/add.jsp</result>
+		</action>
+		
+		<!-- 查询不同类型下指标分组内容 -->
+		<action name="getMibGroupByDeviceTypeId" class="mibInfoBeforeAddAction" method="getMibGroupInfo">
+		</action>
+		
+		<!-- 添加初始化利用设备类型查询符合条件的集合 -->
+		<action name="getParentMibInfoByDeviceType" class="mibInfoBeforeAddAction" method="getParentMibInfoByDeviceType">
+		</action>
+		<!-- 添加 -->
+		<action name="mibInfoAdd" class="mibInfoAddAction" method="add">
+			<result name="success" type="redirectAction">
+					<param name="actionName">mibList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">mibInfoBeforeAdd</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<!-- 折线图显示判断 -->
+		<action name="showLineJudge" class="mibInfoAddAction" method="showLineJudge">
+		</action>
+		<!-- oid是否重复判断 -->
+		<action name="oRepeatJudge" class="mibInfoBeforeAddAction" method="oRepeatJudge">
+		</action>
+		
+		<!-- 修改初始化 -->
+		<action name="mibInfoBeforeUpdate" class="mibInfoBeforeUpdateAction" method="beforeUpdate">
+			<result name="success">/WEB-INF/pages/performance/mibinfo/update.jsp</result>
+		</action>
+		<!-- 修改 -->
+		<action name="mibInfoUpdate" class="mibInfoUpdateAction" method="update">
+			<result name="success" type="redirectAction">
+					<param name="actionName">mibList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">mibInfoBeforeUpdate</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+	</package>
+</struts>

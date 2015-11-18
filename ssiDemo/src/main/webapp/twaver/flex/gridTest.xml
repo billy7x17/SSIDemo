@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<root>
+    <row name="row1">
+        <rank name="rank11">
+            <node>node1</node>
+        </rank>
+    </row>
+    <row name="row2">
+        <rank name="rank21">
+            <node>node2</node>
+        </rank>
+        <rank name="rank22">
+            <node>node3</node>
+        </rank>
+    </row>
+    <row name="row3">
+        <rank name="rank31">
+            <row name="row311">
+                <rank name="rank3111">
+                    <node>node4</node>
+                </rank>
+            </row>
+        </rank>
+        <rank name="rank32">
+            <row name="row321">
+                <rank name="rank3211">
+                    <node>node4</node>
+                </rank>
+                <rank name="rank3212">
+                    <node seq="5" name="node5">
+                    </node>
+                </rank>
+            </row>
+        </rank>
+    </row>
+</root>

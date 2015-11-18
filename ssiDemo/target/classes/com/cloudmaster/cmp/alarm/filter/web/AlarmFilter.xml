@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmFilter">
+	<typeAlias alias="AlarmFilter" type="com.cloudmaster.cmp.alarm.filter.dao.AlarmFilterDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	
+	<!-- 列表 -->
+	<select id="list" parameterClass="AlarmFilter" resultClass="AlarmFilter">
+		SELECT 
+		    filter.Filter_ID as filterId,
+			filter.Filter_Name as filterName,
+			case filter.Filter_Status when 0 then '无效' when 1 then '有效' else '未知' End as filterStatus,
+			DATE_FORMAT(filter.Modify_Time,'%Y-%m-%d %T') as modifyTime,
+			filter.Roster_ID as rosterId,
+			roster.Manufacture_ID as manufactureId,
+			level.name alarmGrade,
+			roster.type as rosterType,
+			roster.ID as rosterThresholdID,
+            threshold.EVENT_NAME as thresholdName,
+            access.ALARM_TITLE as accessName
+		FROM alarmfilter_tab filter
+		LEFT JOIN alarmroster_tab roster ON roster.Roster_ID = filter.Roster_ID
+		LEFT JOIN mals_nm_threshold_valve_t threshold ON roster.ID = threshold.id 
+        LEFT JOIN mals_nm_access_rule_t access  ON roster.ID = access.ROWID
+        LEFT JOIN mals_nm_alarm_level_t level  ON roster.Alarm_Grade = level.value
+        
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="filterName">
+				Filter_Name like concat('%',#filterName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="rosterId">
+				filter.Roster_ID like concat('%',#rosterId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="filterStatus">
+				Filter_Status = #filterStatus#
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="startTime">
+			  (filter.Modify_Time >= #startTime#)
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="endTime">
+			  (#endTime# >= filter.Modify_Time)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="manufactureId">
+              roster.Manufacture_ID like concat('%',#manufactureId#,'%')
+            </isNotEmpty>
+            
+            <isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+        </dynamic>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<!-- 数量 -->
+	<select id="count" parameterClass="AlarmFilter" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM alarmfilter_tab filter
+		LEFT JOIN alarmroster_tab roster ON roster.Roster_ID = filter.Roster_ID
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="filterName">
+				Filter_Name like concat('%',#filterName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="rosterId">
+				filter.Roster_ID like concat('%',#rosterId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="filterStatus">
+				Filter_Status = #filterStatus#
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="startTime">
+			  (filter.Modify_Time >= #startTime#)
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="endTime">
+			  (#endTime# >= filter.Modify_Time)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="manufactureId">
+              roster.Manufacture_ID like concat('%',#manufactureId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="qtype">
+					$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+        </dynamic>
+	</select>
+	
+	<!-- 详细 -->
+	<select id="detail" parameterClass="AlarmFilter" resultClass="AlarmFilter">
+		SELECT 
+		    filter.Filter_ID as filterId,
+			filter.Filter_Name as filterName,
+			case filter.Filter_Status when 0 then '无效' when 1 then '有效' else '未知' End as filterStatus,
+			DATE_FORMAT(filter.Modify_Time,'%Y-%m-%d %T') as modifyTime,
+			filter.Roster_ID as rosterId,
+			roster.Manufacture_ID as manufactureId,
+			level.name alarmGrade,
+			roster.type as rosterType,
+			roster.ID as rosterThresholdID,
+            threshold.EVENT_NAME as thresholdName,
+            access.ALARM_TITLE as accessName
+		FROM alarmfilter_tab filter
+		LEFT JOIN alarmroster_tab roster ON roster.Roster_ID = filter.Roster_ID
+		LEFT JOIN mals_nm_threshold_valve_t threshold ON roster.ID = threshold.id 
+        LEFT JOIN mals_nm_access_rule_t access  ON roster.ID = access.ROWID
+         LEFT JOIN mals_nm_alarm_level_t level  ON roster.Alarm_Grade = level.value
+		WHERE Filter_ID = #filterId#
+	</select>
+	
+	<!-- 添加   -->
+	<insert id="insert" parameterClass="AlarmFilter">
+            <![CDATA[
+            INSERT INTO alarmfilter_tab
+            (
+				Filter_Name,
+				Filter_Status,
+				Modify_Time,
+				Roster_ID 
+            )
+            VALUES
+            (    
+				#filterName#,   
+				#filterStatus#,   
+				DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),     
+				#rosterId#   
+            )
+            ]]>
+    </insert>
+  
+      <!-- 删除 -->
+    <delete id="delete" parameterClass="AlarmFilter">
+		 DELETE FROM alarmfilter_tab
+		 WHERE Filter_ID = #filterId#
+    </delete>
+
+     <!-- 修改前查询记录 -->
+	<select id="getInfo" parameterClass="AlarmFilter" resultClass="AlarmFilter">
+		SELECT 
+		    Filter_ID as filterId,
+			Filter_Name as filterName,
+			Filter_Status as filterStatus,
+			filter.Roster_ID as rosterId,
+			roster.Manufacture_ID as rosterName
+		FROM alarmfilter_tab filter
+		    LEFT JOIN alarmroster_tab roster ON roster.Roster_ID = filter.Roster_ID
+		WHERE Filter_ID = #filterId#
+	</select>
+
+	  <!-- 修改-->
+    <update id="edit" parameterClass="AlarmFilter">
+		UPDATE alarmfilter_tab
+		SET
+            Filter_Name = #filterName#,                     
+			Filter_Status = #filterStatus#,                        
+			Modify_Time = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),     
+			Roster_ID = #rosterId# 
+		WHERE  Filter_ID = #filterId#
+    </update>
+	
+	
+	<!-- 记录是否存在 -->
+	<select id="existCount" parameterClass="AlarmFilter" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM alarmfilter_tab t
+		WHERE Roster_ID = #rosterId#
+		<isNotEmpty prepend="AND" property="filterId">
+				Filter_ID != #filterId# 
+        </isNotEmpty>
+	</select>
+	
+	<!-- 列表 -->
+	<select id="rosterList" parameterClass="AlarmFilter" resultClass="AlarmFilter">
+		SELECT
+			roster.Roster_ID as rosterId,
+			roster.Manufacture_ID as manufactureId,
+			level.name alarmGrade, 
+			DATE_FORMAT(roster.Modify_Time,'%Y-%m-%d %T') as modifyTime,
+			roster.type as rosterType,
+			roster.ID as rosterThresholdID,
+            threshold.EVENT_NAME as thresholdName,
+            access.ALARM_TITLE as accessName
+		FROM alarmroster_tab roster
+		LEFT JOIN mals_nm_threshold_valve_t threshold ON roster.ID = threshold.id 
+        LEFT JOIN mals_nm_access_rule_t access  ON roster.ID = access.ROWID
+        LEFT JOIN mals_nm_alarm_level_t level  ON roster.Alarm_Grade = level.value
+       order by $sortName$ $sortOrder$
+	</select>
+	
+	<!-- 数量 -->
+	<select id="rosterCount" parameterClass="AlarmFilter" resultClass="java.lang.Integer">
+		SELECT
+			COUNT(1)
+		FROM alarmroster_tab roster
+	</select>
+	
+	
+</sqlMap>

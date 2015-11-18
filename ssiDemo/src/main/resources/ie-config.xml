@@ -1,0 +1,527 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!DOCTYPE ie-configs SYSTEM "ie-config.dtd">
+
+<!-- 
+ *******************************************************************************
+ * IE (Importer & Exporter)导入导出框架
+ *
+ *    IE框架支持Excel和CSV文件针对简单数据(JavaBean)的导入导出轻巧的支持. 也就是说, 不需要使用
+ * 大量的代码来读Excel和CSV,只需要在本配置文件中对导入导出做简单的配置(校验是要跟业务相关的),
+ * 在像使用Ibatis那样来调用框架即可将数据轻易的导入或导出. 对于开发维护成员来说,要做的就是关于
+ * 本配置文件, 而不是去关注导入导出的过程中的代码了.转而将注意力放到页面的设计和导入导出业务要求
+ * 上了.下面是使用的简单本框架的代码例子:
+ *
+ *
+ * 导入CSV:
+ *		InputStream in = new FileInputStream("c:\\spRoute.csv");
+ *		IECsvImporter<SpRoute> spRouteImporter = new IECsvImporter<SpRoute>(in);
+ *		List<SpRoute> bigList = spRouteImporter.getCSVDataList("csv-svc");
+ *		List<IEErrorMessage> errorMessage = spRouteImporter.getErrorMessage();
+ *
+ * 导出CSV:
+ *		List<SpRoute> bigList = new ArrayList<SpRoute>();
+ *		IECsvExporter<SpRoute> spRouteExporter = new IECsvExporter<SpRoute>();
+ *	 	String csvData = spRouteExporter.getCSVData("csv-svc", bigList);
+ *
+ * 导入Excel:
+ *		InputStream in1 = new FileInputStream(new File("c:\\gsp_svc_10000.xls"));
+ *		IEExcelImporter excelImplortor = new IEExcelImporter(in1);
+ *		List<GspBasic> gspBasicList = excelImplortor.getSheetData("import", 0);
+ *		List<SpRoute> spRouteList = excelImplortor.getSheetData("import", 1);
+ *		List<IEErrorMessage> errorMessageList = excelImplortor.getErrorMessage();
+ *
+ * 导出Excel:
+ * 		List<SpRoute> bigList = new ArrayList<SpRoute>(500000);
+ *		OutputStream outputStream = new FileOutputStream("c:\\svc_10000.xls");
+ *		IEExcelExporter excelExporter = new IEExcelExporter(outputStream);
+ *		excelExporter.setTitle("Title");
+ *		int sheetSize = excelExporter.putAutoExtendSheets("exportSvc", 0, bigList);
+ *		excelExporter.write();
+ *
+ * [潜规则:]
+ *		配置文件中使用的POJO应该符合
+ *		1. JavaBean规范(默认构造,有访问器方法). 
+ *		2. 字段最好是定义成String类型的,其他类型可能会出问题(未测试过)
+ * [建议:]
+ *		1. JavaBean最好是字段是全部用于导出的,未参与导出的字段可能会为null(看你构造怎么写了)
+ *
+ *******************************************************************************
+ -->
+ 
+<!-- 
+ *******************************************************************************
+ *	IE框架所支持的所有的XML标签如下: 
+ *
+ *	<ie-configs>                                      
+ *		<sheets>                                     
+ *			<sheet>                              
+ *				<property>                   
+ *					<validate>           
+ *						<require/>   
+ *						<reference/> 
+ *						<max/>       
+ *						<min/>       
+ *						<scope/>     
+ *						<regxp/>     
+ *					</validate>          
+ *					<filter/>            
+ *				</property>                  
+ *				......                       
+ *			</sheet>                             
+ *			......                               
+ *		</sheets>                                    
+ *	                                                     
+ *	                                                     
+ *		<excels>                                  
+ *			<workbook>                           
+ *				<import/>或</export>   
+ *					IMPORT/EXPORT决定WORKBOOK所依赖的SHEET的字段中的过滤器产生正向还是反向过滤
+ *			</workbook>                          
+ *			......                               
+ *		</excels>                                 
+ *	                                                     
+ *		<csvs>                                       
+ *			<csv/>                               
+ *			.......                              
+ *		</csvs>                                      
+ *	                                                     
+ *		<global-property-validate>                   
+ *			<property-validate/>                          
+ *			......                               
+ *		</global-property-validate>                  
+ *	                                                     
+ *		<global-object-validate>                     
+ *			<object-validate/>                          
+ *			......                               
+ *		</global-object-validate>                    
+ * 	                                                     
+ *		<global-regxp-validate>                      
+ *			<regxp-validate/>                             
+ *			......                               
+ *		</global-regxp-validate>                     
+ *		                                                     
+ *		<global-dynamic-filter>                      
+ *			<dynamic-filter/>                            
+ *		</global-dynamic-filter>                     
+ *	</ie-configs>     
+ *******************************************************************************  
+ -->
+
+<!-- 
+ *******************************************************************************
+ * <sheet/> 工作表描述 (支持多个<property/>)
+ * 
+ * 例如:
+ *		<sheet id="gsp" properties="10" memo="集团客户" title="导出的标题"
+ *			class="com.neusoft.domain.GspBasic" validate="validateE">
+ *			<property/>
+ *			.....
+ *			<property/>
+ *		</sheet>
+ *
+ * id			: 全局的sheet ID, 供在wrokbook中引用
+ *
+ * properties 	: 用于简单的验证<property/>标签的数量,即域的数量
+ * 
+ * memo 		: 在导出Excel时的Sheet名
+ *
+ * class		: 一行数据对应的Bean名
+ *
+ * title		: 导出Excel时的标题(可以通过setTitle()来设置标题)
+ *
+ * validate		: 行级校验(对象级)的引用名称,需要在<global-object-validate/>中配置 
+ *
+ *******************************************************************************
+ -->
+
+<!--
+ *******************************************************************************
+ * <property/>字段属性描述(支持一个<validate/>和一个<filter/>)
+ *
+ * 例如:
+ *		<property name="svc_id" type="number" memo="特服号码">
+ *			<validate/>
+ *			<filter/>
+ *		</property>
+ *
+ *
+ * name 	: <sheet>中class属性代表的JavaBean中的字段(String域)
+ *
+ * type 	: 导出Excel文件时使用的强制类型
+ *				1. string Excel中以字符串类型存储  (默认)
+ *				2. number Excel中以数值类型存储
+ *
+ * memo 	: 第一行的字段注释信息
+ *
+ *******************************************************************************
+ -->
+
+<!--
+ *******************************************************************************
+ * <validate/> 对数据的校验方式(没有顺序限制, 每个验证只能出现一次)
+ * 
+ * 例如:
+ * 		<validate>
+ *			<require value="true" message="必填字段"/>
+ *			<reference value="corp_id" message="xxx"/>
+ *			<max value="16" message="最大位数16"/>
+ *			<min value="1" message="最小位数1"/>
+ *			<scope value="0,1,2,3,4" messge="只能取[0,1,2,3,4]这几个值"/>
+ *			<regxp value="[0-9]*" message="不是有效的数字" />
+ *			<unique value="true" message="企业代码必须唯一"/>
+ *		</validate>
+ *
+ * 具体的描述:
+ *	1. require   : 必填校验(非空) <require value="true" message="必填字段"/>
+ *
+ *	2. reference : 自定义动态校验 <reference value="corp_id" message="xxx"/> ,
+ *					请参见<dynamic-validate/>, 将不执行其他校验
+ *					如果不配置message,则使用全局引用校验中配置的错误提示信息.
+ *
+ *	3. min       : 最短长度验证   <min value="1" message="最小位数1"/>
+ *
+ *	4. max       : 最长长度验证   <max value="16" message="最大位数16"/>
+ *
+ *	5. scope     : 值域验证       
+ *					<scope value="0,1,2,3,4" messge="只能取[0,1,2,3,4]这几个值"/>
+ *
+ *  6. regxp     : 正则表达式     <regxp value="[0-9]*" message="不是有效的数字" />
+ *					并支持已用    <regxp reference="regxp-corpid" message="xxx"/>
+ *					如果不配置message,则使用全局正则校验中配置的错误提示信息.
+ *
+ *	7. unique	 : 唯一性校验		<unique value="true" message="企业代码必须唯一"/>
+ *					标识本字段出现的值不允许有重复的, 如果出现重复则只保留第一个出现的有效数据
+ *					忽略后面的重复行
+ *
+ *******************************************************************************
+-->
+
+<!--
+ *******************************************************************************
+ * <filter/> 对数据的过滤配置(一个字段只能有一个配置一个filter)
+ * 
+ * 例如:
+ * 		<filter scope="0,老路由;1,新路由"/>
+ * 或
+ *		<filter reference="routeTypeFilter"/>
+ 
+ *	1. scope   		: 表示过滤匹配表(配置的时候情注意顺序)
+ *						导出: 将数据'0'或'1', 过滤成'老路由'或'新路由'
+ *						导入: 将数据'老路由'或'新路由', 过滤成'0'或'1'
+ *
+ *	2. reference 	: 表示引用<global-dynamic-filter/>中注册的全局过滤器
+ *
+ *******************************************************************************
+-->
+
+<!--
+ *******************************************************************************
+ *   <excels/>注册全局工作薄描述, 一个工作薄中可以注册一个import或export
+ * 
+ * id     : 全局的校验引用名, 使用方法如下: 这个ID需要在程序中进行调用
+ *
+ * <import/> 和 <export/> 的属性是相同的
+ *
+ * depends: 工作薄所依赖的工作表ID,支持多个, 使用","分隔
+ *
+ *******************************************************************************
+-->
+
+<!--
+ *******************************************************************************
+ *   <csvs/>注册全局CSV格式导入导出的全局引用ID
+ * 
+ * id     : 全局的引用名, 使用方法如下:
+ *			这个ID需要在程序中调用, 
+ *			详情见com.neusoft.ie.IECsvImporter
+ *
+ * depend : CSV所依赖的工作表ID(不支持多个)
+ *
+ *******************************************************************************
+-->
+
+<!--
+ *******************************************************************************
+ *   <global-property-validate/>注册全局字段级动态校验引用
+ * 
+ * name   : 全局的校验引用名, 使用方法如下:
+ *			<property>
+ *				<validate reference="svc_id"/>
+ *			</property>
+ * 
+ * class  : 校验类
+ *
+ * method : 校验类中的static方法, 
+ *			校验为有效数据: return true;
+ *			校验为无效数据: return false;
+ *			方法定义如下:
+ *			public static boolean methodName(String arg){}
+ *
+ * message: 校验失败时的提示信息
+ *
+ *******************************************************************************
+-->
+
+
+<!--
+ *******************************************************************************
+ *   <global-object-validate/>注册全局行级(对象级)动态校验引用
+ * 
+ * name   : 全局的行级校验引用名, 使用方法如下:
+ *			
+ * class  : 行级校验类(需要实现接口:com.neusoft.ie.validate.IEObjectValidater)
+ *
+ *******************************************************************************
+-->
+
+
+<!-- 
+ *******************************************************************************
+ *   <global-regxp-validate/>注册全局正则表达式校验
+ * 
+ * name   : 全局的正则表达式引用名称,
+ *			供<validate><regxp reference=""/></validate>使用
+ *			
+ * value  : 正则表达式
+ *
+ * message: 校验失败时的提示信息
+ *******************************************************************************
+ -->
+
+<!-- 
+ *******************************************************************************
+ *   <global-dynamic-filter/>注册全局动态过滤器(实现数据的转换)
+ * 
+ * name   : 全局的引用名称,
+ *			供<validate><filter reference=""/></validate>使用
+ *			
+ * class  : 实现类名
+ *
+ * method : 过滤方法名称,例如:doFilter
+ *			方法定义如下:
+ *			public static String doFilter(String arg){}
+ *			返回的String为过滤后的数据
+ *******************************************************************************
+ -->	 
+	 
+<ie-configs>
+	<sheets>
+		<sheet memo="物理机信息" properties="9" class="com.cloudmaster.cmp.service.osinstall.dao.PmImportBean" id="pm_sheet">
+			<property memo="机房号" name="objectZoneID" >
+				<validate>
+					<require value="true" message="必填字段" />
+					<max value="32" message="最大32个字符"/>
+					<min value="1" message="最小1个字符"/>
+				</validate>
+			</property>
+			<property memo="机柜号" name="objectClusterID" >
+				<validate>
+					<require value="true" message="必填字段" />
+					<max value="32" message="最大32个字符"/>
+					<min value="1" message="最小1个字符"/>
+				</validate>
+			</property>
+			<property memo="主机名" name="pMName" >
+				<validate>
+					<require value="true" message="必填字段" />
+					<max value="64" message="最大64个字符"/>
+					<min value="1" message="最小1个字符"/>
+				</validate>
+			</property>
+			<property memo="数据口IP" name="pmIP" >
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="管理口IP" name="ipmiIp" >
+			</property>
+			<property memo="管理口用户名" name="iPMIUSER" >
+			</property>
+			<property memo="管理口密码" name="iPMIPASSWD" >
+			</property>
+			<property memo="千兆MAC1" name="mAC" >
+			</property>
+			<property memo="物理机型号" name="serverType" >
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+		</sheet>
+		<sheet memo="子网IP信息" properties="6" class="com.cloudmaster.cmp.resource.ip.view.dao.SubNetInfo" id="ip_sheet">
+			<property memo="子网名称" name="subnetName">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="起始IP" name="ipStart">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="结束IP" name="ipEnd">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="子网掩码" name="mask">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="网关" name="gateway">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="资源类型" name="resourceType">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+		</sheet>
+		
+		<sheet memo="公网IP信息" properties="3" class="com.cloudmaster.cmp.resource.publicip.view.dao.PublicIp" id="publicip_sheet">
+			<property memo="IP地址" name="ip">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="IP类型" name="ipType">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			<property memo="IP描述" name="desc">
+			</property>
+		</sheet>
+
+		<sheet memo="虚拟网络创建表" properties="18" class="com.cloudmaster.cmp.service.vlan.dao.VNDomain" id="vlan_sheet">
+			<property memo="分区" name="zoneID">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="机柜" name="cabinet"/>
+			
+			<property memo="虚拟机网络名称" name="vnName">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="bcec分区标识" name="bcecZoneId">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="子网掩码" name="netMask">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="网关" name="gateWay">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			
+			<property memo="域名服务器" name="dns">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="辅助域名服务器" name="dnsa">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="虚拟网络使用类型" name="useType">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="起始ip" name="startIP">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="结束ip" name="endIP">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="交换机端口" name="switchPort">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="虚拟网络应用类型" name="VNUseType">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="防火墙标识" name="fwModoleId">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="虚拟网络编号" name="vlanCode">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="vlan名称" name="vlanName">
+				<validate>
+					<require value="true" message="必填字段" />
+				</validate>
+			</property>
+			
+			<property memo="操作系统类型" name="osType"/>
+			<property memo="虚拟网桥" name="vnType"/>
+		</sheet>
+		<sheet memo="物理机逻辑名补全" properties="2" class="com.cloudmaster.cmp.service.osinstall.dao.PmImportBean" id="addmessage_sheet">
+			<property memo="主机名" name="pMName"/>
+			<property memo="设备逻辑名" name="logicName"/>
+		</sheet>
+	</sheets>
+	<excels>
+		<workbook id="pm_workbook">
+			<import depends="pm_sheet" />
+		</workbook>
+		<workbook id="ip_workbook">
+			<import depends="ip_sheet" />
+		</workbook>
+		<workbook id="publicip_workbook">
+			<import depends="publicip_sheet" />
+		</workbook>
+		<workbook id="vlan_workbook">
+			<import depends="vlan_sheet" />
+		</workbook>
+		<workbook id="addmessage_workbook">
+			<import depends="addmessage_sheet" />
+		</workbook>
+	</excels>
+	<csvs/>
+
+	<global-property-validate/>
+
+	<global-object-validate/>
+	
+	<global-regxp-validate/>
+	
+	<global-dynamic-filter/>
+</ie-configs>

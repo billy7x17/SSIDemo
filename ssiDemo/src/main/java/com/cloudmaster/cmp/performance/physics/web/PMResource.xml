@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PMRes">
+
+	<typeAlias alias="PMResource"
+		type="com.cloudmaster.cmp.performance.physics.dao.PMResourceInfo" />
+	<typeAlias alias="PMResourceNew"
+		type="com.cloudmaster.cmp.performance.physics.dao.PMResourceInfoNew" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+
+	<!-- 查询物理机的实时信息 -->
+	<select id="getResource" resultClass="PMResourceNew">
+		SELECT
+		*
+		FROM
+		performance_tab
+		WHERE <![CDATA[PER_TIME >= #per_time# and PER_TIME <=NOW()]]> AND PER_HID= #per_hid#  ORDER BY PER_TIME ASC
+	</select>
+	
+	<!-- 查询物理机的历史信息（最近一周） -->
+	<select id="getWeekResource" resultClass="PMResourceNew">
+		SELECT
+		*
+		FROM      
+		performance_hour_tab
+		WHERE <![CDATA[PER_TIME >= #per_time# and PER_TIME <=NOW()]]> AND PER_HID= #per_hid#  ORDER BY PER_TIME ASC
+	</select>
+	
+	
+	
+	<!-- 查询物理机的历史信息（最近一个月） -->
+	<select id="getMouthResource" resultClass="PMResourceNew">
+		SELECT
+		*
+		FROM
+		performance_day_tab
+		WHERE <![CDATA[PER_TIME >= #per_time# and PER_TIME <=NOW()]]> AND PER_HID= #per_hid#  ORDER BY PER_TIME ASC
+	</select>
+
+	<!-- 查询物理机信息（增量数据） -->
+	<select id="getResourceIncrease" resultClass="PMResourceNew">
+		SELECT
+		*
+		FROM
+		performance_tab
+		WHERE <![CDATA[PER_TIME >= date_sub(now(),interval #time# SECOND) and PER_TIME <=NOW()]]> AND PER_HID= #pmIP#  ORDER BY PER_TIME;
+	</select>
+	
+	<!-- 优化点击设备类型后单个查询所有设备节点的sql语句  begin-->
+	<select id="getResourceForAll" resultClass="PMResourceNew">
+		SELECT
+		Per_Hid
+		FROM
+		performance_tab
+		WHERE 
+			<iterate property="perHidArray"
+				open="(" close=")" conjunction="OR">
+				PER_HID=#perHidArray[]#
+			</iterate>
+			and
+			<![CDATA[PER_TIME >= #per_time# and PER_TIME <=NOW()]]>
+	</select>
+	<!-- 优化点击设备类型后单个查询所有设备节点的sql语句  end-->
+	
+	<!-- 通过站点ID查询VMS的CPU空闲率和内存利用率 -->
+	<select id="getVMSReportBySite" parameterClass="java.lang.String"
+		resultClass="java.util.HashMap">
+		SELECT
+			Cpu_idle , Mem_Percent
+		FROM
+			(
+			SELECT
+				p1.Per_Hid , MAX(p1.Per_Time) as maxTime , i1.site_id
+			FROM
+				performance_tab p1
+			LEFT JOIN
+				mals_nm_agent_info_t i1
+			ON
+				i1.AGENT_IP = p1.Per_Hid
+			LEFT JOIN
+				mals_nm_agent_type_t t
+			ON
+				t.AGENT_TYPE = i1.TYPE_ID
+			WHERE
+				t.AGENT_GROUP = 'VMS'
+			AND
+				i1.site_id = #siteId#
+		) temp
+		LEFT JOIN
+			performance_tab p
+		ON
+			temp.Per_Hid = p.Per_Hid
+		AND
+			temp.maxTime = p.Per_Time
+		GROUP BY
+			p.Per_Hid
+		ORDER BY 
+			PER_TIME ASC 
+	</select>
+</sqlMap>
+

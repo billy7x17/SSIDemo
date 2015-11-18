@@ -1,0 +1,98 @@
+Application{
+    themeColor : #D8650E;
+    backgroundColor : #A8A8A8;
+}
+
+VDividedBox {
+    verticalGap : 6;
+    dividerAffordance : 6;
+    dividerThickness : 6;
+    dividerColor : #D8650E;
+}
+
+HDividedBox {
+    horizontalGap : 6;
+    dividerAffordance : 6;
+    dividerThickness : 6;
+    dividerColor : #D8650E;
+}
+
+ButtonBar{
+    horizontalGap : -1;
+    verticalGap : -1;
+}
+
+Button{
+    borderColor : #555555;
+}
+
+TileList{
+}
+
+Accordion{
+    headerStyleName : "accordionHeader";
+}
+
+@namespace demo "demo.common.*" ;
+demo|GradientCanvas{
+    backgroundGradientColors : #CFCFCF, #A8A8A8;
+    backgroundGradientAlphas : 1, 1;
+    backgroundGradientRotation : 90;
+}
+
+.banner{
+    color : #000000;
+}
+
+.finder{
+    backgroundColor : #A8A8A8;
+}
+
+.finderInput{
+    cornerRadius : 10 ;
+}
+
+.navTree{
+    backgroundColor : #F0F0F0;
+    borderStyle : none;
+}
+
+.navNetwork{
+    labelColor : #E0E0E0;
+    vectorFillColor : #CCCCCC;
+    backgroundColor : #000000;
+}
+
+.console{
+    backgroundColor : #F0F0F0;
+    color : #0000A0;
+    fontFamily : Courier;
+}
+
+.demoPane{
+    backgroundColor : #FFFFFF;
+}
+
+.accordionHeader{
+    fillColors: #FED758, #D8650E;
+    fillAlphas: 1.0, 0.6;
+    selectedFillColors: #CFCFCF, #A8A8A8;
+    textAlign : center;
+    border : none;
+}
+
+.singleButton{
+    cornerRadius : 10;
+}
+
+.controlPane{
+    backgroundColor : #FFFFFF;
+    backgroundAlpha : 0.7;
+    borderColor : #000000 ;
+}
+
+.mainScreen{
+    fillColor : #D1D3D4;
+    gradientColor : #FFFFFF;
+    gradientType : "radial.center";
+}

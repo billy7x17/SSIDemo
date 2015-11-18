@@ -1,0 +1,29 @@
+@charset "utf-8";
+/* CSS Document */
+.searchBar{ width:100%; padding-bottom:0px; *padding-bottom:10px;}
+.searchBarBgCol_1{ background:url(../images/searchBarBg.png) repeat-x left top; background-color:#e8ecee;}
+.searchBarBgCol_2{ background-color:#f4f6f8;}
+.formCon{ float:left; margin:9px 0px 0px 0px; padding-right:13px;}
+.formConWid_150{ width:150px;}
+.formConWid_190{ width:190px; *margin-left:2px;}
+/* 2011-12-28 wengcz width由73改为173  */
+.formTxt{ display:block; float:left; width:173px; text-align:right; color:#525458; margin:15px 5px 0 20px; font-weight:bold;}
+.formBotTxt{display:block; float:left; width:73px; text-align:right; color:#525458; margin:0px 8px 0 20px; *margin:0px 5px 0 20px; font-weight:bold;}
+/* ie7浏览器 */
+.mtl_9{ margin:0px 0px 0px 0px; *margin:0px 0px 0px 9px;}
+.mt_15{ margin-top:25px; *margin-top:6px; _margin-top:25px;}
+.mt_20{ margin-top:26px; *margin-top:6px; _margin-top:26px;}
+.mt_23{ margin-top:24px; *margin-top:15px; _margin-top:24px;}
+.mt_10{ margin-top:15px; *margin-top:7px; _margin-top:25px;}
+.mt_19{ margin-top:0px; *margin-top:-19px; _margin-top:0px;}
+
+.mt_15_ie7{ margin-top:15px; *margin-top:5px;}
+
+.textareaTxt{display:block; float:left; width:73px; text-align:right; margin-right:5px; margin-left:20px; height:45px; color:#525458; font-weight:bold; margin-top:7px; *margin-top:-10px; _margin-top:7px;}
+.textareaCon{margin-bottom:10px; margin-left:9px; margin-top:4px; *margin-top:-15px; _margin-top:4px; padding:0;}
+
+.searchBarTex{ width:662px; *width:659px; _*width:661px; border:1px solid #acb2b4; background:url(../images/textareaBg.png) repeat-x left top; background-color:#fff; font-size:12px; line-height:16px; color:#525458; margin-left:0; *margin-left:-4px; _margin-left:0px; height:44px; padding:5px;}
+.searchButWra{width:84px; position:absolute; left:795px; _left:815px; top:30px;}
+.searchBut{ margin:5px 0 0 0;}
+
+.columnar, .pie, .curve{ margin:4px;}

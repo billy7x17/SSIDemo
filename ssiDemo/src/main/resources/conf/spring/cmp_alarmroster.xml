@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<!-- 告警花名册浏览 -->
+	<bean id="AlarmRosteListAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosteListAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRosterList.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmroster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 修改前准备 -->
+		<bean id="AlarmRosterBeforeEditAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterBeforeEditAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRosterEdit.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 修改花名册 -->
+		<bean id="AlarmRosterEditAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterEditAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRosterEdit.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmroster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+	</bean>
+	
+	<!-- 删除花名册 -->
+		<bean id="AlarmRosterDeleteAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterDeleteAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRosterDelete.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmroster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+	</bean>
+	
+	<!-- 查询花名册前准备 -->
+		<bean id="AlarmRosterBeforeSearchAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterBeforeSearchAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRosterSearch.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 花名册高级查询-->
+		<bean id="AlarmRosterSearchAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterSearchAction"
+		singleton="false">
+		<property name="authId">
+			<value>${alarmRosterSearch.authID}</value>
+		</property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy"/>
+		</property>
+		<property name="functionName">
+			<value>${alarmroster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 花名册详细-->
+		<bean id="AlarmRosterDetailAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterDetailAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy"/>
+		</property>
+		<property name="authId">
+			<value>${alarmRosterDetail.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmroster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 添加前准备-->
+		<bean id="AlarmRosterBeforeAddAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterBeforeAddAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy"/>
+		</property>
+		<property name="authId">
+			<value>${alarmRosterAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 添加-->
+		<bean id="AlarmRosterAddAction" class="com.cloudmaster.cmp.alarm.alarmroster.web.AlarmRosterAddAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy"/>
+		</property>
+		<property name="authId">
+			<value>${alarmRosterAdd.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmroster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+	</bean>
+		
+
+</beans>

@@ -1,0 +1,19 @@
+<config>
+    <rander>
+        <control>
+            http://localhost:8080/twaver/mvc.jsp
+        </control>
+        <init>
+            <!--
+            http://localhost:8080/twaver/demo.xml
+             -->
+         http://localhost:8080/twaver/mvc.jsp
+        </init>
+        <increment>
+        http://localhost:8080/twaver/increment.jsp
+        </increment>
+        <setting>
+
+        </setting>
+    </rander>
+</config>

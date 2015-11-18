@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+	<!-- SSMM配置文件-->
+
+<ssmm>
+	<license>OTQ0NzkxMTkxNTI1MzI4MQ==</license>
+	<!--
+		验证码
+	-->
+	<mac_address>00-1C-C4-1B-42-AF</mac_address>
+	<!--
+		mac地址
+	-->
+	<maxmsgcount>300000</maxmsgcount><!--缓存大小-->
+	<size>10000</size><!--共享内存大小-->
+
+	<ismg>
+		<!--
+			<ip>10.10.13.65</ip> <port2>8956</port2> <port3>11439</port3>
+		-->
+		<ip>211.139.144.2011</ip><!--短信网关IP-->
+		<port2>7890</port2><!--短信网关cmpp2.0监听端口-->
+		<port3>7890</port3><!--短信网关cmpp3.0监听端口-->
+
+		<connect_count>1</connect_count><!--和短信网关建立的连接个数-->
+
+		<reconnect_interval>30</reconnect_interval>
+		<!--
+			连接短信网关失败后,重新连接等待时间，单位秒
+		-->
+
+		<active_test_interval>30</active_test_interval>
+		<!--
+			发送链路检测表时间间隔，单位秒
+		-->
+
+		<wait_submit_rsp_timeout>30</wait_submit_rsp_timeout>
+		<!--
+			等待网关返回MT应答的超时时间,单位秒
+		-->
+		<glideWindow>16</glideWindow><!--异步窗口大小-->
+		<filewriteTime>10</filewriteTime><!--消息内存过期写入文件时间,单位秒-->
+		<ssmmOsSort>0</ssmmOsSort><!--操作系统类别 0:windosws;1:其它操作系统-->
+		<err_codes>
+			<err_code>2005</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2008</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2998</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2015</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2085</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2082</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>205</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2859</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2185</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+			<err_code>2483</err_code><!--收到MT应答,如果是配置的错误码,则进行消息重传-->
+		</err_codes>
+
+		<count>3</count><!--重传的次数-->
+		<interval>30</interval><!--重传的时间间隔-->
+		<!--长消息等待所有拆分的消息的状态报告过期时间,单位:秒-->
+		<long_submit_expire_timeout>100</long_submit_expire_timeout>
+		<!--等待一条长deliver消息的过期时间,单位:秒-->
+		<long_deliver_expire_timeout>100</long_deliver_expire_timeout>
+
+		<!--下面的配置信息不要轻易更改-->
+		<poolPath>pool/cache</poolPath><!--Oscache的路径-->
+		<ssmmOs>Windows</ssmmOs>
+		<ssmmPath>sbin</ssmmPath>
+		<ssmmCommand>ipconfig / all</ssmmCommand>
+		<!--
+			<ssmmSolarisCommand>arp</ssmmSolarisCommand>
+			<ssmmLinuxPath>sbin</ssmmLinuxPath>
+			<ssmmLinuxCommand>ifconfig</ssmmLinuxCommand>
+			<ssmmHpunixPath>/usr/sbin</ssmmHpunixPath>
+			<ssmmHpunixCommand>arp</ssmmHpunixCommand>
+			<ssmmScounixCommand>ifconfig</ssmmScounixCommand>
+		-->
+		<ssmmEncryption>OTIwMTAyMjQxMTcwODQwMTkx
+		</ssmmEncryption>
+	</ismg>
+
+</ssmm>

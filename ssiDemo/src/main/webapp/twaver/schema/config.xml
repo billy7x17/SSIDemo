@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\DOCUME~1\dreams\桌面\schema\config.xsd">
+    <setting>    </setting>
+    <construction>        
+        http://localhost:8080/twaver/MainMVC.jsp    
+    </construction>
+    <increment>
+        http://localhost:8080/twaver/incrementMVC.jsp
+    </increment>
+    <select>
+         http://localhost:8080/twaver/incrementMVC.jsp
+    </select>
+    <auth>
+        <operate name="detail.mail" action="reg" regular="[0-9]+"/>
+    </auth>
+    <plugin>
+        <factory type="com.neusoft.mid.topology.nj.factory.NJFactory"/>
+    </plugin>
+</config>

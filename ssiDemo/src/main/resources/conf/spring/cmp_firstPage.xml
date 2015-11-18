@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="resourceReportAction" class="com.cloudmaster.cmp.firstpage.web.ResourceReportAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="sysParaService">
+			<ref bean="SystemParameterService" />
+		</property>
+	</bean>
+	
+	<bean id="firstPageAlarmListAction" class="com.cloudmaster.cmp.firstpage.web.FirstPageAlarmListAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	</bean>
+	
+	<bean id="firstPageGradeAlarmAction" class="com.cloudmaster.cmp.firstpage.web.FirstPageGradeAlarmAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	</bean>
+	
+	<bean id="firstPageVMSReportAction" class="com.cloudmaster.cmp.firstpage.web.FirstPageVMSReportAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>	
+	</bean>
+	
+	<bean id="firstPageNVRReportAction" class="com.cloudmaster.cmp.firstpage.web.FirstPageNVRReportAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>	
+	</bean>
+</beans>

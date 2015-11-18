@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+   PUBLIC "-//iBATIS.com//DTD SQL Map Config 2.0//EN"
+   "http://www.ibatis.com/dtd/sql-map-config-2.dtd">
+<sqlMapConfig>
+	<settings cacheModelsEnabled="true" enhancementEnabled="true"
+		lazyLoadingEnabled="true" maxRequests="32" maxSessions="10"
+		maxTransactions="5" useStatementNamespaces="true" />
+
+	<sqlMap resource="com/cloudmaster/cmp/web/login/login.xml" />
+	
+	<sqlMap resource="com/cloudmaster/cmp/firstpage/web/ResourceReport.xml" />
+	
+	<sqlMap resource="com/cloudmaster/cmp/resource/collectdevice/web/DeviceInfo.xml" />
+	<!-- 机房 -->
+	<sqlMap resource="com/cloudmaster/cmp/resource/zone/view/web/zoneRoom.xml"/>
+	<!-- 机柜 -->
+	<sqlMap resource="com/cloudmaster/cmp/resource/cluster/view/web/clusterCabinet.xml"/>
+	<sqlMap resource="com/cloudmaster/cmp/resource/site/web/site.xml" />
+	
+	
+	<sqlMap resource="com/cloudmaster/cmp/performance/physics/web/PMInfo.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/performance/physics/web/PMResource.xml"/>
+	<sqlMap resource="com/cloudmaster/cmp/performance/tree/web/PerformanceTree.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/performance/mibinfo/web/MibInfo.xml" />
+	<!-- IPSAN -->
+	<sqlMap resource="com/cloudmaster/cmp/performance/ipsan/web/IpSanInfo.xml"/>
+	<!-- IPC -->
+	<sqlMap resource="com/cloudmaster/cmp/performance/ipc/web/IpcInfo.xml"/>
+	<!-- Encoder -->
+	<sqlMap resource="com/cloudmaster/cmp/performance/encoder/web/EncoderInfo.xml"/>
+	<!-- Decoder -->
+	<sqlMap resource="com/cloudmaster/cmp/performance/decoder/web/decoderInfo.xml"/>
+
+	<sqlMap resource="com/cloudmaster/cmp/alarm/threshold/web/Threshold.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/standardize/service/standardizeAlarm.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/view/web/AlarmView.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/alarmroster/web/AlarmRoster.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/filter/web/AlarmFilter.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/topology/web/alarmDetail.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/history/web/AlarmHistory.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/alarmTitle/web/AlarmTitle.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/autoclear/service/autoClearAlarm.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/regulation/web/AlarmRegulation.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/alarm/topology/manageWeb/manageWeb.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/topology/buildGraph/topoGraph.xml" />
+
+
+	<sqlMap resource="com/cloudmaster/cmp/system/alarmrules/web/AlarmRules.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/system/systemparmeter/web/SystemParameter.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/web/authority/user/UserInfo.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/web/authority/role/RoleInfo.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/web/authority/auth/AuthInfo.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/web/operationlog/OperationLogInfo.xml" />
+
+
+	<sqlMap resource="com/cloudmaster/cmp/ITIL/cronexpression/web/cronexpression.xml" />
+	<sqlMap resource="com/cloudmaster/cmp/ITIL/job/job_ibatis.xml" />
+	
+</sqlMapConfig>

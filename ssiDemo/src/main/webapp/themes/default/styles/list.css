@@ -1,0 +1,27 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+.list{ margin:4px 0px 11px 5px; border:1px solid #b8baba; background-color:#fff; border-collapse:collapse;word-wrap:break-word;table-layout: fixed;}
+
+.list th, .list td{ border-right:1px solid #e0e0e0; border-bottom:1px solid #ededed; text-align:left; line-height:19px;}
+.list td{ padding:1px 5px 1px 5px;}
+.list th{ padding:0 5px;}
+.b_r_none td{ border-right:none;}
+.list th{ background:url(../images/listTitBg.png) repeat-x left top;}
+.list td{ }
+.list .listChe{ width:20px; padding:3px 0 0 8px;}
+
+.list .listCon{ color:#1478c8; font-weight:bold;}
+
+.list .rowOddBg{ background-color:#ffffff;}
+.list .rowEvenBg{ background-color:#fafafa;}
+
+.list_close{ background:url(../images/list_plus.gif) no-repeat 10px 6px;}
+.list_open{ background:url(../images/list_minus.gif) no-repeat 10px 6px;}
+.list_sta{ cursor:pointer;}
+
+/*排序箭头*/
+.example img{ margin-left:12px;}
+.example th{ cursor:pointer;}
+

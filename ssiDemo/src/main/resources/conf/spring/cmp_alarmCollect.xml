@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+     <!-- 后台，周期采集告警处理入口 -->
+	 <bean id="standardizeAlarmStart"
+	  class="com.cloudmaster.cmp.alarm.standardize.service.AlarmStart">
+    	<property name="dbProc">
+    		<ref bean="standardizeAlarmDB"></ref>
+    	</property>
+    	<property name="businessProc">
+    		<ref bean="standardizeAlarmBIZ"></ref>
+    	</property>
+    	<property name="standardizeAlarmEnable">
+            <value>${standardizeAlarm_enable}</value>
+        </property>
+    </bean>
+    
+    <!-- 采集告警数据处理类 -->
+     <bean id="standardizeAlarmDB"
+	  class="com.cloudmaster.cmp.alarm.standardize.service.AlarmDBProc">
+    	<property name="timeRecord">
+    		<ref bean="alarmTimeRecord"></ref>
+    	</property>
+    	<property name="ibatisDAO">
+    		<ref bean="ibatisDAOProxy"></ref>
+    	</property>
+    	<property name="ibatisDAOCM">
+    		<ref bean="ibatisDAOProxyCM"></ref>
+    	</property>
+    </bean>
+    
+    <!-- 采集告警业务处理类 -->
+    <bean id="standardizeAlarmBIZ"
+	  class="com.cloudmaster.cmp.alarm.standardize.service.AlarmBusinessProc">
+    	<property name="defaultAlarmGrade">
+			<value>${standardizeAlarm.defaultAlarmGrade}</value>
+		</property>
+		<property name="defaultAlarmIdentify">
+			<value>${standardizeAlarm.defaultAlarmIdentify}</value>
+		</property>
+		<property name="defaultAlarmTitle">
+			<value>${standardizeAlarm.defaultAlarmTitle}</value>
+		</property>
+		<property name="dbProc">
+    		<ref bean="standardizeAlarmDB"></ref>
+    	</property>
+        <property name="alarmNotify">
+            <ref bean="alarmNotify"/>
+        </property>
+    </bean>
+    
+    
+    <!-- 记录采集时间 -->
+    <bean id="alarmTimeRecord"
+	  class="com.cloudmaster.cmp.alarm.standardize.service.AlarmTimeRecord">
+    	<property name="dbProc">
+    		<ref bean="standardizeAlarmDB"></ref>
+    	</property>
+    </bean>
+    
+    <!-- 告警通知处理 -->
+    <bean id="alarmNotify"
+      class="com.cloudmaster.cmp.alarm.autoclear.service.AlarmNotify">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy"></ref>
+        </property>
+          <property name="ssmmClientManager">
+            <ref bean="ssmmclientmanager" />
+        </property>
+         <property name="sysParaService">
+            <ref bean="SystemParameterService" />
+        </property>
+        
+    </bean>
+	
+</beans>

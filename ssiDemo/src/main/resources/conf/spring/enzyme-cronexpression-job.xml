@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- 测试任务 -->
+	<bean id="springJobTest" class="com.cloudmaster.cmp.ITIL.job.SpringJobTest"
+		singleton="false">
+		<property name="jobCallback" ref="callbackWithResultGroup"></property>
+	</bean>
+
+	<!-- 自动清除性能告警 -->
+	<bean id="autoClearAlarmJob"
+		class="com.cloudmaster.cmp.alarm.autoclear.service.AutoClearAlarmJob"
+		singleton="false">
+		<property name="jobCallback" ref="callbackWithResultGroup"></property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="ibatisDAORDC">
+            <ref bean="ibatisDAOProxyAlarm" />
+        </property>
+		<property name="intervalTime">
+			<value>${autoClearAlarm.IntervalTime}</value>
+		</property>
+		<property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+		
+	</bean>
+	
+	<!-- 自动编辑nagios配置文件 -->
+	<bean id="autoEditConfigJob"
+		class="com.cloudmaster.cmp.resource.collectdevice.service.AutoEditConfigJob"
+		singleton="false">
+		<property name="jobCallback" ref="callbackWithResultGroup"></property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="file">
+			<value>${autoEditConfig.file}</value>
+		</property>
+		<property name="ip">
+			<value>${autoEditConfig.serverIP}</value>
+		</property>
+		<property name="user">
+			<value>${autoEditConfig.serverUser}</value>
+		</property>
+		<property name="pwd">
+			<value>${autoEditConfig.serverPwd}</value>
+		</property>
+	</bean>
+
+	<!-- 日志归档任务 -->
+	<bean id="logCleanJob" class="com.cloudmaster.cmp.ITIL.job.LogCleanJob">
+		<property name="jobCallback" ref="callbackWithResultGroup"></property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+
+	
+	<!-- 告警规则处理 -->
+	<bean id="regulatoinProc"
+		class="com.cloudmaster.cmp.alarm.autoclear.service.RegulationProc"
+		singleton="false">
+		<property name="jobCallback" ref="callbackWithResultGroup"></property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="intervalTime">
+			<value>${autoClearAlarm.IntervalTime}</value>
+		</property>
+		<property name="alarmNotify">
+			<ref bean="alarmNotify" />
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<construction name="topCanvas" xmlns="http://www.neusoft.com/mid" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.neusoft.com/mid construction.xsd">
+    <setting>
+        <auto>
+            <zoomOverview>false</zoomOverview>
+            <increment>false</increment>
+        </auto>
+        <style>
+            <bg_fill_color>0xFFFFFF</bg_fill_color>
+            <bg_gradient_color>0xFFFFFF</bg_gradient_color>
+            <selectColor>0X15A230</selectColor>
+        </style>
+        <toolbar>
+            <navigationName> 首页 </navigationName>
+        </toolbar>
+        <operatingSpace>
+            <tree type="show"/>
+        </operatingSpace>
+    </setting>
+    <layout type="GridAutoLayout">
+        <row name="网络出口层">
+            <rank>
+                <row>
+                    <rank/>
+                    <rank/>
+                    <rank>
+                        <node seq="Router1" name="3X10G" image="Router"> </node>
+                    </rank>
+                    <rank/>
+                    <rank>
+                        <node seq="Router2" name="3X10G" image="Router"> </node>
+                    </rank>
+                    <rank/>
+                    <rank/>
+                </row>
+                <row>
+                    <rank/>
+                    <rank>
+                        <node seq="Router3" name="CMNET出口路由1" image="Router"> </node>
+                    </rank>
+                    <rank/>
+                    <rank>
+                        <node seq="Router4" name="CMNET出口路由2" image="Router"> </node>
+                    </rank>
+                    <rank/>
+                </row>
+            </rank>
+        </row>
+        <group name="网络出口层" type="" expanded="true">
+            <node seq="Router1"></node>
+            <node seq="Router2"></node>
+            <node seq="Router3"></node>
+            <node seq="Router4"></node>
+        </group>
+        
+        <group name="总括" expanded="true">
+          <group name="网络出口层" ></group>
+        </group>
+        
+        <!-- 出口层 -->
+        <link from="Router1" to="Router2"/>
+        <link from="Router1" to="Router3"/>
+        <link from="Router4" to="Router2"/>
+        <link from="Router4" to="Router3"/>
+        <link from="Router3" to="Firewall1"/>
+        <link from="Router3" to="Firewall2"/>
+        <link from="Router4" to="Firewall1"/>
+        <link from="Router4" to="Firewall2"/>
+        <!-- 核心层 -->
+        <link from="Firewall1" to="Firewall2"/>
+        <link from="Firewall1" to="csw01"/>
+        <link from="csw02" to="csw01"/>
+        <link from="csw02" to="Firewall2"/>
+        <!-- BUS层 -->
+        <link from="csw01" to="bus"/>
+        <link from="csw02" to="bus"/>
+        <link from="bus" to="bas01"/>
+        <link from="bus" to="bas02"/>
+        <link from="bus" to="bas03"/>
+        <link from="bus" to="bas04"/>
+        <link from="bus" to="bas05"/>
+        <link from="bus" to="bas06"/>
+        <link from="bus" to="bas07"/>
+        <link from="bus" to="bas08"/>
+        <!-- 存储网络 -->
+        <link from="Cluster01" to="bas01"/>
+        <link from="Cluster01" to="bas02"/>
+        <link from="Cluster01" to="disk"/>
+        <!-- 业务网络01 -->
+        <link from="bas03" to="bsw03"/>
+        <link from="bas04" to="bsw04"/>
+        <link from="bas05" to="bsw05"/>
+        <link from="bas06" to="bsw06"/>
+        <link from="bsw03" to="ServerCluster01"/>
+        <link from="bsw04" to="ServerCluster01"/>
+        <link from="bsw05" to="ServerCluster02"/>
+        <link from="bsw06" to="ServerCluster02"/>
+        <!-- 业务网络02 -->
+        <link from="Cluster04" to="bas07"/>
+        <link from="Cluster04" to="bas08"/>
+        <link from="Cluster04" to="CloudDiskServer"/>
+    </layout>
+    <alerm seq="Router1" level="CRITICAL" count="2">
+    </alerm>
+    <synch>1372729968609</synch>
+</construction>

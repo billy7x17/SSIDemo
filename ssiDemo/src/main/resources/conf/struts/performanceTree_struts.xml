@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+	
+	<!-- 组织结构管理 -->
+	<package name="performanceTree" extends="struts-default">
+
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- begin by naxu -->
+		
+		<action name="performanceList" class="PerformanceTreeAction" method="perfomanceTree">
+		    <result name="success">/WEB-INF/pages/performance/tree/performanceTree.jsp</result>
+		    <result name="error">/WEB-INF/pages/performance/tree/performanceTree.jsp</result>
+		</action>
+		
+        <!-- 设备视图树 -->
+        <action name="deviceTreeData" class="DeviceTreeAction" method="deviceTree">
+            <result name="success">/WEB-INF/pages/performance/tree/deviceTree_jsonData.jsp</result>
+        </action>
+        <!-- 业务视图  站点树-->
+        <action name="serviceTreeData" class="ServiceTreeAction" method="serviceTree">
+        </action>
+       
+		<!-- 刷新树结构 -->
+		<action name="performanceTreeRefrash" class="PerformanceTreeRefrashAction" method="perfomanceTree">
+		    <result name="success">/WEB-INF/pages/performance/tree/performanceTree.jsp</result>
+		    <result name="error">/WEB-INF/pages/performance/tree/performanceTree.jsp</result>
+		</action>
+    </package>
+    </struts>

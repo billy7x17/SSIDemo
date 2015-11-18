@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<!-- Quartz 触发器  -->
+ 	<bean id="quartzFactory"  class="org.springframework.scheduling.quartz.SchedulerFactoryBean"> 
+	     <property name="triggers"> 
+	     <list>
+	         <ref bean="standardizeAlarmTrigger"/>
+	         <!--<ref bean="deviceRelationTrigger"/>
+	     --></list>
+	     </property>
+ 	</bean>
+ 	
+ 	<!-- 告警标准化 trigger --> 
+ 	<bean id="standardizeAlarmTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean"> 
+	     <property name="jobDetail"> 
+	     <ref  bean="standardizeAlarmJob"/> 
+	     </property>
+	     <property name="cronExpression">
+	         <value>${standardizeAlarm_cron}</value>
+	     </property>
+ 	</bean>
+
+	 <!-- 告警标准化 job  -->
+    <bean id="standardizeAlarmJob" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="standardizeAlarmStart" />
+		<property name="targetMethod">
+			<value>start</value>
+		</property>
+		<property name="concurrent">
+			<value>false</value>
+		</property>
+    </bean>
+	
+</beans>

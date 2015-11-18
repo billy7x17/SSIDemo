@@ -1,0 +1,48 @@
+/* 页面滚轮 */
+
+
+
+
+.jspTrack
+{
+	background:url(../images/scroll_m_bg.gif) repeat-y left top;
+}
+
+.jspDrag
+{
+	background:url(../images/btn_scroll.png) no-repeat left top;
+}
+			
+.jspArrowUp
+{		
+   background:url(../images/scroll_t_bg.gif) no-repeat left top;
+}
+
+.jspArrowDown 
+{
+   background:url(../images/scroll_b_bg.gif) no-repeat left top;
+}
+
+/*ie6上下圆角部分样式*/
+* html .jspTrack
+{
+   margin-top:-12px;
+   padding-top:10px;
+   padding-bottom:10px;
+}
+
+
+.leftTre .scroll-pane{
+	width: 100%;
+	overflow: auto;
+}
+
+.inputAuto2 .scroll-pane{
+	width: 100%;
+	/*height: 537px;*/
+	height:162px;
+	overflow: auto;
+}
+
+
+

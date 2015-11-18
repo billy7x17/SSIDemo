@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PerformanceTree">
+
+	<typeAlias alias="PerformanceTreeDomain"
+		type="com.cloudmaster.cmp.performance.tree.dao.PerformanceTreeDomain" />
+
+	<typeAlias alias="ServiceViewTreeDomain"
+		type="com.cloudmaster.cmp.performance.tree.dao.ServiceViewTreeDomain" />
+		
+	<typeAlias alias="PingDomain"
+		type="com.cloudmaster.cmp.performance.tree.dao.PingDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />	
+	
+	<!-- 使用资源文件中配置的根节点获取树下的第一层节点  -->
+	<select id="getTree" resultClass="PerformanceTreeDomain">
+		SELECT 
+		    Zone_Cluster_ID AS localTableIdRef,
+		    Zone_Cluster_Name AS zoneClusterName,
+		    Parent_ID AS parentId,
+		    Cluster_Desc AS clusterDesc,
+		    'zoneORCluster' AS resourceType,
+		    #icon# as icon
+		FROM zone_cluster_tab
+		where Parent_ID IN ('0',#parentId#)
+		ORDER by Zone_Cluster_Name asc
+	</select>
+	
+	<!-- 查询机房下的机柜信息  -->
+	<select id="getZoneOrCluster" resultClass="PerformanceTreeDomain">
+		SELECT 
+		    Zone_Cluster_ID AS localTableIdRef,
+		    Zone_Cluster_Name AS zoneClusterName,
+		    Parent_ID AS parentId,
+		    Cluster_Desc AS clusterDesc,
+		    'zoneORCluster' AS resourceType,
+		    #icon# as icon
+		FROM zone_cluster_tab
+		where Parent_ID = #parentId#
+		ORDER by Zone_Cluster_Name asc
+	</select>
+	
+	<!-- 查询根节点下的所有设备类型及数量 -->
+    <select id="getResourceType" resultClass="PerformanceTreeDomain">
+		SELECT COUNT(*) AS clusterDesc,
+		  RESOURCE_TYPE AS resourceType,
+		      CASE RESOURCE_TYPE
+			      WHEN 'CIDC-RT-SRV' THEN 'ico_X86'
+	              WHEN 'CIDC-RT-VM' THEN 'ico_X862'
+	              WHEN 'CIDC-RT-BS' THEN 'ico_blockMemory'
+	              WHEN 'CIDC-RT-OS' THEN 'ico_blockMemory'
+		      ELSE 'ico_file'
+		    END AS icon,
+		  CASE RESOURCE_TYPE
+              WHEN 'CIDC-RT-SRV' THEN 1
+              WHEN 'CIDC-RT-VM' THEN 2
+              WHEN 'CIDC-RT-BS' THEN 3
+              WHEN 'CIDC-RT-OS' THEN 4
+          END AS orderNum
+		  FROM ZONE_CLUSTER_INSTANCE_TAB
+		 WHERE RESOURCE_TYPE IN
+		       ('CIDC-RT-SRV','CIDC-RT-VM','CIDC-RT-BS','CIDC-RT-OS')
+		   AND ZONE_CLUSTER_ID = #zoneClusterId#
+		 GROUP BY Resource_Type
+		 order by orderNum
+    </select>
+    <select id="getResourceTypeFilter" resultClass="PerformanceTreeDomain">
+        SELECT COUNT(*) AS clusterDesc,
+          RESOURCE_TYPE AS resourceType,
+              CASE RESOURCE_TYPE
+                  WHEN 'CIDC-RT-MM' THEN 'ico_vm01Server'
+                  WHEN 'CIDC-RT-MC' THEN 'ico_vm02Server'
+                  WHEN 'CIDC-RT-AS' THEN 'ico_IBMXIVDisc'
+                  WHEN 'CIDC-RT-RT' THEN 'resource_08'
+                  WHEN 'CIDC-RT-SW' THEN 'ico_Switch'
+                  WHEN 'CIDC-RT-FW' THEN 'resource_03'
+                  WHEN 'CIDC-RT-LB' THEN 'ico_file'
+              ELSE 'ico_file'
+            END AS icon,
+          CASE RESOURCE_TYPE
+              WHEN 'CIDC-RT-MM' THEN 5
+              WHEN 'CIDC-RT-MC' THEN 6
+              WHEN 'CIDC-RT-AS' THEN 7
+              WHEN 'CIDC-RT-RT' THEN 8
+              WHEN 'CIDC-RT-SW' THEN 9
+              WHEN 'CIDC-RT-FW' THEN 10
+              WHEN 'CIDC-RT-LB' THEN 11
+          END AS orderNum
+          FROM ZONE_CLUSTER_INSTANCE_TAB
+         WHERE RESOURCE_TYPE IN
+               ('CIDC-RT-MM','CIDC-RT-MC',
+                'CIDC-RT-AS','CIDC-RT-RT','CIDC-RT-SW','CIDC-RT-FW','CIDC-RT-LB')
+           AND ZONE_CLUSTER_ID = #zoneClusterId#
+           AND zone_cluster_instance_tab.LocalTable_ID_Ref IN (SELECT mals_nm_agent_info_t.LocalTable_ID_Ref FROM mals_nm_agent_info_t)
+         GROUP BY Resource_Type
+         order by orderNum
+    </select>
+   
+    <!-- 查询节点下的所有设备资源 (未过滤的)-->
+    <select id="getResource" parameterClass="PerformanceTreeDomain" resultClass="PerformanceTreeDomain">
+        SELECT
+        #parentId# AS parentId,
+        ZCI_ID AS zciId,
+        Zone_Cluster_ID AS zoneClusterId,
+        Resource_Type AS resourceType,
+        LocalTable_ID_Ref AS localTableIdRef,
+        Leaf_Name AS zoneClusterName,
+        Leaf_Name AS ip,
+        Ext_ID_Ref AS extIdRef,
+        CMDB_ID_Ref AS cmdbIdRef,
+        CASE Resource_Type 
+              WHEN 'CIDC-RT-SRV' THEN 'ico_X86'
+              WHEN 'CIDC-RT-VM' THEN 'ico_X862'
+              WHEN 'CIDC-RT-BS' THEN 'ico_blockMemory'
+              WHEN 'CIDC-RT-OS' THEN 'ico_blockMemory'
+            END as icon
+        from
+        zone_cluster_instance_tab
+        WHERE Resource_Type = #resourceType#
+        AND Zone_Cluster_ID = #zoneClusterId#
+    </select>
+    <!-- 查询节点下的所有设备资源 -->
+    <select id="getResourceFilter" parameterClass="PerformanceTreeDomain" resultClass="PerformanceTreeDomain">
+        SELECT
+        #parentId# AS parentId,
+        ZCI_ID AS zciId,
+        Zone_Cluster_ID AS zoneClusterId,
+        Resource_Type AS resourceType,
+        LocalTable_ID_Ref AS localTableIdRef,
+        Leaf_Name AS zoneClusterName,
+        Leaf_Name AS ip,
+        Ext_ID_Ref AS extIdRef,
+        CMDB_ID_Ref AS cmdbIdRef,
+        CASE Resource_Type 
+              WHEN 'CIDC-RT-MM' THEN 'ico_vm01Server'
+              WHEN 'CIDC-RT-MC' THEN 'ico_vm02Server'
+              WHEN 'CIDC-RT-AS' THEN 'ico_IBMXIVDisc'
+              WHEN 'CIDC-RT-RT' THEN 'resource_08'
+              WHEN 'CIDC-RT-SW' THEN 'ico_Switch'
+              WHEN 'CIDC-RT-FW' THEN 'resource_03'
+              WHEN 'CIDC-RT-LB' THEN 'ico_file'
+            END as icon
+        from
+        zone_cluster_instance_tab
+        WHERE Resource_Type = #resourceType#
+        AND Zone_Cluster_ID = #zoneClusterId#
+        AND zone_cluster_instance_tab.LocalTable_ID_Ref IN (SELECT mals_nm_agent_info_t.LocalTable_ID_Ref FROM mals_nm_agent_info_t)
+    </select>
+    
+	
+	<select id="getPMLoadVMCount" resultClass="int">
+		select 
+		COUNT(*)
+		from 
+		pm_info_tab p,
+		vm_info_tab v
+		WHERE
+		p.PM_ID = v.PM_ID AND
+		p.PM_ID = #pmID#;
+	</select>
+	
+	<!-- 设备视图树的sql语句  -->
+	<!-- 查询树结构  -->
+	<select id="getDeviceTree" resultClass="PerformanceTreeDomain">
+		SELECT 
+		    Zone_Cluster_ID AS localTableIdRef,
+		    Zone_Cluster_Name AS zoneClusterName,
+		    Parent_ID AS parentId,
+		    Cluster_Desc AS clusterDesc,
+		    #icon# as icon
+		FROM zone_cluster_tab
+		where Zone_Cluster_ID = #zoneClusterId#
+		ORDER BY Parent_ID, Zone_Cluster_ID
+	</select>
+	
+	<!-- 查询设备视图所有资源类型 不进行过滤的设备类型-->
+	<select id="getDeviceTreeRT" resultClass="PerformanceTreeDomain">
+	    SELECT COUNT(*) AS clusterDesc,
+          RESOURCE_TYPE AS resourceType,
+          CASE RESOURCE_TYPE
+              WHEN 'CIDC-RT-D4' THEN 'ico_X86'
+              WHEN 'CIDC-RT-IPSAN' THEN 'ico_X86'
+              WHEN 'CIDC-RT-IPC' THEN 'ico_X86'
+            ELSE 'ico_file'
+          END AS icon,
+          CASE RESOURCE_TYPE
+                WHEN 'CIDC-RT-D4' THEN 1
+                WHEN 'CIDC-RT-IPSAN' THEN 2
+                WHEN 'CIDC-RT-IPC' THEN 3
+            END AS orderNum
+          FROM ZONE_CLUSTER_INSTANCE_TAB
+         WHERE RESOURCE_TYPE IN
+               ('CIDC-RT-D4','CIDC-RT-IPSAN','CIDC-RT-IPC')
+         GROUP BY Resource_Type
+         order by orderNum
+	</select>
+	<!-- 查询设备视图所有资源类型 进行过滤的设备类型-->
+	<select id="getDeviceTreeRTFilter" resultClass="PerformanceTreeDomain">
+        SELECT COUNT(*) AS clusterDesc,
+          RESOURCE_TYPE AS resourceType,
+          CASE RESOURCE_TYPE
+              WHEN 'CIDC-RT-MM' THEN 'ico_vm01Server'
+              WHEN 'CIDC-RT-MC' THEN 'ico_vm02Server'
+              WHEN 'CIDC-RT-AS' THEN 'ico_IBMXIVDisc'
+              WHEN 'CIDC-RT-RT' THEN 'resource_08'
+              WHEN 'CIDC-RT-SW' THEN 'ico_Switch'
+              WHEN 'CIDC-RT-FW' THEN 'resource_03'
+              WHEN 'CIDC-RT-LB' THEN 'ico_file'
+            ELSE 'ico_file'
+          END AS icon,
+          CASE RESOURCE_TYPE
+                WHEN 'CIDC-RT-MM' THEN 5
+                WHEN 'CIDC-RT-MC' THEN 6
+                WHEN 'CIDC-RT-AS' THEN 7
+                WHEN 'CIDC-RT-RT' THEN 8
+                WHEN 'CIDC-RT-SW' THEN 9
+                WHEN 'CIDC-RT-FW' THEN 10
+                WHEN 'CIDC-RT-LB' THEN 11
+            END AS orderNum
+         FROM ZONE_CLUSTER_INSTANCE_TAB
+        WHERE RESOURCE_TYPE IN
+               ('CIDC-RT-MM','CIDC-RT-MC','CIDC-RT-AS','CIDC-RT-RT','CIDC-RT-SW','CIDC-RT-FW','CIDC-RT-LB')
+          AND zone_cluster_instance_tab.LocalTable_ID_Ref IN (SELECT mals_nm_agent_info_t.LocalTable_ID_Ref FROM mals_nm_agent_info_t)
+        GROUP BY Resource_Type
+        order by orderNum
+    </select>
+	
+	<!-- 不过滤设备视图（按照名称降序）-->
+	<select id="getDeviceTreeNodes" resultClass="PerformanceTreeDomain">
+		SELECT 
+		    #parentId# AS parentId,
+		    ZCI_ID AS zciId,
+		    Zone_Cluster_ID AS zoneClusterId,
+		    Resource_Type AS resourceType,
+		    LocalTable_ID_Ref AS localTableIdRef,
+		    Leaf_Name AS ip,
+		    Ext_ID_Ref AS extIdRef,
+		    CMDB_ID_Ref AS cmdbIdRef,
+		    #icon# as icon,
+		    LocalTable_Name AS zoneClusterName
+		FROM zone_cluster_instance_tab
+		WHERE Resource_Type = #resourceType#
+		ORDER BY LocalTable_Name desc
+	</select>
+	<!-- 进行过滤的设备视图（按照名称降序） -->
+	<select id="getDeviceTreeNodesFilter" resultClass="PerformanceTreeDomain">
+		SELECT 
+		    #parentId# AS parentId,
+		    ZCI_ID AS zciId,
+		    Zone_Cluster_ID AS zoneClusterId,
+		    Resource_Type AS resourceType,
+		    LocalTable_ID_Ref AS localTableIdRef,
+		    LocalTable_Name AS zoneClusterName,
+		    Leaf_Name AS ip,
+		    Ext_ID_Ref AS extIdRef,
+		    CMDB_ID_Ref AS cmdbIdRef,
+		    #icon# as icon
+		FROM zone_cluster_instance_tab
+		WHERE Resource_Type = #resourceType#
+		AND zone_cluster_instance_tab.LocalTable_ID_Ref IN (SELECT mals_nm_agent_info_t.LocalTable_ID_Ref FROM mals_nm_agent_info_t)
+		ORDER BY LocalTable_Name desc
+	</select>
+	
+	
+	
+	
+	<!-- 业务视图树的sql语句  -->
+	
+	<!-- 业务视图树的sql语句	所有业务视图资源节点 -->
+	<select id="getServiceNodes" resultClass="ServiceViewTreeDomain">
+		<![CDATA[
+		SELECT
+		srt.resource_id AS id,
+		CASE s.system_type WHEN 1 THEN '虚拟化' WHEN 2 THEN 'BC-oNest' WHEN 3 THEN 'HugTable' ELSE system_type END as systemParentID,
+		s.system_id AS systemID,
+		zone.Leaf_Name AS leafName,
+		zone.LocalTable_Name AS `name`,
+		solt.App_Name AS serviceName,
+		solt.resource_type AS resourceType
+		FROM
+		service_resource_tab srt
+		LEFT JOIN zone_cluster_instance_tab zone ON srt.resource_id = zone.LocalTable_ID_Ref
+		LEFT JOIN service_operate_log_tab solt ON srt.TransactionId = solt.TransactionId,
+		system_info_tab s
+		WHERE
+			solt.resource_type IN ('CIDC-RT-SRV','CIDC-RT-VM','CIDC-RT-MM','CIDC-RT-MC','CIDC-RT-BS')
+		AND 
+			srt.resource_id <> '' AND solt.App_Name <> ''
+		and
+			solt.App_Name = s.system_name
+		GROUP BY srt.resource_id,solt.App_Name
+		ORDER BY zone.LocalTable_Name DESC
+		]]>
+	</select>
+	<select id="getPMNameUsePMID" parameterClass="String" resultClass="String">
+		SELECT PM_Name from pm_info_tab WHERE PM_ID = #id#;
+	</select>
+	<select id="getVMNameUseVMID" parameterClass="String" resultClass="String">
+		SELECT VM_Name FROM vm_info_tab WHERE VM_ID = #id#;
+	</select>
+	
+	<!-- 获取所有ping不同的x86物理机 -->
+	<select id="getNoPingPM" resultClass="String">
+		SELECT
+		Alarm_IP
+		FROM alarminfo_tab
+		WHERE
+		clear_status = '1' and
+		Alarm_Identify = 'commands_PING'
+		AND device_type = '1'
+	</select>
+	<select id="getAllPMIDAndIP" parameterClass="String" resultClass="PingDomain">
+		SELECT pm_id as id,ip as ip,PM_INSTALL_STATE as pmInstallState FROM pm_info_tab;
+	</select>
+	<!-- 获取所有ping不同的x86虚拟机 -->
+	<select id="getNoPingVM" resultClass="String">
+		SELECT
+		Alarm_IP
+		FROM alarminfo_tab
+		WHERE
+		clear_status = '1' and
+		Alarm_Identify = 'commands_PING'
+		AND device_type = '2'
+	</select>
+	<select id="getVmIPUseVMID" parameterClass="String" resultClass="PingDomain">
+		SELECT vm_id as id,ip as ip FROM vm_info_tab;
+	</select>
+	
+	<!-- 获取所有ping不同的x86物理机 -->
+	<select id="getNoPingPMCM" resultClass="String">
+		SELECT
+		Alarm_IP
+		FROM alarminfo_tab
+		WHERE
+		clear_status = '1' and
+		(Alarm_Identify = 'commands_PING' or Alarm_Source_Type in('1','2'))
+		AND device_type = '1'
+	</select>
+	<!-- 获取所有ping不同的x86虚拟机 -->
+	<select id="getNoPingVMCM" resultClass="String">
+		SELECT
+		Alarm_IP
+		FROM alarminfo_tab
+		WHERE
+		clear_status = '1' and
+		(Alarm_Identify = 'commands_PING' or Alarm_Source_Type in('1','2'))
+		AND device_type = '2'
+	</select>
+	
+	<!-- 查询system_info_tab表中的业务名称 -->
+	<select id="getServiceSystemName" resultClass="String">
+		SELECT
+		CASE system_type WHEN 1 THEN '虚拟化' WHEN 2 THEN 'BC-oNest' WHEN 3 THEN 'HugTable' ELSE system_type END
+		FROM system_info_tab
+		WHERE system_type != '' AND !ISNULL(system_type)
+		GROUP BY system_type;
+	</select>
+	<!-- 查询站点信息 -->
+	<typeAlias alias="serviceTree" type="com.cloudmaster.cmp.performance.tree.dao.ServiceTreeDomain"/>
+	<typeAlias alias="user" type="com.cloudmaster.cmp.web.authority.user.UserInfo"/>
+	<select id="showSiteTree" resultClass="serviceTree" parameterClass="user">
+		SELECT
+			site_id as siteId,
+			site_name as sitename
+		FROM
+		honeywell_site_tab
+		<dynamic prepend="WHERE">
+			<isEqual property="roleType" compareValue="2" prepend="AND">
+				site_id = #siteId#
+			</isEqual>
+		</dynamic>
+	</select>
+	
+	<!-- 查询站点的设备情况 -->
+	<select id="getSiteDeviceTree" resultClass="serviceTree" parameterClass="user">
+		SELECT
+			z.Resource_Type as resourceType,
+			z.ZCI_ID as id,
+			z.Leaf_Name as deviceIp,
+			z.LocalTable_Name resourceName,
+			a.site_id  as siteId,
+			a.TYPE_ID as typeId
+		FROM
+			mals_nm_agent_info_t a,
+			zone_cluster_instance_tab z
+		WHERE
+			z.LocalTable_ID_Ref = a.LocalTable_ID_Ref
+			<isEqual property="roleType" compareValue="2" prepend="AND">
+				a.site_id = #siteId#
+			</isEqual>
+	</select>
+	<!-- 查询设备分组名称 -->
+	<select id="findDeviceGroupName" resultClass="String">
+		SELECT
+			Agent_Group
+		FROM
+			mals_nm_agent_type_t
+		WHERE agent_group <![CDATA[<>'Keyboard']]>
+		GROUP BY agent_group
+	</select>
+	<!-- 在网管nmsdb中查询设备是否有ping告警，如果无则为在线，否则离线 -->
+	<select id="getDeviceState" resultClass="serviceTree" parameterClass="serviceTree">
+		SELECT
+			rid as deviceIp,
+			CASE count(id)
+			WHEN 0 THEN '0'
+			ELSE '1'
+			END status
+		FROM
+			nmsdb.t_alarm_temp
+		WHERE
+			type = '通断性'
+		AND clearStatus = '1'
+		AND rid IN 
+		<iterate  property="ipArray" open="(" close=")" conjunction=",">
+			#ipArray[]#
+		</iterate>
+		AND eventTime > date_add(now(), INTERVAL - #agentFrequency# MINUTE)
+		group by rid
+	</select>
+</sqlMap>
+
+
+
+

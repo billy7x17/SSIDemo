@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+    
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="alarmTitle" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- 列表 -->
+		<action name="alarmTitleList" class="alarmTitleListAction"
+			method="base">
+			<result name="base">/WEB-INF/pages/alarm/alarmTitle/list.jsp</result>
+		</action>
+		
+		<!-- 列表 -->
+		<action name="alarmBaseTitleList" class="alarmTitleListAction"
+			method="list">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmTitle/list.jsp</result>
+		</action>
+		
+		<!-- 删除 -->
+		<action name="alarmTitleDelete" class="alarmTitleDeleteAction"
+			method="delete">
+			<result name="success" type="redirectAction">
+				<param name="actionName">alarmTitleList</param>
+				<param name="msg">${msg}</param>
+				<param name="errorMsg">${errorMsg}</param> 
+			</result>
+		</action>
+		
+  		<!-- 添加前准备-->
+		<action name="alarmTitleBeforeAdd" class="alarmTitleBeforeAddAction"
+			method="beforeAdd">
+			<result name="success">/WEB-INF/pages/alarm/alarmTitle/add.jsp</result>
+		</action>
+		
+		<!-- 添加-->
+		<action name="alarmTitleAdd" class="alarmTitleAddAction"
+			method="add">
+			<result name="success" type="redirectAction">
+				<param name="actionName">alarmTitleList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="input" type="redirectAction">
+				<param name="actionName">alarmTitleBeforeAdd</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		
+		<!-- 添加前校验tcId是否存在 -->
+		<action name="alarmTitleBeforeAddValidateTcId" class="alarmTitleBeforeAddAction" 
+			method="validateTcId">
+		</action>
+		
+		<!-- 修改前准备-->
+		<action name="alarmTitleBeforeEdit" class="alarmTitleBeforeEditAction"
+			method="beforeEdit">
+			<result name="success">/WEB-INF/pages/alarm/alarmTitle/edit.jsp</result>
+		</action>
+
+		<!-- 修改-->
+		<action name="alarmTitleEdit" class="alarmTitleEditAction"
+			method="edit">
+			<result name="success" type="redirectAction">
+				<param name="actionName">alarmTitleList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="input">
+				<param name="actionName">alarmTitleBeforeEdit</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+			
+
+		<!-- 导出 -->
+		<action name="alarmTitleExport" class="alarmTitleExportAction" method="export">
+			<result name="success" type="stream">
+         		<param name="contentType">application/octet-stream</param>
+				<param name="contentDisposition">attachment;filename="${fileFileName}"</param>
+				<param name="inputName">downloadFile</param>
+				<param name="bufferSize">4096</param>
+			</result>
+			<result name="input">index.jsp</result>
+		</action>
+</package>
+</struts>

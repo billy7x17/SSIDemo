@@ -1,0 +1,220 @@
+<?xml version="1.0"?>
+<!-- edited with XMLSpy v2009 (http://www.altova.com) by dreams (LG) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.neusoft.com/mid" elementFormDefault="qualified">
+    <xs:complexType name="networkType">
+        <xs:attribute name="name">
+            <xs:annotation>
+                <xs:documentation>保留未使用</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="nodeType">
+        <xs:sequence>
+            <xs:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="bg_fill_color">
+            <xs:annotation>
+                <xs:documentation>背景色</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="seq"/>
+        <xs:attribute name="name"/>
+        <xs:attribute name="image"/>
+        <xs:attribute name="type">
+            <xs:annotation>
+                <xs:documentation>目前只支持：subCanvas、detailCanvas</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="width"/>
+        <xs:attribute name="height"/>
+        <xs:attribute name="oppositeWidth"/>
+        <xs:attribute name="oppositeHeight"/>
+    </xs:complexType>
+    <xs:complexType name="alermType">
+        <xs:sequence minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="property" type="propertyType" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="seq" type="xs:string" use="required"/>
+        <xs:attribute name="count" type="xs:integer" use="required"/>
+        <xs:attribute name="level" type="alermLevelType">
+            <xs:annotation>
+                <xs:documentation>取值范围为：CRITICAL, MAJOR, MINOR, WARNING, INDETERMINATE, CLEARED</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="rankType">
+        <xs:attribute name="name"/>
+        <xs:attribute name="customizationWidth">
+            <xs:annotation>
+                <xs:documentation>定制宽度</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="oppositeWidth">
+            <xs:annotation>
+                <xs:documentation>相对于父元素的宽度，优先级高于定制宽度</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="rowType">
+        <xs:choice>
+            <xs:element name="rank" minOccurs="0" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:complexContent>
+                        <xs:extension base="rankType">
+                            <xs:choice>
+                                <xs:element name="row" type="rowType" minOccurs="0" maxOccurs="unbounded"/>
+                                <xs:element name="node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
+                            </xs:choice>
+                        </xs:extension>
+                    </xs:complexContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        <xs:attribute name="name"/>
+        <xs:attribute name="customizationHeight">
+            <xs:annotation>
+                <xs:documentation>定制高度</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="oppositeHeight">
+            <xs:annotation>
+                <xs:documentation>相对于父元素的高度，优先级高于定制高度</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:complexType name="settingType">
+        <xs:all>
+            <xs:element name="auto">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="zoomOverview" type="xs:boolean"/>
+                        <xs:element name="increment" type="xs:boolean"/>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="style">
+                <xs:complexType>
+                    <xs:all>
+                        <xs:element name="bg_fill_color"/>
+                        <xs:element name="bg_gradient_color"/>
+                        <xs:element name="selectColor"/>
+                    </xs:all>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="toolbar">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="navigationName" type="xs:string"/>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="operatingSpace">
+                <xs:complexType>
+                    <xs:choice>
+                        <xs:element name="tree">
+                            <xs:complexType>
+                                <xs:attribute name="type" use="required">
+                                    <xs:simpleType>
+                                        <xs:restriction base="xs:string">
+                                            <xs:enumeration value="show"/>
+                                        </xs:restriction>
+                                    </xs:simpleType>
+                                </xs:attribute>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:choice>
+                </xs:complexType>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="groupType">
+        <xs:choice>
+            <xs:element name="node" type="nodeType" maxOccurs="unbounded"/>
+            <xs:element name="group" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="name"/>
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:choice>
+        <xs:attribute name="bg_fill_color">
+            <xs:annotation>
+                <xs:documentation>背景色</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="type" type="xs:string"/>
+        <xs:attribute name="expanded" type="xs:boolean"/>
+    </xs:complexType>
+    <xs:complexType name="linkType">
+        <xs:sequence>
+            <xs:element name="property" type="propertyType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="from" type="xs:string" use="required"/>
+        <xs:attribute name="to" type="xs:string" use="required"/>
+    </xs:complexType>
+    <xs:complexType name="layoutType">
+        <xs:sequence>
+            <xs:element name="row" type="rowType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="node" type="nodeType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="group" type="groupType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="link" type="linkType" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+        <xs:attribute name="type">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="GridAutoLayout"/>
+                    <xs:enumeration value="AutoLayout"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="style">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="round"/>
+                    <xs:enumeration value="symmetry"/>
+                    <xs:enumeration value="topbottom"/>
+                    <xs:enumeration value="bottomtop"/>
+                    <xs:enumeration value="leftright"/>
+                    <xs:enumeration value="rightleft"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+    <xs:simpleType name="alermLevelType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CRITICAL"/>
+            <xs:enumeration value="MAJOR"/>
+            <xs:enumeration value="MINOR"/>
+            <xs:enumeration value="WARNING"/>
+            <xs:enumeration value="INDETERMINATE"/>
+            <xs:enumeration value="CLEARED"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="propertyType">
+        <xs:attribute name="index" type="xs:integer">
+            <xs:annotation>
+                <xs:documentation>属性展示时排列顺序，取值范围为：0---（属性个数-1）</xs:documentation>
+            </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="type">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="input"/>
+                    <xs:enumeration value="area"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute name="name" type="xs:string"/>
+        <xs:attribute name="value" type="xs:string"/>
+        <xs:attribute name="desc" type="xs:string"/>
+    </xs:complexType>
+    <xs:simpleType name="indexType">
+        <xs:restriction base="xs:integer">
+            <xs:pattern value="[0-9][0-9][0-9][0-9][0-9]"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

@@ -1,0 +1,400 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	
+	<!-- 浏览查询用户 -->
+	<bean id="searchUserImpl" singleton="false"
+		class="com.cloudmaster.cmp.core.kmApiImpl.user.SearchUserImpl" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	<bean id="userBrowser" class="com.cloudmaster.cmp.web.authority.user.UserBrowseAction"
+		singleton="false" parent="abstractAction">
+		<property name="searchUser">
+			<ref bean="searchUserImpl" />
+		</property>
+		<property name="authId">
+			<value> ${userBrowser.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${user.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	<!-- 重置密码 -->
+	<bean id="clearPsw" class="com.cloudmaster.cmp.web.authority.user.clearPswAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${userClearPwd.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${user.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+		<property name="des3">
+            <ref bean="loginDes3" />
+        </property>
+	</bean>
+	<!-- 添加用户 -->
+	<bean id="addUserImpl" singleton="false"
+		class="com.cloudmaster.cmp.core.kmApiImpl.user.AddUserImpl" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="defaultRoleID">
+			<value> ${DEFAULT_ROLE_ID}</value>
+		</property>
+	</bean>
+	<bean id="userAdd" class="com.cloudmaster.cmp.web.authority.user.UserAddInfoAction"
+		singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${userAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<bean id="userAddSave" class="com.cloudmaster.cmp.web.authority.user.UserAddAction"
+		singleton="false" parent="abstractAction">
+		<property name="addUser">
+			<ref bean="addUserImpl" />
+		</property>
+		<property name="authId">
+			<value>${userAdd.authID}</value>
+		</property>
+	
+	    <property name="des3">
+            <ref bean="loginDes3" />
+        </property>
+        <property name="functionName">
+			<value>${user.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+	</bean>
+	<bean id="loginDes3" class="com.cloudmaster.cmp.util.DES3">
+		<property name="keyString">
+            <value>${loginDES3keyString}</value>
+        </property>
+	</bean>
+	<!-- 用户编辑 -->
+	<bean id="editUserImpl" singleton="false"
+		class="com.cloudmaster.cmp.core.kmApiImpl.user.EditUserImpl" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	<bean id="userEdit"
+		class="com.cloudmaster.cmp.web.authority.user.UserEditInfoAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${userEdit.authID}</value>
+		</property>
+        <property name="des3">
+            <ref bean="loginDes3" />
+        </property>     
+	</bean>
+	<bean id="userEditSave" class="com.cloudmaster.cmp.web.authority.user.UserEditAction"
+		singleton="false" parent="abstractAction">
+		<property name="editUser">
+			<ref bean="editUserImpl" />
+		</property>
+		<property name="authId">
+			<value>${userEdit.authID}</value>
+		</property>
+        <property name="des3">
+            <ref bean="loginDes3" />
+        </property>
+        <property name="functionName">
+			<value>${user.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+	</bean>
+
+	<!-- 查看用户信息 -->
+	<bean id="userMoreInfo"
+		class="com.cloudmaster.cmp.web.authority.user.UserMoreInfoAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${userDetail.authID}</value>
+		</property>
+		 <property name="functionName">
+			<value>${user.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+
+	<!-- 用户删除 -->
+	<bean id="DelUserImpl" class="com.cloudmaster.cmp.core.kmApiImpl.user.DelUserImpl"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	<bean id="userDel" class="com.cloudmaster.cmp.web.authority.user.UserDelAction"
+		singleton="false" parent="abstractAction">
+		<property name="delUser">
+			<ref bean="DelUserImpl" />
+		</property>
+		<property name="authId">
+			<value>${userDel.authID}</value>
+		</property>
+		
+		 <property name="functionName">
+			<value>${user.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+	</bean>
+
+	<bean id="personalEdit"
+		class="com.cloudmaster.cmp.web.authority.user.PersonalEditInfoAction"
+		singleton="false" parent="abstractAction">
+	</bean>
+	<bean id="personalEditSave"
+		class="com.cloudmaster.cmp.web.authority.user.PersonalEditAction"
+		singleton="false" parent="abstractAction">
+	</bean>
+	<!-- 密码修改前准备 -->
+	<bean id="pswEdit" class="com.cloudmaster.cmp.web.authority.user.PswEditInfoAction"
+		singleton="false" parent="abstractAction">
+		<property name="authId"> 
+		<value>${userPwdEdit.authID}</value>
+		</property>
+	</bean>
+	<!-- 密码修改 -->
+	<bean id="pswEditSave" class="com.cloudmaster.cmp.web.authority.user.PswEditAction"
+		singleton="false" parent="abstractAction">
+		<property name="des3">
+            <ref bean="loginDes3" />
+        </property>
+	
+		<property name="functionName">
+			<value>${user.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+		 
+		 <property name="authId"> 
+		<value>${userPwdEdit.authID}</value>
+		</property>
+	</bean>
+	<!-- modify end -->
+
+	<bean id="userDels"
+		class="com.cloudmaster.cmp.web.authority.user.UserBatchDelAction"
+		singleton="false" parent="abstractAction">
+	</bean>
+	
+	<bean id="roleBrowser" class="com.cloudmaster.cmp.web.authority.role.RoleBrowseAction"
+		singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${roleBrowser.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${role.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>	
+	</bean>
+	
+	<bean id="roleAdd" class="com.cloudmaster.cmp.web.authority.role.RoleAddInfoAction"
+		singleton="false" parent="abstractAction">
+		<property name="roleTreeCreator">
+			<ref bean="roleTreeCreator" />
+		</property>
+		<property name="authId">
+			<value>${roleAdd.authID}</value>
+		</property>	
+		<property name="functionName">
+			<value>${role.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>	
+	</bean>
+	
+	<bean id="roleTreeCreator" class="com.cloudmaster.cmp.web.authority.role.RoleTreeCreator">
+	</bean>
+	
+	<bean id="roleAddSave" class="com.cloudmaster.cmp.web.authority.role.RoleAddAction"
+		singleton="false" parent="abstractAction">
+		<property name="functionName"> 
+			<value>${role.functionName}</value>
+		</property>
+		<property name="authId"> <value>${roleAddSave.authID}</value>
+			</property>
+		<property name="opType">
+            <value>${addPrivilege}</value>
+        </property>
+	</bean>
+	
+	<bean id="roleEdit"
+		class="com.cloudmaster.cmp.web.authority.role.RoleEditInfoAction"
+		singleton="false" parent="abstractAction">
+		<property name="roleTreeCreator">
+			<ref bean="roleTreeCreator" />
+		</property>
+		<property name="authId">
+			<value>${roleEdit.authID}</value>
+		</property>
+	</bean>
+	
+	<bean id="roleEditSave" class="com.cloudmaster.cmp.web.authority.role.RoleEditAction"
+		singleton="false" parent="abstractAction">
+			<property name="authId">
+			<value>${roleEditSave.authID}</value> 
+			</property>
+			<property name="functionName">
+				<value>${role.functionName}</value>
+			</property>
+			<property name="opType">
+				<value>${edit}</value>
+			</property>	
+	</bean>
+	
+	<bean id="roleDel" class="com.cloudmaster.cmp.web.authority.role.RoleDelAction"
+		singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${roleDel.authID}</value>
+		</property>
+		<property name="functionName">
+				<value>${role.functionName}</value>
+			</property>
+			<property name="opType">
+				<value>${delete}</value>
+			</property>		
+	</bean>
+	
+	<bean id="roleDels"
+		class="com.cloudmaster.cmp.web.authority.role.RoleBatchDelAction"
+		singleton="false" parent="abstractAction">
+	</bean>
+	
+	<!-- ajax获取角色类型 -->
+	<bean id="roleSiteAsso" class="com.cloudmaster.cmp.web.authority.role.RoleSiteAsso"
+	singleton="false" parent="abstractAction">
+	</bean>
+	<bean id="login" class="com.cloudmaster.cmp.web.login.LoginAction"
+		singleton="false" parent="abstractAction">
+		<property name="functionName"> 
+		     <value>${login.functionName}</value>
+		</property> 
+		<property name="opType"> 
+		     <value>${login}</value>
+		</property> 
+		<property name="operationLogDAO">
+		     <ref bean="operationloginfo" /> 
+		</property>
+		<property name="des3">
+            <ref bean="loginDes3" />
+        </property>
+        <property name="licenseEndTime">
+           <value>${license.endTime}</value>
+        </property>
+        <property name="netTimeURL">
+           <value>${license.netTimeURL}</value>
+        </property>
+	</bean>
+
+	<bean id="logout" class="com.cloudmaster.cmp.web.login.LogoutAction"
+		singleton="false">
+		<property name="operationLogDAO"> 
+		     <ref bean="operationloginfo" />
+		</property> 
+		<property name="functionName">
+			<value>${logout.functionName}</value> 
+		</property>
+		<property name="opType"> 
+		     <value>${logout}</value>
+		</property> 
+		
+	</bean>
+
+	<bean id="empty" class="com.cloudmaster.cmp.web.EmptyAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property>
+	</bean>
+
+	<bean id="authenticateInterceptor"
+		class="com.cloudmaster.cmp.authority.auth.AuthenticateInterceptor"></bean>
+
+	<bean id="ExceptionIntercepor" class="com.cloudmaster.cmp.web.ExceptionInterceporAction"
+		singleton="false">
+	</bean>
+	
+	<!-- 操作日志begin -->
+	<bean id="operationaction" class="com.cloudmaster.cmp.web.operationlog.OperationAction"
+		singleton="false" parent="abstractAction">
+	</bean>
+	
+    <bean id="logsearchdetailaction" class="com.cloudmaster.cmp.web.operationlog.LogSearchDetailAction"
+		singleton="false" parent="abstractAction"> 
+		<property name="authId">
+			<value>${logDetail.authId}</value>
+		</property>
+	</bean>
+	
+    <bean id="logbrowse" class="com.cloudmaster.cmp.web.operationlog.LogBrowseAction"
+		singleton="false" parent="abstractAction"> 
+		<property name="authId">
+			<value>${logBrowse.authId}</value>
+		</property>
+	</bean> 
+    <!-- 操作日志end -->
+    
+	<bean id="turnPageInterceptor" class="com.cloudmaster.cmp.web.page.TurnPageInterceptor"></bean>
+	<bean id="loginterceptor" class="com.cloudmaster.cmp.operationlog.LogInterceptor">
+		<property name="operationLogDAO">
+			<ref bean="operationloginfo" />
+		</property>
+	</bean>
+	<bean id="operationloginfo" class="com.cloudmaster.cmp.operationlog.OperationLogDAO"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+
+	<!-- 跳转到left页面 -->
+	<bean id="FrameAction" class="com.cloudmaster.cmp.web.authority.role.FrameAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+		
+	<!-- 邮箱校验Ajax -->	
+	<bean id="EmailVerify" class="com.cloudmaster.cmp.web.authority.user.UserEmailVerify"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+</beans>

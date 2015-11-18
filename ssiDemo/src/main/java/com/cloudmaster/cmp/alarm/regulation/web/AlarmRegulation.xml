@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmRegulation">
+	<typeAlias alias="AlarmRule" type="com.cloudmaster.cmp.alarm.regulation.dao.AlarmRegulationDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	
+	<!-- 列表 -->
+	<select id="list" parameterClass="AlarmRule" resultClass="AlarmRule">
+		SELECT 
+		     ID as ID,                        
+			 RULE_NAME as ruleName,          
+			 RULE_DESC as ruleDesc,
+			 RULE_STATE as ruleState,
+			 ruleAction.action as ruleAction
+		FROM alarm_rule_tab rule
+		LEFT JOIN (SELECT RULE_ID, CONCAT(
+                            sum(case when RULE_ACTION=1 then 1 else '' END),
+                            sum(case when RULE_ACTION=2 then 2 else '' END),
+                            sum(case when RULE_ACTION=3 then 3 else '' END),
+                            sum(case when RULE_ACTION=4 then 4 else '' END),
+                            sum(case when RULE_ACTION=5 then 5 else '' END)) as action
+                    from alarm_rule_action_tab 
+                    GROUP BY RULE_ID) ruleAction ON rule.ID = ruleAction.RULE_ID
+		where RULE_STATE != '2'
+		<isNotEmpty prepend="AND" property="ruleName">
+			RULE_NAME like concat('%',#ruleName#,'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="ruleAction">
+            ruleAction.action like  concat('%',#ruleAction#,'%')
+        </isNotEmpty>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<!-- 数量 -->
+	<select id="count" parameterClass="AlarmRule" resultClass="java.lang.Integer">
+		SELECT count(*)
+        FROM alarm_rule_tab rule
+        LEFT JOIN (SELECT RULE_ID, CONCAT(
+                            sum(case when RULE_ACTION=1 then 1 else '' END),
+                            sum(case when RULE_ACTION=2 then 2 else '' END),
+                            sum(case when RULE_ACTION=3 then 3 else '' END),
+                            sum(case when RULE_ACTION=4 then 4 else '' END),
+                            sum(case when RULE_ACTION=5 then 5 else '' END)) as action
+                    from alarm_rule_action_tab 
+                    GROUP BY RULE_ID) ruleAction ON rule.ID = ruleAction.RULE_ID
+        where RULE_STATE != '2'
+        <isNotEmpty prepend="AND" property="ruleName">
+            RULE_NAME like concat('%',#ruleName#,'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="AND" property="ruleAction">
+            ruleAction.action like  concat('%',#ruleAction#,'%')
+        </isNotEmpty>
+	</select>
+	
+	
+	
+	<!-- 添加   -->
+	<insert id="insert" parameterClass="AlarmRule">
+            <![CDATA[
+            INSERT INTO alarm_rule_tab
+            (
+				 ID,
+				 RULE_NAME,
+				 RULE_DESC,
+				 RULE_INFO,
+				 RULE_REGEXP,
+				 RULE_STATE
+            )
+            VALUES
+            (    
+				nextval('alarmrosterSeq'),                        
+				#ruleName#,          
+				#ruleDesc#,
+				#ruleInfo#,          
+				#ruleRegexp#,
+				'0'
+            )
+            ]]>
+    </insert>
+  
+      <!-- 设置删除状态 -->
+    <update id="updateDeleteState" parameterClass="AlarmRule">
+		 UPDATE alarm_rule_tab
+         SET 
+             RULE_NAME = CONCAT(RULE_NAME,'_is_deleted'),  
+             RULE_STATE = #ruleState#
+         WHERE  ID = #ID#
+    </update>
+    
+      <!-- 设置中止、激活状态 -->
+    <update id="updateState" parameterClass="AlarmRule">
+         UPDATE alarm_rule_tab
+         SET 
+             RULE_STATE = #ruleState#
+         WHERE  ID = #ID#
+    </update>
+
+     <!-- 修改前查询记录 -->
+	<select id="getInfo" parameterClass="AlarmRule" resultClass="AlarmRule">
+		SELECT 
+             ID as ID,                        
+             RULE_NAME as ruleName,          
+             RULE_DESC as ruleDesc,
+             RULE_INFO as ruleInfo,
+             case RULE_STATE when 0 then '正常' else '中止' End as ruleState
+        FROM alarm_rule_tab rule
+		WHERE ID = #ID#
+	</select>
+
+	  <!-- 修改-->
+    <update id="edit" parameterClass="AlarmRule">
+		UPDATE alarm_rule_tab
+		SET     
+             RULE_DESC = #ruleDesc#,
+             RULE_INFO = #ruleInfo#,
+             RULE_REGEXP = #ruleRegexp#
+		WHERE  ID = #ID#
+    </update>
+	
+	
+	<!-- 记录是否存在 -->
+	<select id="existCount" parameterClass="AlarmRule" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM alarm_rule_tab t
+		WHERE RULE_NAME = #ruleName#
+	</select>
+
+	  <!-- 删除规则事件 -->
+    <delete id="deleteRuleAction" parameterClass="AlarmRule">
+         delete from  alarm_rule_action_tab
+         WHERE RULE_ID = #ID#
+    </delete>
+      <!-- 删除规则事件 -->
+    <delete id="deleteRuleRedefine" parameterClass="AlarmRule">
+         delete from  alarm_rule_redefine_tab
+         WHERE RULE_ID = #ID#
+    </delete>
+    
+    <!-- 添加规则事件  -->
+    <insert id="insertRuleAction" parameterClass="AlarmRule">
+            <![CDATA[
+            INSERT INTO alarm_rule_action_tab
+            (
+                RULE_ID,
+				RULE_ACTION,
+				CLEAR_NOTIFY,
+				NOTIFY_TYPE,
+				NOTIFY_PERSON,
+				NOTIFY_TITLE,
+				NOTIFY_CONTENT,
+				NOTIFY_SMS,
+				NOTIFY_PERSON_ID,
+				NOTIFY_PERSON_MAIL,
+				NOTIFY_PERSON_PHONE
+            )
+            VALUES
+            (    
+                #ID#,                        
+                #ruleAction#,          
+                #clearNotify#,          
+                #notifyType#,
+                #notifyPerson#,
+                #notifyTitle#,
+                #notifyContent#,
+                #notifySMS#,
+                #notifyPersonId#,
+                #notifyPersonMail#,
+                #notifyPersonMobile#
+            )
+            ]]>
+    </insert>
+    
+     <!-- 查询规则事件 -->
+    <select id="getRuleAction" parameterClass="AlarmRule" resultClass="AlarmRule">
+        SELECT 
+                RULE_ID as ID,
+                RULE_ACTION as ruleAction,
+                CLEAR_NOTIFY as clearNotify,
+                NOTIFY_TYPE as notifyType,
+                NOTIFY_PERSON as notifyPerson,
+                NOTIFY_PERSON_ID as notifyPersonId,
+                NOTIFY_TITLE as notifyTitle,
+                NOTIFY_CONTENT as notifyContent,
+                NOTIFY_SMS as notifySMS,
+                NOTIFY_PERSON_MAIL as notifyPersonMail,
+                NOTIFY_PERSON_PHONE as notifyPersonMobile
+        FROM alarm_rule_action_tab action
+        WHERE RULE_ID = #ID#
+    </select>
+    
+	<!-- 获取告警等级 -->
+    <select id="getAlarmLevel"  resultClass="AlarmRule" parameterClass="AlarmRule">
+            SELECT 
+            LEVEL_ID AS levelId,
+            NAME AS levelName
+        FROM mals_nm_alarm_level_t
+        ORDER BY LEVEL_ID 
+    </select>
+    
+    <!-- 添加规则重定义信息  -->
+    <insert id="insertRuleRedefine" parameterClass="AlarmRule">
+            <![CDATA[
+            INSERT INTO alarm_rule_redefine_tab
+            (
+                RULE_ID,
+                redefine_level,
+                original_content,
+                redefine_content
+            )
+            VALUES
+            (    
+                #ID#,                        
+                #levelId#,          
+                #originalContent#,          
+                #redefineContent#
+            )
+            ]]>
+    </insert>
+    
+    <!-- 获取规则重定义信息 -->
+    <select id="getRedefineContent"  resultClass="AlarmRule" parameterClass="AlarmRule">
+        SELECT 
+            RULE_ID AS ID,
+            redefine_level AS levelId,
+            original_content as originalContent,
+            redefine_content as redefineContent,
+            level.NAME AS levelName
+        FROM alarm_rule_redefine_tab redefine
+             LEFT JOIN mals_nm_alarm_level_t level ON redefine.redefine_level = level.LEVEL_ID
+        where RULE_ID=#ID#
+        ORDER BY RULE_REDEFINE_ID desc 
+    </select>
+     
+	
+</sqlMap>

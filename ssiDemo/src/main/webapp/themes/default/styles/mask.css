@@ -1,0 +1,29 @@
+@charset "utf-8";
+/* CSS Document */
+#backgroundPopup{      
+    display:none;      
+    position:fixed;      
+    _position:absolute; /* hack for internet explorer 6*/     
+    height:100%;      
+    width:100%;      
+    top:0;      
+    left:0;      
+    background:#CFD0D1;      
+    border:1px solid #cecece;      
+    z-index:1;  
+    }      
+	
+#popupContact{      
+    display:none;      
+    position:fixed;      
+    _position:absolute; /* hack for internet explorer 6*/ 
+    z-index:2;      
+    padding:1px;      
+    font-size:13px;
+	overflow:visible;      
+    }  
+	
+#popupContactClose{   
+    position:absolute;   
+    display:block;  
+    }

@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="UserInfo">
+	<typeAlias alias="User" type="com.cloudmaster.cmp.web.authority.user.UserInfo" />
+	<typeAlias alias="UserRole"
+		type="com.cloudmaster.cmp.web.authority.user.UserRoleInfo" />
+	<typeAlias alias="UserTitle"
+		type="com.cloudmaster.cmp.web.authority.user.UserTitle" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+			
+	<select id="getUserCount" resultClass="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM
+		KM_USER_T WHERE USER_ID=#userId# 
+	</select>
+	
+	<!-- 添加用户 -->
+	<insert id="insertUserInfo" parameterClass="User">
+		INSERT INTO	 KM_USER_T
+		  (USER_ID,
+		   USER_NAME,
+		   PASSWORD,
+		   SEX,
+		   MOBILE,
+		   EMAIL,
+		   STATUS,
+		   CREATE_TIME,
+		   UPDATE_TIME,
+		   PERSONNEL_ID,
+		   DESCRIPTION,
+		   SITE_ID)
+		VALUES
+		  (#userId#,
+		   #userName#,
+		   #password#,
+		   #sex#,
+		   #mobile#,
+		   #email#,
+		   '0',
+		   now(),
+		   now(),
+		   #personnelId#,
+		   #description#,
+		   #siteId#)
+	</insert>
+	
+	<!-- 编辑用户 -->
+	<select id="getUserInfo" resultClass="User">
+		SELECT 
+	       	u.USER_ID		AS userId,
+			u.USER_NAME     AS userName,
+			u.PASSWORD      AS password,
+			u.SEX           AS sex,
+			u.MOBILE        AS mobile,
+			u.EMAIL         AS email,
+			u.STATUS        AS status,
+			u.CREATE_TIME   AS creatTime,
+	       	u.UPDATE_TIME   AS updateTime,
+			u.PERSONNEL_ID	AS personnelId,
+			u.DESCRIPTION   AS description,
+			u.SITE_ID       AS siteId
+		  FROM KM_USER_T u
+		 where USER_ID = #userId# 
+	</select>
+	
+	<!--修改人员信息 -->
+	<update id="updateUserInfo" parameterClass="User"> 
+		UPDATE KM_USER_T
+		   SET USER_NAME       = #userName#,
+				<isNotEmpty property="password">
+					PASSWORD = #password#,
+				</isNotEmpty>
+		       SEX             = #sex#,
+		       MOBILE          = #mobile#,
+		       EMAIL           = #email#,
+		       STATUS          = '0',
+		       UPDATE_TIME     = now(),
+		       PERSONNEL_ID    = #personnelId#,
+		       DESCRIPTION     = #description#,
+		       SITE_ID		   = #siteId#
+		 WHERE USER_ID = #userId#
+	</update>
+	
+	<!--重置人员密码 -->
+	<update id="updatePsw" parameterClass="User"> 
+		UPDATE KM_USER_T
+		   SET	
+		   PASSWORD =#password#
+		 WHERE USER_ID = #userId#
+	</update>
+	
+	<!-- 查看用户信息 -->
+	<select id="getSingleUser" resultClass="User">
+	SELECT 
+	      	u.USER_ID		AS userId,
+			u.USER_NAME     AS userName,
+			u.PASSWORD      AS password,
+			u.SEX           AS sex,
+			u.MOBILE        AS mobile,
+			u.EMAIL         AS email,
+			u.STATUS        AS status,
+			u.CREATE_TIME   AS creatTime,
+	       	u.UPDATE_TIME   AS updateTime,
+			u.PERSONNEL_ID	AS personnelId,
+			u.DESCRIPTION   AS description,
+			u.SITE_ID       AS siteId,
+			s.site_name     AS siteName      
+	  FROM KM_USER_T u , honeywell_site_tab s
+	 WHERE USER_ID = #userId#
+	   AND u.SITE_ID = s.site_id
+	</select>
+	
+	<!-- 用过用户名查找 登陆名称 -->
+	<select id="getUserByUserName" parameterClass="User" resultClass="User">
+		SELECT USER_ID AS userId from KM_USER_T where USER_NAME like '%$userName$%'
+	</select>
+	
+	<!-- 用户列表 -->
+	<select id="getUserSearchInfos" parameterClass="User" resultClass="User">
+		SELECT
+			u.USER_ID AS userId,
+			u.USER_NAME AS userName,
+			u. PASSWORD AS PASSWORD,
+			u.SEX AS sex,
+			u.MOBILE AS mobile,
+			u.EMAIL AS email,
+			u. STATUS AS STATUS,
+			u.CREATE_TIME AS creatTime,
+			u.UPDATE_TIME AS updateTime,
+			u.PERSONNEL_ID AS personnelId,
+			u.DESCRIPTION AS description,
+			u.SITE_ID AS siteId,
+			s.site_name AS siteName,
+			r.ROLE_NAME AS roleName
+		FROM
+			KM_USER_T u
+		LEFT JOIN honeywell_site_tab s ON s.site_id = u.SITE_ID
+		LEFT OUTER JOIN km_user_role_t ur ON u.USER_ID = ur.USER_ID
+		LEFT OUTER JOIN km_role_t r ON ur.ROLE_ID = r.ROLE_ID
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="userId">
+				u.USER_ID like '%$userId$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="userName">
+				USER_NAME like '%$userName$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="siteId">
+				s.SITE_ID = #siteId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+		</dynamic>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<select id="getUserSearchInfoCount" parameterClass="User" resultClass="java.lang.Integer"> 
+		SELECT COUNT(*) FROM KM_USER_T 
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="userId">
+				USER_ID like '%$userId$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="userName">
+				USER_NAME like '%$userName$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="siteId">
+				SITE_ID = #siteId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+		</dynamic>
+	</select>
+		
+	<!-- 删除用户 -->
+	<select id="getUserStatus" resultClass="java.lang.String"> 
+		SELECT STATUS AS status FROM KM_USER_T WHERE USER_ID = #userId#
+	</select>
+	
+	<delete id="deleteUser" parameterClass="User"> 
+		DELETE FROM KM_USER_T 
+		 WHERE USER_ID = #userId#
+	</delete>
+	
+	<delete id="deleteUserRole" parameterClass="String"> 
+		DELETE FROM km_user_role_t
+		 WHERE USER_ID = #userId#
+	</delete>
+	
+	<!-- 获取用户角色 -->
+	<select id="getUserRoles" resultClass="UserRole"> 
+		SELECT USER_ID AS userId, ROLE_ID AS roleId
+		  FROM KM_USER_ROLE_T
+		 WHERE USER_ID = #userId#
+	</select>
+	
+	<!-- 插入用户角色 -->
+	<insert id="insertUserRole" parameterClass="UserRole"> 
+		INSERT INTO KM_USER_ROLE_T
+		  (USER_ID, ROLE_ID)
+		VALUES
+		  (#userId#, #roleId#)
+	</insert>
+	
+	<select id="getUserRoleByDouble" parameterClass="UserRole" resultClass="java.lang.Integer">
+		select count(*) from KM_USER_ROLE_T where USER_ID = #userId# and  ROLE_ID = #roleId#
+	</select>
+	
+	<!-- 更新个人信息 -->
+	<update id="updatePersonalInfo" parameterClass="User"> 
+		UPDATE KM_USER_T
+		   SET USER_NAME       = #userName#,
+		       SEX             = #sex#,
+		       MOBILE          = #mobile#,
+		       EMAIL           = #email#,
+		       UPDATE_TIME     = now(),
+		       DESCRIPTION     = #description#
+		       SITE_ID		   = #siteId#
+		 WHERE USER_ID = #userId#
+	</update>
+	
+	<!-- 更新密码 -->	
+	<update id="updateUserPsw" parameterClass="User"> 
+	UPDATE KM_USER_T
+	   SET PASSWORD = #password#, UPDATE_TIME = now()
+	 WHERE USER_ID = #userId#
+	</update>
+
+	<select id="getUserByEmail" parameterClass="java.lang.String" 
+		resultClass="java.lang.Integer">
+	
+		SELECT 
+			count(1)
+		FROM
+			`km_user_t` u
+		WHERE
+			u.EMAIL = #email#;
+		
+	</select>
+
+</sqlMap>

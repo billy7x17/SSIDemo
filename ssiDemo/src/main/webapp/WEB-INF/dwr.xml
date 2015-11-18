@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dwr PUBLIC "-//GetAhead Limited//DTD Direct Web Remoting 2.0//EN" "http://getahead.org/dwr/dwr20.dtd">
+<dwr>
+	<allow>
+		<create creator="spring" javascript="ReverseNewAlarm">
+	 		<param name="beanName" value="reverseNewAlarm"/>
+			<include method="getNewAlarmInfo3" />
+			<include method="getNewAlarmInfo" />
+			<include method="handle" />
+        </create>
+        
+        <!-- 采集设备管理获取设备类型 -->
+        <create creator="spring" javascript="DeviceBeforeAddAction"
+			scope="application">
+			<param name="beanName" value="deviceBeforeAddAction"></param>
+			<include method="getZoneIdList"/>
+			<include method="getClusterIdList"/>
+			<include method="getTypeList"/>
+			<include method="getVmsGroupList"/>
+			<include method="getNvrGroupList"/>
+			<include method="getSwitchGroupList"/>
+		</create>
+		<convert match="com.cloudmaster.cmp.resource.collectdevice.dao.DeviceDomain"
+			converter="bean" javascript="deviceDomain">
+			<param name="include" value="typeId,typeName,zoneId,zoneName,clusterId,clusterName,
+				siteId,vmsId,vmsName,nvrId,nvrName,switchId,switchName"/>
+		</convert>
+	</allow>
+</dwr>

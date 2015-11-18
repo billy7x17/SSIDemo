@@ -1,0 +1,746 @@
+@charset "utf-8";
+/* CSS Document */
+/*移除锚点外框*/
+a, a:active, a:hover, a:focus {outline: 0 none;}
+button, button:active, button:hover, button:focus {outline-style: none;}
+.wrapper {
+	width: 100%;
+	height: 100%;
+}
+
+.top {
+	background: #252525;
+	height: 26px;
+	line-height: 26px;
+	width: 100%;
+}
+
+.top ul li {
+	float: left;
+	margin-right: 21px;
+}
+
+.top ul li a {
+	color: #c8c8c8;
+}
+/*头部导航样式*/
+.top-nav {
+	background: #3b3b3b;
+	height: 44px;
+	width: 100%;
+}
+
+.brand {
+	background: url(../../default/images/logo-pc.png) no-repeat top left;
+	width: 260px;
+	height: 44px;
+	float: left;
+	margin-right: 139px;
+	cursor: default;
+}
+
+.nav-bar {
+	padding-top: 15px;
+}
+
+.nav-bar li {
+	float: left;
+}
+
+.nav-bar li a {
+	color: #c8c8c8;
+	padding: 16px 53px 15px;
+}
+
+.nav-bar li .active {
+	background: #d8d8d8;
+	color: #3b3b3b;
+}
+/*主要操作区*/
+.main {
+	margin: 17px auto;
+	width: 1376px;
+}
+
+.section {
+	float: left;
+}
+
+.co-2 {
+	width: 300px;
+}
+
+.co-5 {
+	width: 554px;
+	margin: 0 20px 20px
+}
+
+.co-4 {
+	width: 480px;
+	margin-bottom: 20px;
+}
+
+.panel-title {
+	background: #666;
+	color: #f0f0f0;
+	font-size: 14px;
+	font-weight: bold;
+	height: 34px;
+	line-height: 34px;
+	text-align: left;
+	padding-left: 20px;
+}
+
+.panel {
+	background: #f4f4f4;
+	clear: left;
+	padding: 34px 20px 23px;
+	height: 215px;
+	text-align: center
+}
+
+.nav-left {
+	background: #f4f4f4;
+	padding-top: 8px;
+}
+
+.nav-left li {
+	background: #f4f4f4;
+	border-bottom: 1px dashed #d8d8d8;
+	cursor: pointer;
+	height: 58.1px;
+	line-height: 55px;
+	float: left;
+	width: 100%;
+}
+
+.icon-warn {
+	border-right: 1px solid #d8d8d8;
+	width: 20px;
+	height: 20px;
+	float: left;
+	margin: 12px 0 0 20px;
+	padding: 6px 12px 0 0;
+}
+
+.warn-2 {
+	background: url(../images/warn-yellow.png) no-repeat;
+}
+
+.warn-3 {
+	background: url(../images/warn-lemon.png) no-repeat;
+}
+
+.warn-0 {
+	background: url(../images/warn-red.png) no-repeat;
+}
+
+.warn-1 {
+	background: url(../images/warn-org.png) no-repeat;
+}
+
+.nav-inner {
+	float: left;
+	margin-left: 19px;
+	padding-top: 10px;
+}
+
+.nav-inner h4 {
+	color: #444;
+}
+
+.nav-inner h4 small {
+	color: #999
+}
+
+.ul-group {
+	float: left;
+}
+
+.ul-group ul {
+	float: left;
+	margin-bottom: 40px;
+	margin-left: 11px;
+	margin-right: 12px;
+}
+
+.ul-group li {
+	text-align: center;
+	width: 105px;
+}
+
+.ul-group .ul-top {
+	color: #fff;
+	height: 44px;
+	cursor: default;
+}
+
+.ul-group .ul-info {
+	color: #444;
+	background: #e8e8e8;
+	padding: 15px 0 10px;
+	cursor: default;
+}
+
+.ul-group .top-blue {
+	background: #8ebfee
+}
+
+.ul-group .top-grey {
+	background: #c2c2c2;
+}
+
+.font-30 {
+	font-size: 30px;
+}
+
+.font-14 {
+	font-size: 14px;
+}
+/*页面底部样式*/
+.footer {
+	background: #3b3b3b;
+	clear: both;
+	color: #d9d9d9;
+	height: 30px;
+	line-height: 30px;
+	text-align: center
+}
+/*弹出框样式*/
+.pop {
+	left: 310px;
+	position: absolute;
+	z-index: 100;
+	background: #fff;
+	border: 4px solid #dbdbdb\9;
+	padding: 15px 17px 20px;
+	width: 280px;
+	box-shadow: 3px 3px 3px #dbdbdb;
+}
+
+.pop td {
+	color: #666;
+	line-height: 30px;
+	vertical-align: top;
+	padding-right: 12px
+}
+
+.pop-list-label {
+	color: #4e4e4e !important;
+	width: 90px;
+	text-align: right;
+}
+
+.pop-list-content{
+	word-break: break-all;
+}
+
+.btn {
+	border: none;
+	padding: 8px 40px;
+	color: #fff;
+	cursor: pointer;
+	margin-right: 10px;
+}
+
+.btn-group {
+	margin: 26px 10px 0 20px;
+}
+
+.btn-group-firstPage {
+	margin: 20px 0 0 20px;
+}
+
+.btn-blue {
+	background: #00aaf0
+}
+
+.btn-red {
+	background: #fa5050
+}
+/*告警实时监控 样式*/
+.co-1{
+	width: 260px;	
+}
+.nav-list-bg{
+	background: #f4f4f4;
+	width: 260px;
+}
+.nav-list li{
+	background: #bbb;
+	color: #444;
+	cursor: pointer;
+	height: 36px;
+	line-height: 38px;
+	float: left;
+	margin-bottom: 4px;
+	padding: 0 14px 0 20px;
+	width: 87%;
+}
+.nav-list-label{
+	font-weight: bold;	
+}
+.nav-content{
+	float: left;
+	padding: 18px;
+	display: none
+}
+.nav-list .active{
+	background: #666;
+	color: #f4f4f4
+}
+.icon-right{
+	background: url(../images/icon-right.png) no-repeat top left;
+	width: 9px;
+	height: 12px;
+	margin-top: 14px;
+}
+.icon-down{
+	background: url(../images/icon-down.png) no-repeat top left;
+	width: 13px;
+	height: 8px;
+	margin-top: 14px;
+}
+.co-10{
+	width: 1094px;
+	background: #f4f4f4;
+	margin-left: 20px;
+	float: left;
+	margin-bottom: 18px;
+}
+.sec-label{
+	color: #444;
+	font-weight: 700;
+	float: left;
+	margin-right: 34px;
+	margin-left: 20px;
+	margin-top: 20px;
+}
+.bread-cut{
+	float: left;
+    margin-top: 36px;
+}
+
+.bread-cut li{
+	float: left
+}
+.btn-grey{
+	background: #666;
+	color: #fff;	
+}
+
+.btn-eee{
+	background: #eee;
+	border: 1px solid #e2e2e2;
+	color: #696969;	
+}
+
+.small-btn{
+	border: none;
+	padding: 4px 20px 4px 10px;
+	margin-right: 6px;
+	cursor: pointer;
+}
+.icon-confirm{
+	background: url(../images/icon-confirm.png) no-repeat top left;
+	width: 17px;
+	height: 16px;
+	float: left;
+	margin-right: 10.5px;
+	margin-top: 2px;
+}
+.icon-clear{
+	background: url(../images/icon-clear.png) no-repeat top left;
+	width: 17px;
+	height: 16px;
+	float: left;
+	margin-right: 10.5px;
+	margin-top: 2px;
+}
+.icon-export{
+	background: url(../images/icon-export.png) no-repeat top left;
+	width: 17px;
+	height: 16px;
+	float: left;
+	margin-right: 10.5px;
+	margin-top: 2px;
+}
+.icon-search{
+	background: url(../images/icon-search.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 10.5px;
+	margin-top: 2px;
+}
+.icon-add{
+	background: url(../images/icon-add.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 11px;
+	margin-top: 2px;
+}
+.icon-del{
+	background: url(../images/icon-del.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 20px;
+	margin-top: 2px;
+	margin-left: 6px;
+}
+.icon-edit{
+	background: url(../images/icon-edit.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-top: 2px;
+	margin-right: 10px;
+}
+
+.icon-edit-only{
+	background: url(../images/icon-edit.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-top: 2px;
+	margin-left: 6px;
+	margin-right: 10px;
+}
+
+.icon-resetPwd{
+	background: url(../images/tol_resetPassword_gra.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 20px;
+	margin-top: 2px;
+	margin-left: 6px;
+}
+
+.icon-editPwd{
+	background: url(../images/tol_clearpwd_gra.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 20px;
+	margin-top: 2px;
+	margin-left: 6px;
+}
+
+.grid{
+	width: 100%;
+	margin-top: 26px;
+	float: left;
+	
+}
+.grid-bordered{
+	border-top: 2px solid #d8d8d8	
+}
+.grid-bordered thead th{
+	border-right: 1px solid #d8d8d8;
+	padding-left: 10px;
+	height: 30px;
+	line-height: 30px;
+	font-size: 12px;
+	font-weight: bold;
+	font-family: Microsoft YaHei;
+}
+.grid-bordered tr td{
+	border-bottom: 1px solid #f4f4f4;
+	border-right: 1px solid #ececec;
+	color: #666;
+	height: 30px;
+	line-height: 30px;
+	padding-left: 5px;
+}
+.warn-label{
+	float: left	
+}
+.warn-icon-16{
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-top: 7px;
+	margin-right: 5px;
+}
+.warn-yellow-16{
+	background: url(../images/warn-yellow-16.png) no-repeat;	
+}
+.warn-lemon-16{
+	background: url(../images/warn-lemon-16.png) no-repeat;	
+}
+.warn-red-16{
+	background: url(../images/warn-red-16.png) no-repeat;	
+}
+.warn-org-16{
+	background: url(../images/warn-org-16.png) no-repeat;	
+}
+.pagination{
+	background: #d3d3d3;
+	color: #666;
+	height: 29px;
+	line-height: 30px;
+	clear: left;
+	margin-bottom: 4px;
+	padding-left: 16px;
+	position: relative;
+	bottom: 0
+}
+.pagination select{
+	background: #fff;
+	border: 1px solid #a8a8a8;
+	width: 60px;
+	margin: 0 4px
+}
+.page-btn{
+	float: left;
+	margin-left: 54px;
+}
+.page-btn ul li{
+	float: left	
+}
+.page-first, .page-prev, .page-next, .page-next, .page-last{
+	width: 9px;
+	height: 10px;
+	float: left;
+	margin-top: 10px;
+	margin-left: 4px;
+	margin-right: 6px;
+}
+.page-first{
+	background: url(../images/page-first.png) no-repeat top left;
+}
+.page-prev{
+	background: url(../images/page-prev.png) no-repeat top left;
+}
+.page-next{
+	background: url(../images/page-next.png) no-repeat top left;
+}
+.page-last{
+	background: url(../images/page-last.png) no-repeat top left;
+}
+.page-refresh{
+	background: url(../images/page-refresh.png) no-repeat top left;
+	width: 12px;
+	height: 14px;
+	float: left;
+	margin-top: 8px;
+	margin-left: 4px;
+	margin-right: 6px;
+}
+.page-btn input{
+	width: 36px;
+	height: 18px;
+	background: #fff;
+	border: 1px solid #a8a8a8;
+	text-align: center;
+	font-family: '微软雅黑';
+}
+/*告警实时监控（详细）*/
+.container{
+	position: absolute;
+	top: 87px;
+	left: 1105px;
+	z-index: 20;
+	background: #f4f4f4;
+	border-left: 3px solid #d8d8d8;
+}
+.warn-yellow-40{
+	background: url(../images/warn-yellow-40.png) no-repeat top left;
+	width: 40px;
+	height: 37px;
+	float: right;
+	margin-top: 26px;
+	margin-right: 20px;
+}
+.new_ul{
+	float: left;
+	margin-top: 17px;
+	margin-left: 28px;	
+}
+.menu0{
+	margin-top: 20px;	
+	width: 100%;
+}
+.menu0 .click{
+	background: #00aaf0;
+	
+}
+.menu0 li{
+	background: #666;
+	color: #fff;
+	cursor: pointer;
+	float: left;
+	padding: 12px 51px;
+	
+}
+.new_ul li{
+	margin-bottom: 10px;
+}
+.new_ul li input{
+	background: #fff;
+	border: 1px solid #b7b7b7;
+	border-radius: 3px;
+	color: #666;
+	font-family: '微软雅黑';
+	width: 158px;
+	height: 22px;
+	line-height: 22px;
+	padding-left: 8px
+}
+.new_ul li label{
+	margin-right: 12px;	
+	float: left;
+	margin-bottom: 7px
+}
+.textarea-control{
+	background: #fff;
+	border: 1px solid #b7b7b7;
+	border-radius: 3px;
+	color: #666;
+	font-family: '微软雅黑';
+	width: 165px;
+}
+.new_ul .btn-detail{
+	margin-top: 43px;
+	text-align: center;
+	width: 100%
+}
+.new_ul .btn-detail a{
+	padding: 10px 38px;
+	color: #fff;
+	margin-right: 22px;
+}
+.submit-btn{
+	background: #00aaf0;	
+}
+.del-btn{
+	background: #fd6566;	
+}
+.new_ul .input-lg, .texarea-lg{
+	clear: left;
+    display: block;
+	width: 237px;
+}
+.texarea-lg{
+	width: 245px;
+	resize: none;
+}
+.input-bg{
+	background-image: url(../images/icon-address.png)!important;
+    background-origin: padding-box;
+    background-position: right center!important;
+    background-repeat: no-repeat!important;
+    background-size: auto auto;
+	background-color: #fff;
+	width: 18px;
+	height: 15px;
+	float: right;
+}
+.email li{
+	margin-bottom: 20px;
+	float: left
+}
+/* *号 */
+.input_required {
+	background:url(../images/Start.png) no-repeat;
+	width: 13px;
+	height: 18px;
+	margin-right: 75px;
+}
+
+/* #detail{
+	display: none;
+	min-height: 273px;
+} */
+
+
+.addEmailPerson{
+	float: left;
+	background: url(../images/icon-address.png) no-repeat;
+	width: 18px;
+	height: 18px;
+	margin-top: 4px;
+	margin-left:-5px;
+	cursor: pointer;
+}
+.emailContent{
+	float: left;
+	background: url(../images/tol_email.png) no-repeat;
+	width: 18px;
+	height: 18px;
+	margin-top: 4px;
+	margin-left:8px;
+	cursor: pointer;
+}
+
+.operSpan{
+	background: url(../images/ico_arrow_up.gif) no-repeat 100% 100%;
+	padding-left:20px;
+	cursor: pointer;
+}
+.operationShowDiv{
+	display: block;
+	background: #fff;
+	position: absolute;
+	width: 70px;
+	margin-left:5px;
+	margin-top: -5px;
+	padding-bottom: -10px;
+}
+ .buttonA {
+	cursor: pointer;
+	width: 75px;
+	float: left;
+	padding-top: 5px;
+	padding-left: 5px;
+	height: 22px;
+	margin-left: -5px;
+	margin-top: -3px;
+	font-size: 12px;
+}
+.buttonA:hover{
+	background: #e8e8e8;
+}
+.buttonSpan{
+	margin-left: -5px;
+}
+/*激活*/
+.icon-actived{
+	background: url(../images/tol_actived.png) no-repeat top left;
+	width: 20px;
+	height: 18px;
+	float: left;
+	margin-top: 1px;
+	margin-right: 20px;
+}
+/* 中止*/
+.icon-suspend{
+	background: url(../images/tol_shut.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-top: 2px;
+	margin-right: 20px;
+}
+/*绑定*/
+.icon-bind{
+	background: url(../images/tol_bind.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-top: 2px;
+	margin-right: 20px;
+}
+/*解绑*/
+.icon-unBind{
+	background: url(../images/tol_unBind.png) no-repeat top left;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-top: 2px;
+	margin-right: 20px;
+}
+/* 告警规则样式 end*/

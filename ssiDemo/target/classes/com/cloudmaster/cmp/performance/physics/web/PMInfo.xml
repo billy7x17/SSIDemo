@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PMInfo">
+
+	<typeAlias alias="PM"
+		type="com.cloudmaster.cmp.performance.physics.dao.PMInfo" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+
+	<!-- 获取物理机的基本信息  -->
+	<select id="getMessage" resultClass="PM">
+		SELECT
+		p.PM_ID AS pmID,
+		p.PM_Name AS pmName,
+		p.IP AS pmIP,
+		p.Creater AS pmCreater,
+		p.Creat_Time AS pmCreaterTime,
+		p.Proposer AS pmProposer,
+		p.Prop_Time AS pmPropTime,
+		p.PM_State AS pmState,
+		p.ext_host_id AS pmExtHostId,
+		case p.Power_State when '00' then '正在启动' when '01' then '运行中' when '02' then '正在关机' when '03' then '关机完成'  when '04' then '正在重启' when '05' then '正在重启' else '未知' end AS pmPowerState,
+		p.OS_State AS pmOSState,
+		p.Soft_State AS pmSoftState,
+		pti.Server_Type AS pmServerType,
+		pti.PM_Name AS pmServerName,
+		pti.CPU_Frequency AS pmCPUFrequency,
+		pti.CPU_Type AS pmCPUType,
+		pti.CPU_Num AS pmCPUNum,
+		pti.V_Processor AS pmVProcessor,
+		pti.Memory_Size AS pmMemorySize,
+		pti.Disk_Size AS pmDiskSize,
+		pti.EthAda_Num AS pmEthAdaNum,
+		pti.EthAda_Type AS pmEthAdaType,
+		pti.SCSI_Ada_Num AS pmSCSIAdaNum,
+		pti.HBA_Num AS pmHBANum,
+		pti.HBA_Type AS pmHBAType,
+		pti.OS AS pmOS,
+		pti.Description AS pmDescription,
+		pti.Factory AS pmFactory
+		FROM
+		pm_info_tab p 
+		left join rescource_template_attribute_tab rta on p.PM_Server_Ref=rta.Resource_Template_ID 
+		left JOIN pm_type_info_tab pti on rta.Attribute_Value=pti.Server_Type where p.PM_ID=#pmID#
+	</select>
+	<select id="getUserName" resultClass="String">
+		SELECT USER_NAME FROM km_user_t WHERE USER_ID = #creater#
+	</select>
+	<select id="getIPUserPMID" resultClass="String">
+		SELECT Leaf_Name FROM zone_cluster_instance_tab WHERE LocalTable_ID_Ref=#id#
+	</select>
+	<!-- 根据物理机ID查询物理机是否工程中 -->
+	<select id="getStateUserPMID" resultClass="String" parameterClass="String">
+		SELECT PM_INSTALL_STATE FROM pm_info_tab WHERE PM_ID=#id#;
+	</select>
+	<!-- 查询物理机电源状态 -->
+	<select id="getPowerState" resultClass="String" parameterClass="String">
+		SELECT 
+			case Power_State when '00' then '正在启动' when '01' then '运行中' when '02' then '正在关机' when '03' then '关机完成'  when '04' then '正在重启' when '05' then '正在重启' else '未知' end AS pmPowerState 
+		FROM pm_info_tab WHERE PM_ID=#id#;
+	</select>
+	<!-- 获得设备类型Id -->
+	<select id="getTypeIdValue" resultClass="String" parameterClass="String">
+		SELECT 
+			TYPE_ID 
+		FROM 
+			mals_nm_agent_info_t 
+		WHERE
+			AGENT_IP=#deviceType#
+	</select>
+	
+	<typeAlias alias="mibDomain" type="com.cloudmaster.cmp.performance.mibinfo.dao.MibinfoDomain" />
+	<!-- 查询物理机在MIB中的基本配置Tab，并根据物理机id查询ip和设备类型，用以查询是否配置过进程和功耗 -->
+	<select id="getAlreadyConfTab" parameterClass="String" resultClass="mibDomain">
+		SELECT
+			a.OID as oid,
+			a.MIB_NAME as mibName,
+			g.mib_group_name AS indexGroup
+		FROM 
+			mals_nm_mib_t a,mals_nm_mib_group_t g
+		WHERE 
+				a.type_id =#typeId#
+			AND a.MIB_GROUP  = g.mib_group_id 
+			GROUP BY a.MIB_GROUP
+			ORDER BY a.MIB_GROUP
+	</select>
+	<!-- 查询基本的Tab指标(除进程和功耗以及配置在黑名单中的指标) -->
+	<select id="getAlreadyConfTabIndex" resultClass="mibDomain">
+		SELECT
+		a.OID as oid,
+		a.MIB_NAME as mibName,
+		g.mib_group_name as indexGroup,
+		CASE a.MIB_UNIT 
+				WHEN 0 THEN '%' 
+				WHEN 1 THEN '个' 
+				WHEN 2 THEN 'MHz' 
+				WHEN 3 THEN 'MB' 
+				WHEN 4 THEN 'GB' 
+				WHEN 5 THEN 'Bytes/sec' 
+				WHEN 6 THEN 'KB' 
+				WHEN 7 THEN 's' 
+				WHEN 8 THEN 'packets/sec' 
+				WHEN 9 THEN '无单位' 
+				WHEN 10 THEN 'degrees C'
+				WHEN 11 THEN 'Volts'
+				WHEN 12 THEN 'RPM'
+				WHEN 13 THEN 'Watts'
+				WHEN 14 THEN 'Mbps'
+				WHEN 15 THEN 'Byte'
+				WHEN 16 THEN '℃'
+				WHEN 17 THEN 'IOPS'
+				END AS indexUnit,
+		a.SHOW_LINE as ifShowLine
+		FROM mals_nm_mib_t a LEFT OUTER JOIN mals_nm_mib_group_t g
+		ON a.type_id = g.type_id AND a.MIB_GROUP = g.mib_group_id
+		WHERE a.type_id = #typeId#
+		ORDER BY a.MIB_GROUP
+	</select>
+	<!-- 查询基本的Tab指标(进程和功耗的指标) -->
+	<select id="getAlreadyConfTabIndexP" resultClass="mibDomain">
+		SELECT
+		a.OID as oid,
+		a.MIB_NAME as mibName,
+		CASE a.MIB_GROUP WHEN 5 THEN '进程' ELSE '功耗' END as indexGroup,
+		CASE a.MIB_UNIT WHEN 0 THEN '%' WHEN 1 THEN '个' WHEN 2 THEN 'MHz' WHEN 3 THEN 'MB' WHEN 4 THEN 'GB' WHEN 5 THEN 'Bytes/sec' WHEN 6 THEN 'KB' WHEN 7 THEN 's' WHEN 8 THEN 'packets/sec' WHEN 9 THEN '无单位' WHEN 10 THEN 'degrees C' WHEN 11 THEN 'Volts' WHEN 12 THEN 'RPM' WHEN 13 THEN 'Watts' END AS indexUnit,
+		a.COLOME_NAME as colomeName,
+		b.SHOW_LINE as ifShowLine
+		FROM mals_nm_mib_t a,
+		mals_nm_mib_process_t b,
+		pm_info_tab c
+		WHERE a.type_id = '1' AND b.show_table = '1'
+		AND
+		((a.OID = b.OID AND b.IP = c.IP AND a.MIB_GROUP = 5))
+		AND c.PM_ID = #id#
+		GROUP BY a.OID
+		ORDER BY a.MIB_GROUP
+	</select>
+	<select id="getAlreadyConfTabIndexC" resultClass="mibDomain">
+	SELECT
+		a.OID as oid,
+		a.MIB_NAME as mibName,
+		CASE a.MIB_GROUP WHEN 5 THEN '进程' ELSE '功耗' END as indexGroup,
+		CASE a.MIB_UNIT WHEN 0 THEN '%' WHEN 1 THEN '个' WHEN 2 THEN 'MHz' WHEN 3 THEN 'MB' WHEN 4 THEN 'GB' WHEN 5 THEN 'Bytes/sec' WHEN 6 THEN 'KB' WHEN 7 THEN 's' WHEN 8 THEN 'packets/sec' WHEN 9 THEN '无单位' WHEN 10 THEN 'degrees C' WHEN 11 THEN 'Volts' WHEN 12 THEN 'RPM' WHEN 13 THEN 'Watts' END AS indexUnit,
+		a.COLOME_NAME as colomeName,
+		d.SHOW_LINE as ifShowLine
+		FROM mals_nm_mib_t a,
+		pm_info_tab c,
+		mals_nm_mib_con_t d
+		WHERE a.type_id = '1' AND d.show_table = '1' 
+		AND
+		(d.DEVICE_TYPE = c.server_type AND d.oid = a.oid and a.MIB_GROUP = 6)
+		AND c.PM_ID = #id#
+		GROUP BY a.OID
+		ORDER BY a.MIB_GROUP
+	</select>
+	
+	
+	<!-- 集成CMDB的基本信息 利用基本ID，查询CMDBID begin-->
+	<select id="getCMDBIDUseLocalTableIDRef" resultClass="String">
+		SELECT CMDB_ID_Ref FROM zone_cluster_instance_tab WHERE LocalTable_ID_Ref = #id#
+	</select>
+	<!-- 集成CMDB的基本信息 利用基本ID，查询CMDBID end-->
+	
+</sqlMap>

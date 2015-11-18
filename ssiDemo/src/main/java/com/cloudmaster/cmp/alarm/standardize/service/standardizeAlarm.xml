@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AlarmStandardize">
+	<typeAlias alias="AlarmStandardize" type="com.cloudmaster.cmp.alarm.standardize.dao.AlarmDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	
+	<!-- 获取采集告警的最大时间 -->
+	<select id="lastTime" parameterClass="AlarmStandardize" resultClass="String">
+        SELECT max(time) as alarmTime
+		FROM (select DATE_FORMAT(max(Alarm_Time),'%Y%m%d%H%i%S') as time from alarminfo_tab where Alarm_Source_Type =#alarmSourceType#
+            union select DATE_FORMAT(max(Alarm_Time),'%Y%m%d%H%i%S')  as time from alarminfo_filtered_tab where Alarm_Source_Type =#alarmSourceType#) aa
+	</select>
+	
+	<!-- 获取mals_nm_alarm_device_t告警 -->
+	<select id="getMalsDeviceAlarm" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+		SELECT 
+		    '0' as alarmSourceType,
+			ALARM_OID as alarmIdentify, 
+			ALARM_LEVEL as originalAlarmGrade,
+			ALARM_TYPE as alarmType,
+			ALARM_TITLE as alarmTitle,
+			ALARM_CONTENT as alarmContent,
+			OCCUR_TIME as alarmTime,
+			AGENT_IP as alarmIP,
+			AGENT_TYPE as deviceType,
+			THRESHOLD_ID as thresholdId 
+		FROM mals_nm_alarm_device_t t
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="alarmTime">
+				(OCCUR_TIME >#alarmTime#)
+            </isNotEmpty>
+		</dynamic>
+		order by alarmTime asc 
+	</select>
+	
+	<!-- 获取花名册记录 -->
+	<select id="getRoster" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+		SELECT Alarm_Grade as alarmGrade,Roster_ID as rosterId
+		from alarmroster_tab
+		where type = #rosterType#
+		     and ID = #thresholdId#
+	</select>
+	
+	<!-- 采集表（mals_nm_alarm_device_t）中告警数据花名册数据 -->
+    <select id="getTrapRoster" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+	   SELECT Alarm_Grade as alarmGrade,Roster_ID as rosterId
+        from alarmroster_tab roster,mals_nm_access_rule_t access
+        where roster.type = #rosterType#
+             and roster.ID = access.ROWID
+         and access.ALARM_OID = #alarmIdentify#
+     </select>
+	
+	<!-- 获取序列号 -->
+	<select id="getSeqId" resultClass="String">
+		SELECT nextval('alarm_info_id') as alarmID
+	</select>
+	
+	<!-- 记录告警信息 -->
+	<insert id="insertAlarm" parameterClass="AlarmStandardize">
+		INSERT INTO	 alarminfo_tab
+		  (
+		    Alarm_ID,
+			Alarm_Source_Type,
+			Alarm_Identify,
+			Alarm_Grade,
+			Original_Alarm_Grade,
+			Alarm_Type,
+			Alarm_Title,
+			Alarm_Content,
+			Alarm_Time,
+			Alarm_IP,
+			count,
+			device_type, 
+			first_alarm_time,
+			threshold_id,
+			confirm_status,
+			clear_status,
+			Roster_ID
+			)
+		VALUES
+		  (
+		    #alarmID#,
+			#alarmSourceType#,
+			#alarmIdentify#,
+			#alarmGrade#,
+			#originalAlarmGrade#,
+			#alarmType#,
+			#alarmTitle#,
+			#alarmContent#,
+			str_to_date(#alarmTime#,'%Y%m%d%H%i%S'),
+			#alarmIP#,
+			'1',
+			#deviceType#,
+			str_to_date(#alarmTime#,'%Y%m%d%H%i%S'),
+			#thresholdId#,
+			'1',
+			'1',
+			#rosterId#
+			)
+	</insert>
+	
+	<!-- 修改重复告警信息 -->
+	<update id="updateAlarm" parameterClass="AlarmStandardize">
+		UPDATE alarminfo_tab
+		  SET count = count+1,
+		      Alarm_Time = str_to_date(#alarmTime#,'%Y%m%d%H%i%S'),
+		      Alarm_Content = #alarmContent#
+		 WHERE Alarm_ID = #alarmID#
+	</update>
+	
+	<!-- 记录过滤掉的告警信息	 -->
+	<insert id="insertFilteredAlarm" parameterClass="AlarmStandardize">
+		INSERT INTO	 alarminfo_filtered_tab
+		  (
+		    Alarm_ID,
+			Alarm_Source_Type,
+			Alarm_Identify,
+			Alarm_Grade,
+			Original_Alarm_Grade,
+			Alarm_Type,
+			Alarm_Title,
+			Alarm_Content,
+			Alarm_Time,
+			Alarm_IP,
+			count,
+			device_type,
+			first_alarm_time,
+			threshold_id,
+			confirm_status,
+			clear_status,
+			Roster_ID 
+			)
+		VALUES
+		  (
+		    #alarmID#,
+			#alarmSourceType#,
+			#alarmIdentify#,
+			#alarmGrade#,
+			#originalAlarmGrade#,
+			#alarmType#,
+			#alarmTitle#,
+			#alarmContent#,
+			str_to_date(#alarmTime#,'%Y%m%d%H%i%S'),
+			#alarmIP#,
+			'1',
+			#deviceType#,
+			str_to_date(#alarmTime#,'%Y%m%d%H%i%S'),
+			#thresholdId#,
+			'1',
+			'1',
+			#rosterId#
+			)
+	</insert>
+
+
+	<!-- 过滤掉的告警，修改重复告警信息 -->
+	<update id="updateFilteredAlarm" parameterClass="AlarmStandardize">
+		UPDATE alarminfo_filtered_tab
+		  SET count = count+1,
+		      Alarm_Time = str_to_date(#alarmTime#,'%Y%m%d%H%i%S'),
+		      Alarm_Content = #alarmContent#
+		 WHERE Alarm_ID = #alarmID#
+	</update>
+	 
+	 <!-- 获取重复告警信息  -->
+	<select id="repeatAlarm" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+		SELECT Alarm_ID as alarmID,DATE_FORMAT(Alarm_Time,'%Y%m%d%H%i%S') as alarmTime
+        from alarminfo_tab
+		where Alarm_Source_Type = #alarmSourceType#
+		     and Alarm_Identify = #alarmIdentify#
+			 and Original_Alarm_Grade = #originalAlarmGrade#
+			 and Alarm_Type = #alarmType#
+			 and Alarm_Title = #alarmTitle#
+			 and Alarm_IP = #alarmIP#
+			 and device_type = #deviceType#
+			 and Alarm_Grade = #alarmGrade#
+			 and clear_status = '1'
+	    ORDER BY Alarm_ID desc
+        limit 1
+	</select>
+	
+	<!-- 获取重复告警信息，内容包含  -->
+    <select id="repeatAlarmPartContent" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+        SELECT Alarm_ID as alarmID,DATE_FORMAT(Alarm_Time,'%Y%m%d%H%i%S') as alarmTime
+        from alarminfo_tab
+        where Alarm_Source_Type = #alarmSourceType#
+             and Alarm_Identify = #alarmIdentify#
+             and Original_Alarm_Grade = #originalAlarmGrade#
+             and Alarm_Type = #alarmType#
+             and Alarm_Content like concat('%',#alarmContent#,'%')
+             and Alarm_IP = #alarmIP#
+             and device_type = #deviceType#
+             and Alarm_Grade = #alarmGrade#
+             and clear_status = '1'
+        ORDER BY Alarm_ID desc
+        limit 1
+    </select>
+    
+    <!-- 获取业务系统重复告警信息，内容相等  -->
+    <select id="repeatAlarmFullContent" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+        SELECT Alarm_ID as alarmID,DATE_FORMAT(Alarm_Time,'%Y%m%d%H%i%S') as alarmTime
+        from alarminfo_tab
+        where Alarm_Source_Type = #alarmSourceType#
+             and Alarm_Identify = #alarmIdentify#
+             and Original_Alarm_Grade = #originalAlarmGrade#
+             and Alarm_Type = #alarmType#
+             and Alarm_Content = #alarmContent#
+             and Alarm_IP = #alarmIP#
+             and device_type = #deviceType#
+             and Alarm_Grade = #alarmGrade#
+             and clear_status = '1'
+        ORDER BY Alarm_ID desc
+        limit 1
+    </select>
+	
+	 <!-- 获取过滤掉的重复告警信息  -->
+	<select id="filteredRepeatAlarm" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+        SELECT Alarm_ID as alarmID,DATE_FORMAT(Alarm_Time,'%Y%m%d%H%i%S') as alarmTime
+        from alarminfo_filtered_tab
+		where Alarm_Source_Type = #alarmSourceType#
+		     and Alarm_Identify = #alarmIdentify#
+			 and Original_Alarm_Grade = #originalAlarmGrade#
+			 and Alarm_Type = #alarmType#
+			 and Alarm_Title = #alarmTitle#
+			 and Alarm_IP = #alarmIP#
+			 and device_type = #deviceType#
+			 and Alarm_Grade = #alarmGrade#
+	   ORDER BY Alarm_ID desc
+       limit 1
+	</select>
+	
+	 <!-- 过滤掉的重复告警信息，告警内容包含  -->
+    <select id="filteredRepeatAlarmPartContent" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+       SELECT Alarm_ID as alarmID,DATE_FORMAT(Alarm_Time,'%Y%m%d%H%i%S') as alarmTime
+        from alarminfo_filtered_tab
+        where Alarm_Source_Type = #alarmSourceType#
+             and Alarm_Identify = #alarmIdentify#
+             and Original_Alarm_Grade = #originalAlarmGrade#
+             and Alarm_Type = #alarmType#
+             and Alarm_Content like concat('%',#alarmContent#,'%')
+             and Alarm_IP = #alarmIP#
+             and device_type = #deviceType#
+             and Alarm_Grade = #alarmGrade#
+        ORDER BY Alarm_ID desc
+        limit 1
+    </select>
+	
+	
+	 <!-- 业务系统重复告警信息,告警内容相等  -->
+    <select id="filteredRepeatAlarmFullContent" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+        SELECT Alarm_ID as alarmID,DATE_FORMAT(Alarm_Time,'%Y%m%d%H%i%S') as alarmTime
+        from alarminfo_filtered_tab
+        where Alarm_Source_Type = #alarmSourceType#
+             and Alarm_Identify = #alarmIdentify#
+             and Original_Alarm_Grade = #originalAlarmGrade#
+             and Alarm_Type = #alarmType#
+             and Alarm_Content  = #alarmContent#
+             and Alarm_IP = #alarmIP#
+             and device_type = #deviceType#
+             and Alarm_Grade = #alarmGrade#
+             and clear_status = '1'
+        ORDER BY Alarm_ID desc
+        limit 1
+    </select>
+	
+	<!-- 是否存在筛选器信息 -->
+	<select id="filterCount" parameterClass="AlarmStandardize" resultClass="int">
+		SELECT count(1)
+		from alarmfilter_tab t
+		where Filter_Status = '1'
+		     and Roster_ID = #rosterId#
+	</select>
+	
+	<!-- 获取nagios告警配置信息 -->
+	<select id="getNagiosConfig" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+		SELECT 
+			ALARM_LEVEL as originalAlarmGrade,
+			ALARM_TYPE as alarmType,
+			ALARM_TITLE as alarmTitle,
+			ROWID as thresholdId
+		FROM mals_nm_access_rule_t
+		where ALARM_OID = #alarmIdentify#
+		     and TYPE_ID = #deviceType#
+	</select>
+	
+	<!-- 亚信告警上报接口，获取告警设备信息 -->
+    <select id="getDeviceInfo" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+        SELECT 
+            REPLACE(Resource_Type,'CIDC-RT-','') as deviceType,
+            LocalTable_ID_Ref as deviceId
+        FROM zone_cluster_instance_tab resource,service_resource_tab relation,worksheet_tab worksheet
+        where Leaf_Name = #alarmIP#
+            and Resource_Type in('CIDC-RT-VM','CIDC-RT-SRV','CIDC-RT-MC','CIDC-RT-BS')
+            and resource.LocalTable_ID_Ref = relation.resource_id
+            and relation.event_id = worksheet.event_id
+            and worksheet.type ='2'
+    </select>
+    
+    <!-- 判断告警设备是否存在 -->
+    <select id="alarmDeviceExist" parameterClass="AlarmStandardize" resultClass="int">
+        SELECT count(*)
+        FROM zone_cluster_instance_tab resource
+        where Leaf_Name = #alarmIP#
+    </select>
+    
+     <!-- 判断物理机是否工程中 -->
+    <select id="alarmDeviceUnderConstruction" parameterClass="AlarmStandardize" resultClass="int">
+        SELECT count(*)
+        FROM pm_info_tab
+        where IP = #alarmIP#
+            and PM_INSTALL_STATE = '1'
+    </select>
+    
+    <!-- 获取清除告警trap的配置信息 -->
+    <select id="getClearTrapConfig" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+        SELECT 
+            alarm_trap_oid as alarmIdentify
+        FROM alarm_clear_trap_tab
+        where clear_trap_oid = #alarmIdentify#
+    </select>
+    
+    <!-- 清除告警trap -->
+    <update id="clearTrap" parameterClass="AlarmStandardize">
+        UPDATE alarminfo_tab
+        SET clear_status = '3',
+        Clear_Time = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') 
+        where Alarm_Source_Type = #alarmSourceType#
+             and Alarm_Identify = #alarmIdentify#
+             and Alarm_Content like concat('%',#alarmContent#,'%')
+             and Alarm_IP = #alarmIP#
+             and device_type = #deviceType#
+             and clear_status = '1'
+    </update>
+	
+	<!-- 获取告警设备的分区实例信息 -->
+    <select id="getClusterInstance" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+        SELECT 
+            LocalTable_ID_Ref as deviceId,
+            CMDB_ID_Ref as cmdbId,
+            Resource_Type as deviceType
+        FROM zone_cluster_instance_tab
+        where Leaf_Name = #alarmIP#
+    </select>
+</sqlMap>

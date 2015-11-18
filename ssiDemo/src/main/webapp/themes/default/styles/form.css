@@ -1,0 +1,452 @@
+@charset "utf-8";
+/* CSS Document */
+input[type="text"]:focus,input[type="password"]:focus,textarea:focus {
+	background: #fff;
+}
+
+.left_10 {
+	margin-left: 10px;
+}
+/* .input{
+	width:200px;
+	height:22px;
+	border:1px solid #acb2b4;
+	background:url(../images/inputBg.png) repeat-x left top;
+	line-height:22px;
+	text-indent:5px;
+	font-size:12px;
+	*margin-left:-5px;
+} */
+input[type="text"],input[type="file"],input[type="password"],select,textarea {
+	border-radius: 3px;
+	border: 1px solid #b7b7b7;
+	background: #fff;
+	float: left;
+	margin-right: 13px;
+	width: 242px;
+	height: 23px;
+	line-height: 23px;
+	padding: 0 5px;
+	margin-bottom: 12px;
+	color: #666;
+}
+
+select {
+	width: 254px;
+	padding-right: 0px;
+	padding-left: 0px;
+}
+
+textarea {
+	width: 252px;
+	height: 62px;
+	margin-bottom: 34px;
+}
+
+.input[readonly]:focus {
+	background: #F0F0F0;
+}
+
+.alarmInput {
+	width: 100px;
+	height: 22px;
+	border: 1px solid #acb2b4;
+	background: url(../images/inputBg.png) repeat-x left top;
+	line-height: 22px;
+	text-indent: 5px;
+	font-size: 12px;
+	*margin-left: -5px;
+}
+/*第二行input和上面input的边距*/
+.input_mt,.select_date1.input_mt {
+	margin-top: 0px;
+	*margin-top: 0px;
+	_margin-top: 20px;
+}
+
+.select_mt {
+	margin-top: 10px;
+	*margin-top: 0px;
+	_margin-top: 20px;
+}
+
+/*js模仿下拉框效果*/
+.selectGet {
+	height: 24px;
+	border: 1px solid #acb2b4;
+	line-height: 24px;
+	background-color: #f8f8f8;
+	cursor: pointer;
+}
+
+.selectGetW_150 {
+	width: 150px;
+	*width: 152px
+}
+
+.selectGetW_60 {
+	width: 60px;
+	margin-top: 13px;
+}
+
+.selectGetW_190 {
+	width: 190px;
+	*width: 192px
+}
+
+.selectGetVal {
+	height: 24px;
+	line-height: 24px;
+	float: left;
+	text-indent: 5px;
+	font-weight: normal;
+}
+
+.selectGetW_150 .selectGetVal {
+	width: 129px;
+}
+
+.selectGetW_60 .selectGetVal {
+	width: 39px;
+}
+
+.selectGetW_190 .selectGetVal {
+	width: 169px;
+}
+
+.selectGet img {
+	float: left;
+	margin-top: 10px;
+}
+
+.selectSetVal {
+	position: absolute;
+	border: 1px solid #e2e2e2;
+	background-color: #fff;
+	z-index: 1000;
+	margin-bottom: 4px;
+	_margin-bottom: 8px;
+}
+
+.selectSetW_150 {
+	width: 150px;
+	border-top: none;
+}
+
+.selectSetW_60 {
+	width: 60px;
+	right: 32px;
+	right: 32px\9;
+	*right: 35px;
+	_right: 8px;
+	bottom: 33px;
+	border-bottom: none;
+	float: none;
+}
+
+.selectSetW_190 {
+	width: 190px;
+	border-top: none;
+}
+
+.selectSetVal li {
+	height: 20px;
+	text-indent: 9px;
+	line-height: 20px;
+	cursor: pointer;
+	font-weight: normal;
+}
+
+/*单选*/
+.formCon span {
+	float: left;
+}
+
+.radio_txt {
+	margin: 0 7px 0 3px;
+	font-weight: bold;
+}
+
+.radio_ico {
+	margin-top: 3px;
+	margin-top: 2px\9;
+	*margin-top: 3px;
+}
+
+/*配置*/
+.confWrap {
+	background-color: #e8ecee;
+	padding: 5px 5px 7px 5px;
+	*margin-top: 0px;
+	_margin-top: 5px;
+	width: 190px;
+	height: 82px;
+	border: 1px solid #acb2b4;
+	margin-bottom: 20px;
+}
+
+.confWrapOld {
+	background-color: #e8ecee;
+	padding: 5px 5px 7px 5px;
+	*margin-top: 0px;
+	_margin-top: 5px;
+	width: 324px;
+	height: 160px;
+	border: 1px solid #acb2b4;
+	margin-bottom: 20px;
+}
+
+.confWrap_3tds {
+	background-color: #e8ecee;
+	padding: 5px 5px 7px 5px;
+	*margin-top: 0px;
+	_margin-top: 5px;
+	width: 532px;
+	height: 82px;
+	border: 1px solid #acb2b4;
+	margin-bottom: 20px;
+}
+
+.confCenL,.confCenR {
+	height: 140px;
+	border: 1px solid #c5c9cb;
+	width: 115px;
+	background-color: #fff;
+}
+
+.confCenL {
+	float: left;
+}
+
+.confCenR {
+	float: right;
+}
+
+.confCenM {
+	float: left;
+	width: 75px;
+	_width: 75px;
+	height: 100%;
+	padding-top: 17px;
+	margin-left: 6px;
+}
+
+.inputAuto2 {
+	width: 173px;
+	height: 160px;
+}
+
+.inputAuto2 span {
+	display: block;
+	width: 136px;
+	height: 22px;
+	line-height: 22px;
+	text-indent: 14px;
+	cursor: pointer;
+	font-weight: bold;
+	margin: 1px 0px 1px 5px;
+}
+
+.optionSel {
+	border: 1px solid #9e9e9e;
+	background: url(../images/optionBg.png) repeat-x left top;
+	color: #3a3d40;
+}
+
+.confCenM a {
+	display: block;
+	width: 62px;
+	height: 28px;
+	margin: 2px auto;
+}
+
+.confCenM a.btn2 {
+	margin-bottom: 15px;
+}
+
+.btn_add {
+	background: url(../images/btn_add_normal.png) no-repeat left top;
+}
+
+.btn_remove {
+	background: url(../images/btn_remove_normal.png) no-repeat left top;
+}
+
+.btn_addAll {
+	background: url(../images/btn_addAll_normal.png) no-repeat left top;
+}
+
+.btn_removeAll {
+	background: url(../images/btn_removeAll_normal.png) no-repeat left top;
+}
+
+.btn_add_sel {
+	background: url(../images/btn_add_focus.png) no-repeat left top;
+}
+
+.btn_remove_sel {
+	background: url(../images/btn_remove_focus.png) no-repeat left top;
+}
+
+.btn_addAll_sel {
+	background: url(../images/btn_addAll_focus.png) no-repeat left top;
+}
+
+.btn_removeAll_sel {
+	background: url(../images/btn_removeAll_focus.png) no-repeat left top;
+}
+/*致灰*/
+.btn_add_gra {
+	background: url(../images/btn_add_disable.png) no-repeat left top;
+}
+
+.btn_remove_gra {
+	background: url(../images/btn_remove_disable.png) no-repeat left top;
+}
+
+.btn_addAll_gra {
+	background: url(../images/btn_addAll_disable.png) no-repeat left top;
+}
+
+.btn_removeAll_gra {
+	background: url(../images/btn_removeAll_disable.png) no-repeat left top;
+}
+
+/*下拉输入input 下拉宽度*/
+.autoComplete {
+	width: 200px;
+}
+
+/*新增select样式*/
+/* .newSelect{
+	width:202px;
+	height:26px;
+	border:solid 1px #ACB2B4;
+	line-height:24px;
+	vertical-align:middle;
+	background-image:url(themes/default/images/inputBg.png);
+	color:#666;
+} */
+/* .newTextarea{
+	width:188px;
+	height:80px;
+	color:#666;
+	font-size: 12px;
+} */
+.newTextarea_3tds {
+	width: 530px;
+	height: 80px;
+	color: #666;
+	font-size: 12px;
+}
+
+/* 2012-12-28 add wengcz 必填项红星   */
+/* .input_required {
+	background:url(../images/icon-blue.png) no-repeat;
+	line-height: 18px;
+	padding: 0 4px;
+} */
+
+/* 添加、编辑画面使用的样式 */
+.addTable {
+	margin-left: 75px;
+	float: left;
+	border: 0;
+	width: 580px;
+}
+
+.addTable_2 {
+	margin-top: 10px;
+	margin-left: 30px;
+	float: left;
+	border: 0;
+}
+/* 标题列 */
+.tdLabel {
+	width: 140px;
+	height: 37px;
+	color: #666;
+	padding-right: 10px;
+}
+/* 内容输入列 */
+.tdInput {
+	width: 200px;
+	word-break: break-all;
+}
+/* 校验信息列 */
+.tdVad {
+	valign: top;
+}
+
+.formGroup {
+	float: left;
+	margin: 30px 0px 0px 0px;
+	width: 100%;
+}
+
+.formGroup .formLabel{
+	color: #ccc;
+	font-size: 16px;
+	margin-bottom: 38px;
+	float: left;
+	margin-left:61px;
+	margin-top:18px;
+}
+
+.labelLine{
+	background: url(../images/label-line.png) no-repeat top left;
+	width: 580px;
+	height: 8px;
+	float: right;
+	margin-top: 9px;
+	margin-left: 8px;	
+}
+
+.rightDisplayFwSj {
+	margin: 0 0 0 0;
+	width: 100%;
+	overflow: auto;
+	background-color: #ffffff;
+}
+
+.serverEventButton {
+	height: 60px;
+	float: left;
+	margin-top: 27px;
+}
+/* -73*/
+.rightToolButtonjhjFwSj {
+	margin: 7px 0 0 189px;
+	padding: 0;
+	width: 80%;
+}
+
+.rightToolButtonjhjFwSj li {
+	float: left; 
+	margin-left : 36px;
+	text-align: center;
+	width: 82px;
+}
+
+.rightToolButtonjhjFwSj a {
+	display: block;
+	width: 64px;
+	height: 18px;
+	line-height: 16px;
+}
+
+.buttonFwSj {
+	border: none;
+	padding: 8px 20px;
+	color: #fff;
+	background: #00aaf0;
+	cursor: pointer;
+}
+
+.buttonGrey {
+	border: none;
+	padding: 8px 20px;
+	color: #fff;
+	background: #fa5050;
+	cursor: pointer;
+}

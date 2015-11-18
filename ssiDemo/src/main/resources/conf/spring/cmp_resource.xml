@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 初始化left-->
+	<bean id="unifyInitAction" class="com.cloudmaster.cmp.resource.view.web.UnifyInitAction" 
+		 singleton="false">
+	</bean>
+
+	<!-- 设备信息 -->
+	<bean id="deviceDomain" 
+		class="com.cloudmaster.cmp.resource.collectdevice.dao.DeviceDomain" 
+		singleton="false">
+	</bean>
+	<!-- 浏览设备 -->
+	<bean id="deviceListAction"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${device.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${snmpDevice.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	<!-- 删除 -->
+	<bean id="deviceDeleteAction"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceDeleteAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${deviceDel.authID}</value>
+		</property>
+		<property name="deviceDomain">
+			<ref bean="deviceDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${snmpDevice.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${delete}</value>
+        </property>	
+	</bean>
+	<!-- 详细 -->
+	<bean id="deviceDetailAction"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceDetailAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${deviceDetail.authID}</value>
+		</property>
+		<property name="deviceDomain">
+			<ref bean="deviceDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${snmpDevice.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	<!-- 添加初始化 -->
+	<bean id="deviceBeforeAddAction"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceBeforeAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${deviceAdd.authID}</value>
+		</property>
+	</bean>
+	<!-- 添加 -->
+	<bean id="deviceAddAction"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${deviceAdd.authID}</value>
+		</property>
+		<property name="deviceDomain">
+			<ref bean="deviceDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${snmpDevice.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${add}</value>
+        </property>	
+	</bean>
+	<!-- 修改初始化 -->
+	<bean id="deviceBeforeUpdateAction"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceBeforeUpdateAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${deviceEdit.authID}</value>
+		</property>
+	</bean>
+	<!-- 修改 -->
+	<bean id="deviceUpdateAction"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceUpdateAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${deviceEdit.authID}</value>
+		</property>
+		<property name="deviceDomain">
+			<ref bean="deviceDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${snmpDevice.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${edit}</value>
+        </property>	
+	</bean>
+	<!-- 批量导入 -->
+	<bean id="deviceBatchInto"
+		class="com.cloudmaster.cmp.resource.collectdevice.web.DeviceBatchInto"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${deviceAdd.authID}</value>
+		</property>
+		<property name="deviceDomain">
+			<ref bean="deviceDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${snmpDevice.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${add}</value>
+        </property>	
+	</bean>
+
+
+	<!-- Zone部分 start -->
+	<!-- 机房浏览-->
+	<bean id="zoneResourceListAction" class="com.cloudmaster.cmp.resource.zone.view.web.ZoneResourceAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceInstanceBrowse.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.zone.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	<!-- 机房添加-->
+	<bean id="zoneResourceAddAction" class="com.cloudmaster.cmp.resource.zone.view.web.ZoneResourceAddAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceInstanceAdd.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.zone.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+	</bean>
+	<!-- 机房修改-->
+	<bean id="zoneResourceEditAction" class="com.cloudmaster.cmp.resource.zone.view.web.ZoneResourceEditAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceInstanceEdit.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.zone.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+	</bean>
+	<!-- 机房删除-->
+	<bean id="zoneResourceDelAction" class="com.cloudmaster.cmp.resource.zone.view.web.ZoneResourceDelAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceInstanceDel.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.zone.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+	</bean>
+	<!-- Zone部分 end -->
+	
+	<!-- Cluster部分 start -->
+	<!-- 机柜浏览-->
+	<bean id="clusterResourceListAction" class="com.cloudmaster.cmp.resource.cluster.view.web.ClusterResourceAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceClusterBrowse.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.cluster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	<!-- 机柜添加-->
+	<bean id="clusterResourceAddAction" class="com.cloudmaster.cmp.resource.cluster.view.web.ClusterResourceAddAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceClusterAdd.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.cluster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+	</bean>
+	<!-- 机柜修改-->
+	<bean id="clusterResourceEditAction" class="com.cloudmaster.cmp.resource.cluster.view.web.ClusterResourceEditAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceClusterEdit.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.cluster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+	</bean>
+	<!-- 机柜删除-->
+	<bean id="clusterResourceDelAction" class="com.cloudmaster.cmp.resource.cluster.view.web.ClusterResourceDelAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceClusterDel.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.cluster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+	</bean>
+	<!-- 机柜详细-->
+	<bean id="clusterResourceDetailAction" class="com.cloudmaster.cmp.resource.cluster.view.web.ClusterResourceDetailAction"
+		 singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${resourceClusterView.authId}</value>
+		</property>
+		<property name="functionName">
+			<value>${resource.cluster.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	<!-- Cluster部分 end -->
+	
+	<!-- 站点浏览 -->
+	<bean id="siteListAction" class="com.cloudmaster.cmp.resource.site.web.SiteListAction"
+		singleton="false" parent="abstractAction">
+		<property name="functionName" value="${resource.site.functionName}" />
+		<property name="authId" value="${resource.siteBrowse.authId}" />
+		<property name="opType" value="${browse}" />
+	</bean>
+	
+	<!-- 站点添加 -->
+	<bean id="siteAddAction" class="com.cloudmaster.cmp.resource.site.web.SiteAddAction"
+	    singleton="false" parent="abstractAction">
+		<property name="functionName" value="${resource.site.functionName}"/>
+		<property name="authId" value="${resource.siteAdd.authId}"/>
+		<property name="opType" value="${add}"/>    
+	</bean>
+	
+	<!-- 站点修改 -->
+	<bean id="siteEditAction" class="com.cloudmaster.cmp.resource.site.web.SiteEditAction"
+		singleton="false" parent="abstractAction">
+		<property name="functionName" value="${resource.site.functionName}"/>
+		<property name="authId" value="${resource.siteEdit.authId}"/>
+		<property name="opType" value="${edit}"/>
+	</bean>
+	
+	<!-- 站点删除 -->
+	<bean id="siteDeleteAction" class="com.cloudmaster.cmp.resource.site.web.SiteDeteleAction"
+		singleton="false" parent="abstractAction">
+		<property name="functionName" value="${resource.site.functionName}"/>
+		<property name="authId" value="${resource.siteDelete.authId}"/>
+		<property name="opType" value="${delete}"/>
+	</bean>
+	
+	<!-- 站点详情 -->
+	<bean id="siteDetailAction" class="com.cloudmaster.cmp.resource.site.web.SiteDetailAction"
+		singleton="false" parent="abstractAction">
+		<property name="functionName" value="${resource.site.functionName}"/>
+		<property name="authId" value="${resource.siteBrowse.authId}"/>
+		<property name="opType" value="${browse}"/>
+	</bean>
+</beans>

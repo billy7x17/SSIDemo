@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="resourceReport">
+
+	<typeAlias alias="AlarmView"
+		type="com.cloudmaster.cmp.alarm.view.dao.AlarmViewDomain" />
+
+    <resultMap id="resourceUsedMap" class="java.util.HashMap">
+        <result property="type" column="type" />
+        <result property="used" column="used" />
+        <result property="total" column="total"/>
+    </resultMap>
+
+    <!-- 查询资源使用情况 -->
+    <select id="getResourceUsed" parameterClass="String" resultMap="resourceUsedMap">
+        SELECT
+			s.type , SUM(s.used) AS used , SUM(s.total) AS `total`
+		FROM
+		(
+			SELECT
+				av.type , av.available as used , SUM(total.num) as `total`
+			FROM
+			(
+			SELECT
+				t.AGENT_GROUP AS type ,
+				count(c.Leaf_Name) AS num
+			FROM
+				zone_cluster_instance_tab c
+			LEFT JOIN
+				mals_nm_agent_info_t i
+			ON
+				c.Leaf_Name = i.AGENT_IP
+			LEFT JOIN
+				mals_nm_agent_type_t t
+			ON
+				t.AGENT_TYPE = i.TYPE_ID
+			WHERE
+				i.site_id = #siteId#
+			GROUP BY
+				Leaf_Name
+			) total
+			,
+			(
+			SELECT
+			 a.type ,  SUM(a.num) as available
+			FROM
+			(
+			SELECT
+				t.AGENT_GROUP AS type ,
+				c.Leaf_Name as ip,
+				count(c.Leaf_Name) AS num
+			FROM
+				zone_cluster_instance_tab c
+			LEFT JOIN
+				mals_nm_agent_info_t i
+			ON
+				c.Leaf_Name = i.AGENT_IP
+			LEFT JOIN
+				mals_nm_agent_type_t t
+			ON
+				t.AGENT_TYPE = i.TYPE_ID
+			WHERE
+				i.site_id = #siteId#
+			GROUP BY
+				c.Leaf_Name
+			) a
+			LEFT JOIN
+			(
+			SELECT
+				t.rid
+			FROM
+				nmsdb.t_alarm_temp t
+			WHERE
+				t.type = '通断性'
+			AND 
+				t.clearStatus = '1'
+			AND
+				t.eventTime > date_add(now(), INTERVAL - 1 MINUTE)
+			) b
+			ON
+				a.ip = b.rid
+			WHERE
+				b.rid IS NULL
+			GROUP BY
+				a.type
+			) av
+			WHERE
+				total.type = av.type
+			GROUP BY
+				av.type
+		) s
+		GROUP BY
+			s.type
+        
+    </select>
+    
+    <select id="getMaxTime" resultClass="String">
+        SELECT TIMESTAMPADD(MINUTE,-30,now())
+    </select>
+    
+      <select id="getTop10Alarms" parameterClass="AlarmView" resultClass="AlarmView">
+      	
+   		SELECT 
+			alarm.id as alarmID,
+			alarm.nid as alarmIdentify, 
+			alarm.lid as alarmGrade,
+			gradeLevel.NAME as alarmGradeName,
+			level.NAME as originalAlarmGrade,
+			alarm.type as alarmType,
+			alarm.title as alarmTitle,
+			alarm.text as alarmContent,
+			alarm.maxEventTime as alarmTime,
+			alarm.eventTime as eventOccurTime,
+			alarm.rid as alarmIP, 
+			case alarm.confirmStatus when 1 then '未确认' when 2 then '手工确认' when 3 then '自动确认' else '未知' End as confirmStatus,
+			case alarm.clearStatus when 1 then '未清除' when 2 then '已清除' when 3 then '已清除'  else '未知' End as clearStatus,
+			alarm.clearTime as clearTime,
+			clearUser.USER_NAME as clearPerson,
+			alarm.acknowledgementtime as confirmTime,
+			confirmUser.USER_NAME as confirmPerson,
+			alarm.count as count,
+			alarm.deviceType as deviceType,
+			type.agent_group as deviceTypeName,
+			alarm.eventTime as firstAlarmTime,
+			alarm.ConfirmDesc as confirmDesc,
+            alarm.objectID as deviceId,
+            alarm.alarmImpact as alarmImpact,
+            alarm.oid as alarmReportOID,
+            alarm.alarmTitleID as alarmTitleId,
+            alarm.systemName as deviceName
+		from $nmsDB$.t_alarm_temp alarm
+            LEFT JOIN km_user_t clearUser ON alarm.cuid = clearUser.USER_ID
+            LEFT JOIN km_user_t confirmUser ON alarm.auid = confirmUser.USER_ID
+            LEFT JOIN mals_nm_agent_type_t type ON alarm.deviceType = type.TYPE_ID 
+            LEFT JOIN mals_nm_alarm_level_t level ON alarm.Original = level.LEVEL_ID 
+            LEFT JOIN mals_nm_alarm_level_t gradeLevel ON alarm.lid = gradeLevel.LEVEL_ID 
+            LEFT JOIN mals_nm_agent_info_t i ON alarm.rid = i.AGENT_IP
+        WHERE
+        	(alarm.pid is null or alarm.pid = '')
+        AND
+			alarm.clearStatus = 1
+		AND
+			i.site_id = #queryValue#
+		ORDER BY
+			alarm.maxEventTime
+		limit 10
+      
+      </select>
+      
+      <select id="getAgentTypeGroup" resultClass="String">
+      	SELECT
+			DISTINCT t.AGENT_GROUP 
+		FROM
+			`mals_nm_agent_type_t` t;
+      </select>
+      
+      <select id="getCountsByGrade" parameterClass="AlarmView" resultClass="AlarmView">
+      	SELECT 
+			t.lid as alarmGrade , count(t.lid) as count
+		FROM 
+			$nmsDB$.`t_alarm_temp` t
+		LEFT JOIN 
+			mals_nm_agent_info_t i 
+		ON
+			t.rid = i.AGENT_IP	
+		WHERE
+			(t.pid is null or t.pid='')
+		AND
+			i.site_id = #queryValue#
+		AND
+			t.clearStatus = 1
+		GROUP BY 
+			t.lid;
+      </select>
+      
+      <select id="getNVRReport" parameterClass="java.lang.String" resultClass="java.util.HashMap">
+      	SELECT
+			TAGET_VALUE AS cpu,
+			p.AGENT_NAME AS agentName
+		FROM
+			mals_nm_perf_info_t p,
+			mals_nm_mib_t m,
+			mals_nm_mib_group_t g
+		WHERE
+			p.OID = m.OID
+		AND p.agent_ip = #ip#
+		AND m.MIB_GROUP = g.mib_group_id
+		AND g.mib_group_id = '4'
+		GROUP BY
+			INDEX_NUMBER,
+			MIB_NAME
+		ORDER BY
+			p.CREATE_TIME DESC
+		LIMIT 1
+      </select>
+</sqlMap>

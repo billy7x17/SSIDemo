@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="RoleInfo">
+
+	<typeAlias alias="Role"
+		type="com.cloudmaster.cmp.web.authority.role.RoleInfo" />
+	<typeAlias alias="RoleAuth"
+		type="com.cloudmaster.cmp.web.authority.role.RoleAuthInfo" />
+	<typeAlias alias="AuthInfo"
+		type="com.cloudmaster.cmp.web.authority.auth.AuthInfo" />
+
+	<!-- start  -->
+	<select id="getRoleInfoCount" parameterClass="Role" resultClass="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM
+		KM_ROLE_T
+		<dynamic prepend="WHERE">
+		    <isNotEmpty prepend="AND" property="roleId">
+                ROLE_ID like concat('%',#roleId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="roleName">
+                ROLE_NAME like concat('%',#roleName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS=#status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="roleType">
+                role_type=#roleType#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+        </dynamic>
+	</select>
+
+	<select id="getRoleInfos" parameterClass="Role" resultClass="Role">
+		SELECT
+		ROLE_ID AS
+		roleId,ROLE_NAME AS
+		roleName,STATUS,STR_TO_DATE(CREATE_TIME,'%Y-%m-%d') as
+		creatTime,
+		STR_TO_DATE(UPDATE_TIME,'%Y-%m-%d')
+		AS
+		updateTime,DESCRIPTION as description,
+		role_type as roleType
+		FROM KM_ROLE_T
+		<dynamic prepend="WHERE">
+		    <isNotEmpty prepend="AND" property="roleId">
+                ROLE_ID like concat('%',#roleId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="roleName">
+                ROLE_NAME like concat('%',#roleName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="status">
+                STATUS=#status#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="roleType">
+                role_type=#roleType#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+        </dynamic>
+		order by $sortName$ $sortOrder$
+	</select>
+
+	<select id="getAuthInfos" resultClass="AuthInfo">
+		SELECT
+		AUTH_ID AS
+		authId,AUTH_NAME AS
+		authName, DESCRIPTION as description
+		FROM KM_AUTH_T
+		ORDER BY AUTH_ID
+	</select>
+
+	<select id="getSingleRole" resultClass="Role">
+		SELECT ROLE_ID AS
+		roleId,ROLE_NAME AS roleName,STATUS AS
+		status,STR_TO_DATE(CREATE_TIME,'%Y-%m-%d %H:%T:%S') as
+		creatTime,STR_TO_DATE(UPDATE_TIME,'%Y-%m-%d %H:%T:%S') AS
+		updateTime,DESCRIPTION as description,
+		role_type as roleType
+		FROM KM_ROLE_T
+		WHERE
+		ROLE_ID=#roleId#
+	</select>
+
+	<select id="getRoleUserCount" resultClass="int" parameterClass="String">
+		SELECT count(u.USER_ID)
+		FROM KM_USER_ROLE_T u,KM_ROLE_T r
+		WHERE
+		r.ROLE_ID=#roleId# and r.ROLE_ID=u.ROLE_ID 
+	</select>
+
+	<insert id="insertRoleInfo" parameterClass="Role">
+		<!-- 
+		<selectKey resultClass="String" keyProperty="roleId" >  
+           SELECT ROLE_ID_SEQUENCES.NEXTVAL AS ROLE_ID FROM DUAL  
+       </selectKey> 
+        -->
+		INSERT INTO KM_ROLE_T
+		(ROLE_ID,ROLE_NAME,STATUS,CREATE_TIME,UPDATE_TIME,DESCRIPTION,ROLE_TYPE)
+		VALUES
+		(#roleId#,#roleName#,#status#,now(),now(),#description#,#roleType#)
+	</insert>
+
+	<insert id="insertRoleAuth" parameterClass="RoleAuth">
+		INSERT INTO
+		KM_ROLE_AUTH_T
+		(ROLE_ID,AUTH_ID) VALUES (#roleId#,#authId#)
+	</insert>
+
+	<update id="updateRoleInfo" parameterClass="Role">
+		UPDATE KM_ROLE_T
+		SET
+		ROLE_NAME=#roleName#,STATUS=#status#,UPDATE_TIME=now(),DESCRIPTION=#description#,ROLE_TYPE=#roleType#
+		WHERE ROLE_ID=#roleId#
+	</update>
+
+	<update id="changeRoleStatu" parameterClass="Role">
+		UPDATE KM_ROLE_T
+		SET STATUS=#status#
+		WHERE ROLE_ID=#roleId#
+	</update>
+
+	<delete id="deleteRoleAuth" parameterClass="java.lang.String">
+		DELETE FROM
+		KM_ROLE_AUTH_T
+		WHERE ROLE_ID=#roleId#
+	</delete>
+
+	<delete id="deleteRoleInfo" parameterClass="java.lang.String">
+		DELETE FROM KM_ROLE_T
+		WHERE ROLE_ID=#roleId#
+	</delete>
+
+	<select id="getRoleAuths" resultClass="RoleAuth" parameterClass="java.lang.String">
+		SELECT AUTH_ID AS authId,ROLE_ID AS roleId
+		FROM KM_ROLE_AUTH_T
+		WHERE
+		ROLE_ID=#roleId#
+	</select>
+	<!-- end -->
+
+	<select id="getRoleSearchInfos" resultClass="Role">
+		SELECT
+		ROLE_ID AS roleId,ROLE_NAME AS
+		roleName,STATUS,STR_TO_DATE(CREATE_TIME,'%Y-%m-%d %H:%T:%S') as
+		creatTime,
+		STR_TO_DATE(UPDATE_TIME,'%Y-%m-%d %H:%T:%S') AS
+		updateTime,DESCRIPTION,
+		role_type as roleType
+		FROM
+		KM_ROLE_T
+		<dynamic prepend="WHERE">
+			<isNotNull prepend="AND" property="roleId">
+				ROLE_ID like '%$roleId$%'  
+				</isNotNull>
+				<isNotNull prepend="AND" property="roleName">
+				ROLE_NAME like '%$roleName$%' 
+				</isNotNull>
+				<isNotNull prepend="AND" property="status">
+				STATUS=#status#
+				</isNotNull>
+		  </dynamic>
+		ORDER BY ROLE_ID
+	</select>
+	<select id="getRoleAuth" resultClass="AuthInfo">
+		SELECT
+        a.AUTH_ID AS authId, a.AUTH_NAME AS authName 
+        FROM KM_ROLE_AUTH_T r, KM_AUTH_T a
+        WHERE r.ROLE_ID=#roleId# and a.AUTH_ID=r.AUTH_ID
+	</select>
+	
+	<select id="getRoleSearchInfoCount" resultClass="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM KM_ROLE_T
+		<dynamic prepend="WHERE">
+				<isNotNull prepend="AND" property="roleId">
+				ROLE_ID like '%$roleId$%'
+				</isNotNull>
+				<isNotNull prepend="AND" property="roleName">
+				ROLE_NAME like '%$roleName$%' 
+				</isNotNull>
+				<isNotNull prepend="AND" property="status">
+				STATUS=#status#
+				</isNotNull>
+		  </dynamic>
+	</select>
+	<select id="getRoleInfoByName" resultClass="Role">
+		SELECT ROLE_ID AS roleId,
+		       ROLE_NAME AS roleName,
+		       STATUS AS status,
+		       STR_TO_DATE(CREATE_TIME, '%Y-%m-%d %H:%T:%S') as creatTime,
+		       STR_TO_DATE(UPDATE_TIME, '%Y-%m-%d %H:%T:%S') AS updateTime,
+		       DESCRIPTION as description,
+		       role_type as roleType
+		  FROM KM_ROLE_T
+		 WHERE ROLE_NAME = #roleName#
+	</select>
+	<select id="getRoleCount" resultClass="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM KM_ROLE_T
+		WHERE ROLE_ID=#roleId#
+	</select>
+	<!-- 
+	<select id="getRoleUserCount" resultClass="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM IAMP_AUTHORITY_USER_ROLE_T
+		WHERE ROLE_ID=#roleId#
+	</select>
+	 -->
+	<update id="delRole" parameterClass="java.lang.String">
+	    UPDATE KM_ROLE_T
+	    SET STATUS=1,UPDATE_TIME=now()
+	    WHERE ROLE_ID=#roleId#
+	</update>
+	<update id="resumeRole" parameterClass="java.lang.String">
+	    UPDATE KM_ROLE_T
+	    SET STATUS=0,UPDATE_TIME=now()
+	    WHERE ROLE_ID=#roleId#
+	</update>
+	<select id="getUserRoleInfoCount" resultClass="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM KM_USER_ROLE_T
+		WHERE ROLE_ID=#roleId#
+	</select>
+	<select id="getUserRole" resultClass="Role">
+		SELECT r.ROLE_ID AS roleId,r.ROLE_NAME AS roleName,role_type as roleType
+		FROM KM_USER_ROLE_T u,KM_ROLE_T r
+		WHERE USER_ID=#userId# and r.ROLE_ID=u.ROLE_ID
+	</select>
+	<select id="getRoleStatus" resultClass="java.lang.String">
+		SELECT STATUS AS status	FROM KM_ROLE_T
+	    WHERE ROLE_ID=#roleId#
+	</select>
+	<select id="getUsedRoles" resultClass="Role">
+		SELECT
+		ROLE_ID AS roleId,ROLE_NAME AS roleName,role_type as roleType
+		FROM
+		KM_ROLE_T
+		WHERE STATUS=0
+		ORDER BY ROLE_ID
+	</select>
+	<select id="getRoleId" resultClass="java.lang.String">
+		SELECT
+		nextval('role_id')		
+	</select>
+	
+	<select id="getRoleType" parameterClass="java.lang.String" resultClass="java.lang.String">
+		SELECT
+			r.ROLE_TYPE AS roleType
+		FROM
+			km_role_t r
+		WHERE
+			r.ROLE_ID = #roleId#;
+	</select>
+</sqlMap>

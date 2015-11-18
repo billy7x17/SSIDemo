@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- 列表 -->
+	<bean id="alarmTitleListAction"
+		class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmTitleList.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmTitle.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	
+	<!-- 删除 -->
+	<bean id="alarmTitleDeleteAction"
+		class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleDeleteAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmTitleDelete.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmTitle.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${delete}</value>
+        </property>	
+	</bean>
+		
+	<!-- 添加前准备 -->
+	<bean id="alarmTitleBeforeAddAction"
+		class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleBeforeAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="jsonarray">
+			<ref bean="jsonarray" />
+		</property>
+		<property name="jsonobject">
+			<ref bean="jsonobject" />
+		</property>
+		<property name="authId">
+			<value>${alarmTitleAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 添加 -->
+	<bean id="alarmTitleAddAction"
+		class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmTitleAdd.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmTitle.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${add}</value>
+        </property>	
+	</bean>
+
+	<!-- 修改前准备 -->
+	<bean id="alarmTitleBeforeEditAction"
+		class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleBeforeEditAction"
+		singleton="false" >
+		<property name="authId">
+			<value>${alarmTitleEdit.authID}</value>
+		</property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>		
+	</bean>
+	
+	<!-- 修改 -->
+	<bean id="alarmTitleEditAction"
+		class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmTitleEdit.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmTitle.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${edit}</value>
+        </property>	
+	</bean>
+	
+	<!-- 返回 -->
+	<bean id="alarmTitleBackAction"
+		class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleBackAction"
+		singleton="false" >
+	</bean>
+	
+	<!-- 导出 -->
+	<bean id="alarmTitleExportAction" 
+	 	class="com.cloudmaster.cmp.alarm.alarmTitle.web.AlarmTitleExportAction"
+	 	singleton="false" >
+	 	<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmTitleExport.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmTitle.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>
+	 </bean>
+</beans>

@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AutoClearAlarm">
+	<typeAlias alias="AutoClearAlarm" type="com.cloudmaster.cmp.alarm.autoclear.dao.AutoClearAlarmDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	<typeAlias alias="AlarmRule" type="com.cloudmaster.cmp.alarm.regulation.dao.AlarmRegulationDomain" />
+	<typeAlias alias="Alarm" type="com.cloudmaster.cmp.alarm.standardize.dao.AlarmDomain" />
+	
+	<!-- 获取阀值信息 -->
+	<select id="getThreshold" parameterClass="AutoClearAlarm" resultClass="AutoClearAlarm">
+		SELECT  threshold.ID as thresholdId, 
+                mib.MIB_ID as mibId,
+		        mib.oid as alarmOID
+		FROM mals_nm_threshold_valve_t threshold,mals_nm_mib_t mib
+		where threshold.MIB_ID = mib.MIB_ID
+	</select>
+	
+	<!-- 自动清除告警 -->
+	<update id="clearAlarm" parameterClass="AutoClearAlarm">
+		UPDATE alarminfo_tab
+		SET clear_status = '3',
+        Clear_Time = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') 
+		WHERE Alarm_ID in $alarmID$
+	</update>
+	
+	<!-- 亚信告警上报接口，获取告警设备信息 -->
+    <select id="getDeviceInfo" parameterClass="AutoClearAlarm" resultClass="AutoClearAlarm">
+        SELECT 
+            alarm.Alarm_ID as alarmID,
+            REPLACE(resource.Resource_Type,'CIDC-RT-','') as deviceType,
+            resource.LocalTable_ID_Ref as deviceId,
+            alarm.Alarm_Title as alarmTitle,
+            case alarm.Alarm_Grade when 2 then '一般' when 3 then '一般' when 4 then '重大' when 5 then '严重' else '一般' End as alarmGrade,
+            alarm.count as alarmCount,
+            alarm.Alarm_Content as alarmContent,
+            DATE_FORMAT(alarm.first_alarm_time,'%Y-%m-%d %T') as firstAlarmTime,
+            DATE_FORMAT(alarm.Alarm_Time,'%Y-%m-%d %T') as alarmTime
+        FROM alarminfo_tab alarm,zone_cluster_instance_tab resource,
+             service_resource_tab relation,worksheet_tab worksheet
+        where alarm.Alarm_ID in $alarmID$
+            and alarm.Alarm_IP = resource.Leaf_Name
+            and resource.Resource_Type in('CIDC-RT-VM','CIDC-RT-SRV','CIDC-RT-MC','CIDC-RT-BS')
+            and resource.LocalTable_ID_Ref = relation.resource_id
+            and relation.event_id = worksheet.event_id
+            and worksheet.type ='2'
+    </select>
+    
+    <!-- 通断性告警，获取自动清除告警数据 -->
+    <select id="getDisconnectedAlarm" parameterClass="AutoClearAlarm" resultClass="AutoClearAlarm">
+        select Alarm_ID as alarmID 
+        from alarminfo_tab
+        WHERE Alarm_Type = #alarmType#
+              and clear_status = '1'
+              and DATE_SUB(NOW(),INTERVAL #clearIntervalTime# MINUTE) > Alarm_Time 
+    </select>
+    
+    <!-- 业务告警，获取自动清除告警数据 -->
+    <select id="getBusinessAlarm" parameterClass="AutoClearAlarm" resultClass="AutoClearAlarm">
+        select Alarm_ID as alarmID 
+        from alarminfo_tab
+        WHERE device_type = '15'
+              and clear_status = '1'
+              and DATE_SUB(NOW(),INTERVAL #clearIntervalTime# MINUTE) > Alarm_Time 
+    </select>
+    
+    <!-- 按规则清除告警，获取自动清除告警数据 -->
+    <select id="getAlarm" parameterClass="AutoClearAlarm" resultClass="AutoClearAlarm">
+        select Alarm_ID as alarmID,
+               Alarm_Title as alarmTitle,
+               Alarm_IP as alarmIP,
+               Alarm_Content as alarmContent,
+               Alarm_Type as alarmType,
+               Alarm_Grade as alarmGrade,
+               Alarm_Identify as mibId,
+               device_type as deviceType,
+               DATE_FORMAT(Alarm_Time,'%Y%m%d%T') as alarmTime,
+               newAlarm_notify_rule as newAlarmNotifyRule
+        from alarminfo_tab
+        WHERE 1=1
+	        <isNotEmpty prepend="AND" property="clearIntervalTime">
+	            DATE_SUB(NOW(),INTERVAL #clearIntervalTime# MINUTE) > Alarm_Time 
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="clearStatus">
+	            clear_status='1'
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="confirmStatus">
+	            confirm_status='1'
+	            and clear_status='1'
+	        </isNotEmpty>
+	        <isNotEmpty prepend="AND" property="alarmID">
+	           Alarm_ID in $alarmID$
+	        </isNotEmpty>
+    </select>
+    
+    <select id="getRule" parameterClass="AlarmRule" resultClass="AlarmRule">
+        SELECT 
+             ID as ID,                        
+             RULE_NAME as ruleName, 
+             RULE_REGEXP as ruleRegexp,
+              ruleAction.action as ruleAction
+        FROM alarm_rule_tab rule
+        LEFT JOIN (SELECT RULE_ID, CONCAT(
+                            sum(case when RULE_ACTION=1 then 1 else '' END),
+                            sum(case when RULE_ACTION=2 then 2 else '' END),
+                            sum(case when RULE_ACTION=3 then 3 else '' END)) as action
+                    from alarm_rule_action_tab 
+                    GROUP BY RULE_ID) ruleAction ON rule.ID = ruleAction.RULE_ID
+        where IS_DELETED = '0'
+        <isNotEmpty prepend="AND" property="ruleAction">
+            ruleAction.action like  concat('%',#ruleAction#,'%')
+        </isNotEmpty>
+    </select>
+    
+    <!-- 规则处理告警 -->
+    <update id="regulationAlarmProc" parameterClass="AutoClearAlarm">
+        UPDATE alarminfo_tab
+        set
+	        <isNotEmpty property="clearStatus">
+	           clear_status = '3',
+	           Clear_Time = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') 
+	        </isNotEmpty>
+	        <isNotEmpty property="confirmStatus">
+               confirm_status = '3',
+               Confirm_Time = DATE_FORMAT(NOW(),'%Y%m%d%H%i%s') 
+            </isNotEmpty>
+        WHERE Alarm_ID in $alarmID$
+    </update>
+    
+    <!-- 查询规则事件 -->
+    <select id="getRuleAction" parameterClass="AlarmRule" resultClass="AlarmRule">
+        SELECT 
+                RULE_ID as ID,
+                RULE_ACTION as ruleAction,
+                CLEAR_NOTIFY as clearNotify,
+                NOTIFY_TYPE as notifyType,
+                NOTIFY_PERSON as notifyPerson,
+                NOTIFY_PERSON_ID as notifyPersonId,
+                NOTIFY_TITLE as notifyTitle,
+                NOTIFY_CONTENT as notifyContent,
+                NOTIFY_SMS as notifySMS 
+        FROM alarm_rule_action_tab action
+        WHERE RULE_ID = #ID#
+              and RULE_ACTION = #ruleAction#
+    </select>
+    
+    <select id="getRuleNotifyPerson" parameterClass="String" resultClass="AlarmRule">
+      SELECT usr.EMAIL as notifyPersonMail, usr.MOBILE as notifyPersonMobile
+	  from km_user_t usr
+	  WHERE  usr.USER_ID in $userID$
+    </select>
+    
+     <!-- 规则处理告警 -->
+    <update id="updateAlarmRule" parameterClass="Alarm">
+        UPDATE alarminfo_tab
+        set
+           newAlarm_notify_rule = #newAlarmNotifyRule#
+        WHERE Alarm_ID = #alarmID#
+    </update>
+	
+	
+	 <select id="getClearNotifyRule" parameterClass="AlarmRule" resultClass="AlarmRule">
+        SELECT 
+                RULE_ID as ID,
+                RULE_ACTION as ruleAction,
+                CLEAR_NOTIFY as clearNotify,
+                NOTIFY_TYPE as notifyType,
+                NOTIFY_PERSON as notifyPerson,
+                NOTIFY_PERSON_ID as notifyPersonId,
+                NOTIFY_TITLE as notifyTitle,
+                NOTIFY_CONTENT as notifyContent,
+                NOTIFY_SMS as notifySMS 
+        FROM alarm_rule_action_tab action
+        WHERE RULE_ID in $ID$
+              and RULE_ACTION='3'
+              and CLEAR_NOTIFY='1'
+    </select>
+</sqlMap>

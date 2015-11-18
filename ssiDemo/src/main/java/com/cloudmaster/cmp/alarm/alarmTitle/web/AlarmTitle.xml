@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmTitle">
+
+	<typeAlias alias="AlarmTitle" type="com.cloudmaster.cmp.alarm.alarmTitle.dao.AlarmTitleDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+		
+	<!-- 列表 -->
+	<select id="list" parameterClass="AlarmTitle" resultClass="AlarmTitle">
+		SELECT 
+			tc.tc_id as tcId,
+			tc.tc_title as tcTitle,
+			tc.tc_type as tcType,
+			CASE
+				WHEN tc.type = 1 THEN '设备告警'
+				WHEN tc.type = 2 THEN '性能阀值告警'
+				WHEN tc.type = 3 THEN '业务告警'
+				ELSE ''
+			END	type,
+			tc.AlarmIdentityID as alarmIdentityID,
+			DATE_FORMAT(tc.create_time,'%Y-%m-%d %T') as createTime
+		FROM mals_nm_threshold_content_t tc
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="tcId">
+				tc.tc_id like concat('%',#tcId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="tcTitle">
+				tc.tc_title like concat('%',#tcTitle#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="tcType">
+				tc.tc_type like concat('%',#tcType#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="type">
+				tc.type like concat('%',#type#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIdentityID">
+				tc.AlarmIdentityID like concat('%',#alarmIdentityID#,'%')
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="createTime">
+			  (tc.create_time >= #createTime#)
+            </isNotEmpty>           
+            <isNotEmpty prepend="AND" property="qtype">
+				$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+        </dynamic>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<!-- 数量 -->
+	<select id="count" parameterClass="AlarmTitle" resultClass="java.lang.Integer">
+		SELECT COUNT(1)
+		FROM mals_nm_threshold_content_t
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="tcId">
+				tc_id like concat('%',#tcId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="tcTitle">
+				tc_title like concat('%',#tcTitle#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="tcType">
+				tc_type like concat('%',#tcType#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="type">
+				type like concat('%',#type#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIdentityID">
+				AlarmIdentityID like concat('%',#alarmIdentityID#,'%')
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="createTime">
+			    (create_time >= #createTime#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="qtype">
+				$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+        </dynamic>
+	</select>
+	
+	<!-- 详细 -->
+	<select id="detail" parameterClass="AlarmTitle" resultClass="AlarmTitle">
+		SELECT 
+			tc_id as tcId,
+			tc_title as tcTitle,
+			tc_type as tcType,
+			CASE
+				WHEN type = 1 THEN '设备告警'
+				WHEN type = 2 THEN '性能阀值告警'
+				WHEN type = 3 THEN '业务告警'
+				ELSE ''
+			END	type,
+			AlarmIdentityID as alarmIdentityID,
+			DATE_FORMAT(create_time,'%Y-%m-%d %T') as createTime
+				
+		FROM mals_nm_threshold_content_t tc
+		WHERE	tc.tc_id=#tcId#					
+	</select>
+	
+	<!-- 删除 -->
+    <delete id="delete" parameterClass="AlarmTitle">
+		 DELETE FROM mals_nm_threshold_content_t 
+		 WHERE tc_id = #tcId#
+    </delete>
+    
+    <!-- 删除前确认tcId是否被其他表使用 -->
+    <select id="checkDelete" parameterClass="AlarmTitle" resultClass="int">
+    	SELECT COUNT(1)
+    	FROM mals_nm_access_rule_t ar
+    	WHERE 
+    	 	ar.alarm_title=#tcId#
+    </select>
+    
+	<insert id="insert" parameterClass="AlarmTitle">            
+            INSERT INTO mals_nm_threshold_content_t 
+            (
+				tc_id,
+				tc_title,
+				tc_type,
+				type,
+				AlarmIdentityID,
+				create_time
+            )
+            VALUES
+            (    
+				#tcId#,
+				#tcTitle#,
+				#tcType#,
+				#type#,
+				#alarmIdentityID#,
+				DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+            )
+          
+    </insert>
+    
+    <!-- 记录是否存在 -->
+	<select id="existCount" parameterClass="String" resultClass="int">
+		SELECT COUNT(1)
+		FROM mals_nm_threshold_content_t 
+		WHERE tc_id = #tcId#
+	</select>
+	
+     <!-- 修改前查询记录 -->
+	<select id="getInfo" parameterClass="AlarmTitle" resultClass="AlarmTitle">
+		SELECT 
+		   	tc_id as tcId,
+			tc_title as tcTitle,
+			tc_type as tcType,
+			type,
+			AlarmIdentityID as alarmIdentityID
+		
+		FROM mals_nm_threshold_content_t
+		WHERE tc_id = #tcId#
+	</select>
+
+	<!-- 修改-->
+    <update id="edit" parameterClass="AlarmTitle">
+		UPDATE mals_nm_threshold_content_t
+		SET
+            tc_title = #tcTitle#,
+			tc_type = #tcType#,
+			type = #type#,
+			AlarmIdentityID = #alarmIdentityID#,
+			create_time=DATE_FORMAT(NOW(),'%Y%m%d%H%i%s')
+		WHERE tc_id = #tcId#
+    </update>
+	
+	<!-- 导出全部 -->
+	<select id="exportAll" resultClass="AlarmTitle" parameterClass="AlarmTitle">
+		SELECT 
+			tc.tc_id as tcId,
+			tc.tc_title as tcTitle,
+			tc.tc_type as tcType,
+			tc.AlarmIdentityID as alarmIdentityID,
+			DATE_FORMAT(tc.create_time,'%Y-%m-%d %T') as createTime
+					
+		FROM mals_nm_threshold_content_t tc
+        	
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="tcId">
+				tc.tc_id like concat('%',#tcId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="tcTitle">
+				tc.tc_title like concat('%',#tcTitle#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="tcType">
+				tc.tc_type like concat('%',#tcType#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="type">
+				tc.type like concat('%',#type#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIdentityID">
+				tc.AlarmIdentityID like concat('%',#alarmIdentityID#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="qtype">
+				$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>			
+        </dynamic>
+        order by createTime	desc,alarmIdentityID asc	
+	</select>
+	</sqlMap>

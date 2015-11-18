@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="systemparameter">
+
+	<typeAlias alias="systemparameter"
+		type="com.cloudmaster.cmp.system.systemparameter.dao.SystemParameterDomain" />
+	
+	<!-- start  -->
+	<select id="getCount" parameterClass="systemparameter"
+			resultClass="java.lang.Integer">
+			SELECT
+			COUNT(*)
+			FROM
+			system_parameter_tab
+			<dynamic prepend="where">
+					<isNotEmpty prepend="AND" property="organize">			 
+						Organize like '%$organize$%'  
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="paramKey">
+						Para_Key like '%$paramKey$%'
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="paramValue">
+						Para_Value like '%$paramValue$%'
+					</isNotEmpty>
+					
+					<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+					</isNotEmpty>
+			</dynamic>
+	</select>
+	
+	<!-- 条件查询 -->
+	<select id="getLists" parameterClass="systemparameter"
+		resultClass="systemparameter">
+		SELECT
+			  Organize AS organize,
+			  Para_Key AS paramKey,
+			  Para_Value AS paramValue,
+			  DATE_FORMAT(Update_Time, '%Y-%m-%d %H:%i:%s') AS updateTime,
+			  Para_Describe AS description
+		FROM system_parameter_tab
+		<dynamic prepend="where">
+					<isNotEmpty prepend="AND" property="organize">			 
+						Organize  like '%$organize$%'  
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="paramKey">
+						Para_Key like '%$paramKey$%'
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="paramValue">
+						Para_Value like '%$paramValue$%'
+					</isNotEmpty>
+					<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+					</isNotEmpty>
+		</dynamic>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<!--插入一条记录-->
+	<insert id="insert" parameterClass="systemparameter">
+		INSERT system_parameter_tab
+		(Organize,Para_Key,Para_Value,Update_Time,Para_Describe)
+		VALUES
+		(#organize#,#paramKey#,#paramValue#,#updateTime#,#description#)
+	</insert>
+	
+	<!-- 添加查询联合主键是否存在 -->
+	<select id="getOrganize" parameterClass="systemparameter"
+		resultClass="java.lang.Integer">
+		SELECT
+			 count(*)
+		FROM system_parameter_tab
+		WHERE 
+		 Para_Key = #paramKey#
+	</select>
+	<!-- 查询单个信息 -->
+	<select id="getSingle" parameterClass="systemparameter"
+		resultClass="systemparameter">
+		SELECT
+			  Organize AS organize,
+			  Para_Key AS paramKey,
+			  Para_Value AS paramValue,
+			  DATE_FORMAT(Update_Time, '%Y-%m-%d %H:%i:%s') AS updateTime,
+			  Para_Describe AS description
+		FROM system_parameter_tab
+		WHERE 
+		Organize =#organize# 
+		 AND 
+		 Para_Key = #paramKey#
+	</select>
+	
+	<!-- 修改单个信息 -->
+	<update id="update" parameterClass="systemparameter">
+		UPDATE system_parameter_tab
+			SET
+			Para_Value=#paramValue#,
+			Update_Time=#updateTime#,
+			Para_Describe = #description#
+			WHERE Organize =#organize#
+			 AND Para_Key =#paramKey#
+	</update>
+	
+	<update id="updatePartitionTab" parameterClass="systemparameter">
+		UPDATE partition_tab
+		   SET keep_day=#paramValue#
+		 WHERE table_name = 'km_operation_log_t'
+		   AND table_space = 'njdb'
+	</update>
+	
+	<!-- 删除系统参数 -->
+    <delete id="delete" parameterClass="systemparameter">
+        DELETE FROM system_parameter_tab 
+        WHERE Organize =#organize#
+		AND Para_Key =#paramKey#
+    </delete>
+    
+    <!-- 添加查询联合主键是否存在 -->
+	<select id="getOrganizeKey" parameterClass="systemparameter"
+		resultClass="systemparameter">
+		SELECT
+			 Organize AS organize,
+			 Para_Key AS paramKey,
+			 Para_Value AS paramValue
+		FROM system_parameter_tab
+	</select>
+	
+	 <!-- 服务层根据分组 -->
+	<select id="getServiceList" parameterClass="systemparameter"
+		resultClass="systemparameter">
+		SELECT
+			  Organize AS organize,
+			  Para_Key AS paramKey,
+			  Para_Value AS paramValue,
+			  Update_Time AS updateTime,
+			  Para_Describe AS description
+		FROM system_parameter_tab
+		where 
+		Organize =#organize#
+	</select>
+	
+	 <!-- 服务层返回domain -->
+	<select id="getServiceDomain" parameterClass="systemparameter"
+		resultClass="systemparameter">
+		SELECT
+			  Organize AS organize,
+			  Para_Key AS paramKey,
+			  Para_Value AS paramValue,
+			  Update_Time AS updateTime,
+			  Para_Describe AS description
+		FROM system_parameter_tab
+		where Para_Key =#paramKey#
+	</select>
+</sqlMap>

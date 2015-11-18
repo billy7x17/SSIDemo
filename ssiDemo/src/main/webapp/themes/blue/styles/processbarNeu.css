@@ -1,0 +1,40 @@
+@charset "utf-8";
+
+.progressBarNeu{
+	background:url(../images/home/progress_bg.png) repeat-x;
+	border:1px solid #989898;
+	width:100px;
+	height:9px;
+	display:block;
+	margin-top:2px;
+	float: left;
+}
+.progressBarNeu img{
+	margin:0;
+	height:9px;
+	float: left;
+}
+.orange{
+	border-right:1px solid #7E4C00;
+}
+.green{
+	border-right:1px solid #006a00;
+}
+.progressLabelNeu{
+	color:#838383;
+	font-size:11px;
+}
+#warn{
+	height:305px;
+	background:#fff;
+}
+ 
+    
+.progressDivNeu{
+	 margin-left: 1px; 
+	 margin-top: 1px; 
+	 display:true; 
+	 width:170px; 
+	 height:12px; 
+	 float: left;
+}

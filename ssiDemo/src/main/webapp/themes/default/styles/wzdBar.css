@@ -1,0 +1,21 @@
+@charset "utf-8";
+/* CSS Document */
+.wzdBar{ width:100%; height:60px; border-bottom:1px solid #d1d3d5; background:url(../images/wzdBarBg.png) repeat-x left top;}
+.wzdBar span{ display:block; height:60px; float:left; line-height:60px; font-weight:bold; position:relative;}
+.wzcCur{ width:86px; background:url(../images/wzcCurBg.png) no-repeat left top; color:#0e0f0f; padding-left:62px;}
+.wzcCurNo{ width:86px; color:#818384; padding-left:44px;}
+.wzcCurIco, .wzcCurNoIco, .wzcCurSpe{ width:40px; height:40px; position:absolute; right:90px; top:9px; color:#fff; text-align:center; line-height:40px; font-size:16px; font-family:"微软雅黑";}
+.wzcCurIco{ background:url(../images/wzd_step_completed.png) no-repeat left top;}
+.wzcCurNoIco{ background:url(../images/wzd_step_normal.png) no-repeat left top;}
+.wzcCurSpe{ background:url(../images/wzd_step_finish.png) no-repeat left top;}
+
+
+.wzdBarL{ float:left; width:auto; background:url(../images/wzbBarLogo.gif) no-repeat 18px 13px;}
+.wzdBarL div{ margin-left:68px;}
+.wzdBarLTxtB{ margin-top:12px; font-weight:bold; font-size:14px; color:#3a3d40;}
+
+
+.wzdBarR{ float:right; width:auto;}
+.wzdBar .wzdBarR span{ width:82px; height:24px; line-height:24px; line-height:26px\9; text-align:center; background:url(../images/btn_small_normal.png) no-repeat left top; margin-top:19px; margin-right:7px; cursor:pointer;}
+.wzdBar .wzdBarR span.wzdBarfocus{ background:url(../images/btn_small_focus.png) no-repeat left top; color:#fff;}
+

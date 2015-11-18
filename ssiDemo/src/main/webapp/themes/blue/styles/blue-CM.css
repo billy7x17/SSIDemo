@@ -1,0 +1,45 @@
+body{ background-color:#e1e3e6; font:12px/18px 'Microsoft Yahei','Î¢ÈíÑÅºÚ',Arial,Verdana; margin:0; padding:0; }
+img{ border:none;}
+.wapper{ width:100%; height:100%;}
+.header{ background: url(../images/headerBg.jpg) repeat-x; height:107px; width:100%; min-width:1150px;}
+.logo{ float:left;  height:82px; width:300px; margin:0; padding:0;}
+.menu{ float:right; height:70px; list-style:none; margin:8px 0 0 0; padding:0; width:744px; }
+.menu li{ float:right; height:70px; text-align:center; width:93px; }
+.menu a{ display:block; height:23px; padding-top:47px; width:93px;color:#fff; text-decoration:none;}
+.menu a:hover{ text-decoration:none;}
+.firstPage{ background:url(../images/menu1.jpg) no-repeat center top;}
+.firstPage:hover { background:url(../images/menu1Hover.jpg) no-repeat center top;}
+.firstPage-focus { background:url(../images/menu1focus.jpg) no-repeat center top;}
+.resource{ background:url(../images/menu2.jpg) no-repeat center top;}
+.resource:hover { background:url(../images/menu2Hover.jpg) no-repeat center top;}
+.resource-focus { background:url(../images/menu2focus.jpg) no-repeat center top;}
+.serviceTemplate{ background:url(../images/menu3.jpg) no-repeat center top;}
+.serviceTemplate:hover { background:url(../images/menu3Hover.jpg) no-repeat center top;}
+.serviceTemplate-focus { background:url(../images/menu3focus.jpg) no-repeat center top;}
+.serviceManager{ background:url(../images/menu4.jpg) no-repeat center top;}
+.serviceManager:hover { background:url(../images/menu4Hover.jpg) no-repeat center top;}
+.serviceManager-focus { background:url(../images/menu4focus.jpg) no-repeat center top;}
+.performance{ background:url(../images/menu5.jpg) no-repeat center top;}
+.performance:hover { background:url(../images/menu5Hover.jpg) no-repeat center top;}
+.performance-focus { background:url(../images/menu5focus.jpg) no-repeat center top;}
+.alarm{ background:url(../images/menu6.jpg) no-repeat center top;}
+.alarm:hover { background:url(../images/menu6Hover.jpg) no-repeat center top;}
+.alarm-focus { background:url(../images/menu6focus.jpg) no-repeat center top;}
+.role{ background:url(../images/menu7.jpg) no-repeat center top;}
+.role:hover { background:url(../images/menu7Hover.jpg) no-repeat center top;}
+.role-focus { background:url(../images/menu7focus.jpg) no-repeat center top;}
+.ITIL{ background:url(../images/menu8.jpg) no-repeat center top;}
+.ITIL:hover { background:url(../images/menu8Hover.jpg) no-repeat center top;}
+.ITIL-focus { background:url(../images/menu8focus.jpg) no-repeat center top;}
+.report{ background:url(../images/menu9.jpg) no-repeat center top;}
+.report:hover { background:url(../images/menu9Hover.jpg) no-repeat center top;}
+.report-focus { background:url(../images/menu9focus.jpg) no-repeat center top;}
+.info-bar{ background:url(../images/userBg.jpg) repeat-x; height:25px; line-height:25px; width:100%; clear:both;}
+.user{ width:224px; height:25px; border-right:1px solid #A2A2A2; float:left;}
+.user img{ margin:0 10px 0 20px; float:left;}
+.user strong {color:#4d4d4d;}
+.user a {margin-left:0px; color:#0078c8; font-weight:bold; text-decoration:none;}
+.mainImg{ margin:3px 0 0 8px;; padding:0; width:100%}
+#tab_menu {	padding: 0px;overflow: hidden;}
+#page {width: 100%; min-width:1140px;}
+.footer{ color:#fff; background:url(../images/footerBg.jpg) repeat-x; height:22px; margin:3px 0 0 0; padding-top:8px; text-align:center; width:100%; min-width:1140px;}

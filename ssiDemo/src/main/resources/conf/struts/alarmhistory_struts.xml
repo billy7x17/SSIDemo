@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="alarmhistory" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- 列表 -->
+		<action name="alarmHistoryList" class="alarmHistoryListAction"
+			method="list">
+		</action>
+		<action name="alarmHistoryListBase" class="alarmHistoryListAction"
+			method="beforeSearch">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/history/list.jsp</result>
+		</action>
+
+		<!-- 详细-->
+		<action name="alarmHistoryDetail" class="alarmHistoryDetailAction"
+			method="detail">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/history/detail.jsp</result>
+		</action>
+		
+		<!-- 数据导出 -->
+		<action name="historyAlarmDownLoad" class="alarmHistoryListAction" method="export">
+            <result type="stream" name="returnStream">
+                <!-- 下载文件的类型,假如下载的是其他的，但你又不知道是什么格式，可以去 tomcat\conf\web.xml下找 -->
+                <param name="contentType">
+                    application/vnd.ms-excel
+                </param>
+                <!--  返回流 excelStream为action中的流变量名称 -->
+                <param name="inputName">excelStream</param>
+                <!-- attachment 这个位置的参数挺特殊的，可以设置成下载时，是否出现个下载提示框，或者直接下载之类的，怎么设置忘了，那个小本子找不到了
+                    fileName指定生成的文件名字(这种方式合适动态生成文件名，比如做报表时，一般都要说是几月的统计数据之类)为action中变量  -->
+                <param name="contentDisposition">
+                    attachment;filename=${excelFileName}
+                </param>
+                <param name="bufferSize">1024</param>
+            </result>
+            <result name="ERROR" type="redirectAction">
+                <param name="actionName">alarmHistoryListBase</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>
+        </action>
+        
+	</package>
+</struts>

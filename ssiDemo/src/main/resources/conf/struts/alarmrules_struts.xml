@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<!-- 告警配置浏览 -->
+	<package name="alarmrules" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+
+		
+		<!-- 告警配置管理 -->
+		
+		<!-- 告警配置浏览 -->
+		<action name="alarmrulesList" class="alarmRulesListAction"
+			method="base">
+			<result name="base">/WEB-INF/pages/system/alarmrules/list.jsp</result>
+		</action>
+		
+		<!-- 告警配置浏览 -->
+		<action name="alarmrulesBaseList" class="alarmRulesListAction"
+			method="list">
+			<result name="SUCCESS">/WEB-INF/pages/system/alarmrules/list.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/system/alarmrules/list.jsp</result>
+		</action>
+		
+		<!-- 告警配置添加前准备 -->
+		<action name="alarmrulesBeforeAdd" class="AlarmRulesBeforeAddAction"
+			method="beforeAdd">
+			<result name="SUCCESS">/WEB-INF/pages/system/alarmrules/add.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/system/alarmrules/list.jsp</result>			
+		</action>
+		
+		<!-- 告警配置添加 -->
+		<action name="alarmrulesAdd" class="AlarmRulesAddAction"
+			method="add">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmrulesList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/system/alarmrules/add.jsp</result>			
+		</action>
+		
+		<!-- 告警配置修改前准备 -->
+		<action name="alarmrulesBeforeEdit" class="alarmrulesBeforeEditAction"
+			method="beforeEdit">
+			<result name="SUCCESS">/WEB-INF/pages/system/alarmrules/edit.jsp</result>
+			<result name="INPUT" type="redirectAction">
+				<param name="actionName">alarmrulesList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>	
+		</action>
+		
+		<!-- 告警配置修改 -->
+		<action name="alarmrulesEdit" class="alarmrulesEditAction"
+			method="edit">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmrulesList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/system/alarmrules/edit.jsp</result>		
+		</action>
+		
+		<!-- 告警配置删除 -->
+		<action name="alarmrulesDelete" class="alarmrulesDeleteAction"
+			method="delete">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmrulesList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">alarmrulesList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>	
+		</action>
+		
+		<!-- 告警配置详细 -->
+		<action name="alarmrulesDetail" class="alarmrulesDetailAction"
+			method="detail">
+			<result name="SUCCESS">/WEB-INF/pages/system/alarmrules/detail.jsp</result>
+		</action>
+		
+		<!-- ajax获取设备类型对应的告警标题-->
+		<action name="getDeviceTitle" class="AlarmRulesBeforeAddAction" method="getDeviceTitle">
+        </action>
+        
+	</package>
+</struts>

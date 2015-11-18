@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- 列表 -->
+	<bean id="alarmFilterListAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmFilterList.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmfilter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	
+	<!-- 添加前准备 -->
+	<bean id="alarmFilterBeforeAddAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterBeforeAddAction"
+		singleton="false" >
+		<property name="authId">
+			<value>${alarmFilterAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 添加 -->
+	<bean id="alarmFilterAddAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmFilterAdd.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmfilter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${add}</value>
+        </property>	
+	</bean>
+	
+	<!-- 修改前准备 -->
+	<bean id="alarmFilterBeforeEditAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterBeforeEditAction"
+		singleton="false" >
+		<property name="authId">
+			<value>${alarmFilterEdit.authID}</value>
+		</property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	
+	<!-- 修改 -->
+	<bean id="alarmFilterEditAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmFilterEdit.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmfilter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${edit}</value>
+        </property>	
+	</bean>
+	
+	<!-- 删除 -->
+	<bean id="alarmFilterDeleteAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterDeleteAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmFilterDelete.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmfilter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${delete}</value>
+        </property>	
+	</bean>
+	
+	
+	<!-- 详细 -->
+	<bean id="alarmFilterDetailAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterDetailAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmFilterDetail.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmfilter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	
+	<!-- 查询前准备 -->
+	<bean id="alarmFilterBeforeSearchAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterBeforeSearchAction"
+		singleton="false" >
+		<property name="authId">
+			<value>${alarmFilterSearch.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 查询 -->
+	<bean id="alarmFilterSearchAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterSearchAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmFilterSearch.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmfilter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	
+	<!-- 返回 -->
+	<bean id="alarmFilterBackAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.FilterBackAction"
+		singleton="false" >
+	</bean>
+	
+	<!-- 选择告警源标识 -->
+	<bean id="alarmOIDSelectAction"
+		class="com.cloudmaster.cmp.alarm.filter.web.AlarmOIDListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	
+</beans>

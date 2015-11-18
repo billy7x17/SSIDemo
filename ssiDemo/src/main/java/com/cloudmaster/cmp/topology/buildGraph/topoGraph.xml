@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="TopoGraph">
+
+	<typeAlias alias="deviceDomain"
+		type="com.cloudmaster.cmp.resource.collectdevice.dao.DeviceDomain" />
+
+	<typeAlias alias="alarmDomain"
+		type="com.cloudmaster.cmp.topology.domain.TopoAlarmDomain" />
+
+	<typeAlias alias="AlarmView"
+		type="com.cloudmaster.cmp.alarm.view.dao.AlarmViewDomain" />
+		
+	<resultMap class="deviceDomain" id="deviceResultMap">
+		<result column="AGENT_ID" property="agentId" />
+		<result column="AGENT_NAME" property="agentName" />
+		<result column="TYPE_ID" property="typeId" />
+		<result column="Vms_id" property="vmsId" />
+		<result column="Nvr_id" property="nvrId" />
+		<result column="AGENT_GROUP" property="agentGroup"/>
+	</resultMap>
+
+	<resultMap class="alarmDomain" id="alarmResultMap">
+		<result column="AGENT_ID" property="agentId" />
+		<result column="Nvr_id" property="nvrId" />
+		<result column="Vms_id" property="vmsId" />
+		<result column="lid" property="alarmGrade" />
+		<result column="count" property="count" />
+		<result column="AGENT_GROUP" property="agentGroup"/>
+	</resultMap>
+	
+	<select id="getDeviceGraph" parameterClass="java.lang.Integer"
+		resultMap="deviceResultMap">
+		SELECT
+			i.AGENT_ID , i.AGENT_NAME , i.TYPE_ID , i.site_id , i.Vms_id , i.Nvr_id , t.AGENT_GROUP
+		FROM
+			`mals_nm_agent_info_t` i , mals_nm_agent_type_t t
+		WHERE
+			i.TYPE_ID = t.AGENT_TYPE
+		AND
+			i.site_id = #siteId#;
+	</select>
+
+	<select id="getAlarmGraph" parameterClass="java.util.Map"
+		resultMap="alarmResultMap">
+		SELECT
+			i.AGENT_ID,
+			i.Nvr_id,
+			i.Vms_id,
+			alarm.lid,
+			alarm.count,
+			t.AGENT_GROUP
+		from 
+			$nmsDB$.t_alarm_temp alarm
+		LEFT JOIN
+			mals_nm_agent_info_t i
+		ON
+			i.AGENT_IP = alarm.rid
+		LEFT JOIN
+			mals_nm_agent_type_t t
+		ON
+			i.TYPE_ID = t.TYPE_ID
+		where
+			(alarm.pid is null or alarm.pid='')
+		AND
+			(alarm.clearStatus = '1' or alarm.clearStatus is null)
+		<isNotEmpty prepend="AND" property="siteId">
+			i.site_id = #siteId#
+		</isNotEmpty>
+		ORDER BY 
+			alarm.lid desc
+	</select>
+	
+	<select id="getAlarmDetail" parameterClass="java.util.Map"
+		resultClass="AlarmView">
+		SELECT 
+			alarm.id as alarmID,
+			alarm.nid as alarmIdentify, 
+			alarm.lid as alarmGrade,
+			gradeLevel.NAME as alarmGradeName,
+			level.NAME as originalAlarmGrade,
+			alarm.type as alarmType,
+			alarm.title as alarmTitle,
+			IF(alarm.type='通断性','离线',alarm.text) as alarmContent,
+			alarm.maxEventTime as alarmTime,
+			alarm.eventTime as eventOccurTime,
+			alarm.rid as alarmIP, 
+			case alarm.confirmStatus when 1 then '未确认' when 2 then '手工确认' when 3 then '自动确认' else '未知' End as confirmStatus,
+			case alarm.clearStatus when 1 then '未清除' when 2 then '已清除' when 3 then '已清除'  else '未知' End as clearStatus,
+			alarm.clearTime as clearTime,
+			clearUser.USER_NAME as clearPerson,
+			alarm.acknowledgementtime as confirmTime,
+			confirmUser.USER_NAME as confirmPerson,
+			alarm.count as count,
+			alarm.deviceType as deviceType,
+			type.agent_group as deviceTypeName,
+			alarm.eventTime as firstAlarmTime,
+			alarm.ConfirmDesc as confirmDesc,
+            alarm.objectID as deviceId,
+            alarm.alarmImpact as alarmImpact,
+            alarm.oid as alarmReportOID,
+            alarm.alarmTitleID as alarmTitleId,
+            alarm.systemName as deviceName,
+            i.AGENT_NAME as agentName
+		from $nmsDB$.t_alarm_temp alarm
+            LEFT JOIN km_user_t clearUser ON alarm.cuid = clearUser.USER_ID
+            LEFT JOIN km_user_t confirmUser ON alarm.auid = confirmUser.USER_ID
+            LEFT JOIN mals_nm_agent_type_t type ON alarm.deviceType = type.TYPE_ID 
+            LEFT JOIN mals_nm_alarm_level_t level ON alarm.Original = level.LEVEL_ID 
+            LEFT JOIN mals_nm_alarm_level_t gradeLevel ON alarm.lid = gradeLevel.LEVEL_ID 
+			LEFT JOIN mals_nm_agent_info_t i ON alarm.rid = i.AGENT_IP
+		where i.AGENT_ID = #agentId#
+		limit 1	
+		
+	</select>
+	
+	<select id="getAlarmDetailCount" parameterClass="java.util.Map"
+		resultClass="java.lang.Integer">
+		SELECT 
+			count(*)
+		from $nmsDB$.t_alarm_temp alarm
+            LEFT JOIN km_user_t clearUser ON alarm.cuid = clearUser.USER_ID
+            LEFT JOIN km_user_t confirmUser ON alarm.auid = confirmUser.USER_ID
+            LEFT JOIN mals_nm_agent_type_t type ON alarm.deviceType = type.TYPE_ID 
+            LEFT JOIN mals_nm_alarm_level_t level ON alarm.Original = level.LEVEL_ID 
+            LEFT JOIN mals_nm_alarm_level_t gradeLevel ON alarm.lid = gradeLevel.LEVEL_ID 
+			LEFT JOIN mals_nm_agent_info_t i ON alarm.rid = i.AGENT_IP
+		where i.AGENT_ID = #agentId#
+		and
+			(alarm.pid is null or alarm.pid='')
+		AND
+			(alarm.clearStatus = '1' or alarm.clearStatus is null)
+		limit 1	
+	</select>
+	
+	<update id="updateDetailByAjax" parameterClass="deviceDomain">
+		UPDATE
+		mals_nm_agent_info_t SET
+		DEVICE_TYPE = #deviceType#,
+		AGENT_COMP=#agentComp#,
+		AGENT_DESC=#agentDesc#,
+		diskNum = #diskNum#
+		WHERE AGENT_ID=#agentId#
+	</update>
+	
+	<select id="getSiteLatestAlarmGrade" parameterClass="java.util.Map"
+		 resultClass="java.util.HashMap">
+		SELECT
+			alarm.lid as alarmGrade , i.site_id as siteId
+		FROM
+			$nmsDB$.t_alarm_temp alarm
+		LEFT JOIN mals_nm_agent_info_t i ON alarm.rid = i.AGENT_IP
+		LEFT JOIN (
+			SELECT
+				i.site_id,
+				min(alarm.lid) AS `max`
+			FROM
+				nmsdb.t_alarm_temp alarm
+			LEFT JOIN mals_nm_agent_info_t i ON alarm.rid = i.AGENT_IP
+			WHERE
+				(alarm.pid IS NULL OR alarm.pid = '')
+			AND (alarm.clearStatus = '1' OR alarm.clearStatus IS NULL)
+			AND (i.AGENT_ID != '' AND i.AGENT_ID IS NOT NULL)
+			AND alarm.lid != '5'
+			<isNotEmpty prepend="AND" property="siteId">
+				i.site_id = #siteId#
+			</isNotEmpty>
+			GROUP BY
+				i.site_id
+		) `all` ON i.site_id = `all`.site_id
+		WHERE
+			alarm.lid = `all`.max
+		<isNotEmpty prepend="AND" property="siteId">
+			i.site_id = #siteId#
+		</isNotEmpty>
+		GROUP BY
+			i.site_id
+		ORDER BY
+			i.site_id
+	</select>
+</sqlMap>

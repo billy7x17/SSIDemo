@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<!-- 系统参数浏览 -->
+	<bean id="SystemParameterListAction" class="com.cloudmaster.cmp.system.systemparmeter.web.SystemParameterListAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${systemParameterList.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${systemparameter.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 系统参数添加前准备 -->
+	<bean id="SystemParameterBeforeAddAction" class="com.cloudmaster.cmp.system.systemparmeter.web.SystemParameterBeforeAddAction"
+		singleton="false">	
+		<property name="authId">
+			<value>${systemParameterAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 系统参数添加 -->
+	<bean id="SystemParameterAddAction" class="com.cloudmaster.cmp.system.systemparmeter.web.SystemParameterAddAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${systemParameterAdd.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${systemparameter.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+	</bean>
+	
+	<!-- 系统参数添加前准备 -->
+	<bean id="SystemParamBeforeEditAction" class="com.cloudmaster.cmp.system.systemparmeter.web.SystemParamBeforeEditAction"
+		singleton="false">	
+		<property name="authId">
+			<value>${systemParameterEdit.authID}</value>
+		</property>
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	
+	<!-- 系统参数修改 -->
+	<bean id="SystemParamterEditAction" class="com.cloudmaster.cmp.system.systemparmeter.web.SystemParamterEditAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${systemParameterEdit.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${systemparameter.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+	</bean>
+	
+	<!-- 系统参数删除 -->
+	<bean id="SystemParameterDeleteAction" class="com.cloudmaster.cmp.system.systemparmeter.web.SystemParameterDeleteAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${systemParameterDelete.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${systemparameter.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+	</bean>
+	
+	<!-- 系统参数删除 -->
+	<bean id="SystemParameterSearchAction" class="com.cloudmaster.cmp.system.systemparmeter.web.SystemParameterSearchAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${systemParameterSearch.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${systemparameter.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 系统参数管理服务 -->
+	<bean id="SystemParameterService" class="com.cloudmaster.cmp.system.systemparmeter.service.SystemParameterService"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+</beans>

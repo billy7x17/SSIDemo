@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="cronExpressionManager">
+	<typeAlias alias="CronExpressionDomain"
+		type="com.cloudmaster.cmp.ITIL.cronexpression.dao.CronExpressionManagerDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	<typeAlias alias="map" type="java.util.Map" />
+
+	<!-- 列表 -->
+	<select id="list" parameterClass="CronExpressionDomain"
+		resultClass="CronExpressionDomain">
+		SELECT T.TASK_ID as taskID,
+			T.TASK_NAME as taskName,
+			T.EXCUTE_TIME as
+			cronExpression,
+			DATE_FORMAT(T.ADD_TIME,'%Y-%m-%d %T') AS addTime,
+            DATE_FORMAT(T.UPDATE_TIME,'%Y-%m-%d %T') AS updateTime,
+			T.TASK_TYPE as taskType,
+			T.TASK_PARA as taskParam,
+			T.TASK_STATUS as taskStatus,
+			T.SS_ID as ssID
+		FROM COM_CRONEXPRESSION_MANAGER_TAB T
+		<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="taskID">
+			TASK_ID = #taskID#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskName">
+			TASK_NAME LIKE concat('%',#taskName#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskType">
+			TASK_TYPE = #taskType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskStatus">
+			TASK_STATUS = #taskStatus#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="startTime">
+        <![CDATA[
+            ADD_TIME >= #startTime#
+        ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="endTime">
+        <![CDATA[
+            ADD_TIME <= #endTime#
+        ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="qtype">
+			$qtype$ like concat('%',#query#,'%')
+		</isNotEmpty>
+		</dynamic>
+		ORDER BY $sortName$ $sortOrder$
+		limit $offset$,$rows$
+	</select>
+
+	<!-- 列表数 -->
+	<select id="getCount" parameterClass="CronExpressionDomain"
+		resultClass="int">
+        SELECT COUNT(1) FROM COM_CRONEXPRESSION_MANAGER_TAB
+        <dynamic prepend="WHERE">
+        <isNotEmpty prepend="AND" property="taskID">
+			TASK_ID = #taskID#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskName">
+			TASK_NAME LIKE concat('%',#taskName#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskType">
+			TASK_TYPE = #taskType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskStatus">
+			TASK_STATUS = #taskStatus#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="startTime">
+        <![CDATA[
+            ADD_TIME >= #startTime#
+        ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="endTime">
+        <![CDATA[
+            ADD_TIME <= #endTime#
+        ]]>
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="qtype">
+			$qtype$ like concat('%',#query#,'%')
+		</isNotEmpty>
+		</dynamic>
+	</select>
+	<!-- 保存 -->
+	<insert id="insert" parameterClass="CronExpressionDomain">
+        <![CDATA[
+            INSERT  INTO COM_CRONEXPRESSION_MANAGER_TAB
+                (TASK_ID,
+                 TASK_NAME,
+                 EXCUTE_TIME,
+                 ADD_TIME,
+                 TASK_TYPE,
+                 TASK_PARA,
+                 TASK_STATUS,
+                 SS_ID
+                 )
+            values(
+                #taskID#,
+                #taskName#,
+                #cronExpression#,
+                DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),
+                #taskType#,
+                #taskParam#,
+                #taskStatus#,
+                #ssID#
+            )
+        ]]>
+	</insert>
+	<!-- 修改 -->
+	<update id="update" parameterClass="CronExpressionDomain">
+    <![CDATA[
+        UPDATE COM_CRONEXPRESSION_MANAGER_TAB
+        SET TASK_NAME=#taskName#,
+        	EXCUTE_TIME=#cronExpression#,
+        	TASK_PARA=#taskParam#,
+            UPDATE_TIME=DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'),
+            TASK_STATUS=#taskStatus#
+        WHERE TASK_ID=#taskID#
+    ]]>
+	</update>
+	<!-- 删除 -->
+	<delete id="delete" parameterClass="CronExpressionDomain">
+        DELETE FROM COM_CRONEXPRESSION_MANAGER_TAB WHERE TASK_ID=#taskID#
+	</delete>
+
+	<!-- 详细 -->
+	<select id="detail" parameterClass="CronExpressionDomain"
+		resultClass="CronExpressionDomain">
+        <![CDATA[
+            SELECT T.TASK_ID as taskID,
+               T.TASK_NAME as taskName,
+               T.EXCUTE_TIME as cronExpression,
+               DATE_FORMAT(T.ADD_TIME,'%Y-%m-%d %T') AS addTime,
+               DATE_FORMAT(T.UPDATE_TIME,'%Y-%m-%d %T') AS updateTime,
+               T.TASK_TYPE as taskType,
+               T.TASK_PARA as taskParam,
+               T.TASK_STATUS as taskStatus,
+               T.SS_ID as ssID
+          FROM COM_CRONEXPRESSION_MANAGER_TAB T
+            WHERE  TASK_ID=#taskID#
+        ]]>
+	</select>
+
+	<select id="getTaskId" resultClass="String">
+		select nextval('COM_CRONEXPRESSION_MANAGER_TAB.SEQ')
+	</select>
+
+	<!-- 周期任务查询服务 -->
+	<select id="getListForService" parameterClass="CronExpressionDomain"
+		resultClass="CronExpressionDomain">
+		SELECT T.TASK_ID as taskID,
+			T.TASK_NAME as taskName,
+			T.EXCUTE_TIME as cronExpression,
+			T.ADD_TIME as addTime,
+			T.UPDATE_TIME as updateTime,
+			T.TASK_TYPE as taskType,
+			T.TASK_PARA as taskParam,
+			T.TASK_STATUS as taskStatus
+		FROM COM_CRONEXPRESSION_MANAGER_TAB T
+		<dynamic prepend="WHERE">
+		<isNotEmpty prepend="AND" property="taskID">
+			(TASK_ID = #taskID# )
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskName">
+			(TASK_NAME = #$taskName# )
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="taskType">
+			(TASK_TYPE =#taskType#)
+		</isNotEmpty>
+		</dynamic>
+	</select>
+
+	<!-- 执行历史查询 -->
+	<select id="taskLogsById" parameterClass="CronExpressionDomain"
+		resultClass="CronExpressionDomain">
+		SELECT CM.TASK_ID as taskID,
+			CM.TASK_NAME as taskName,
+			DATE_FORMAT(CL.EXECUTE_TIME,'%Y-%m-%d %T') as executeTime,
+			CL.EXECUTE_RESULT as executeResult,
+			CL.EXECUTE_LOG as executeLog
+		FROM COM_CRON_LOG_TAB CL, COM_CRONEXPRESSION_MANAGER_TAB CM
+		WHERE CM.TASK_ID = #taskID#
+		  AND CM.TASK_ID = CL.TASK_ID
+		ORDER BY $sortName$ $sortOrder$
+		limit $offset$,$rows$
+	</select>
+
+	<select id="getCountTaskLog" parameterClass="CronExpressionDomain"
+		resultClass="int">
+        <![CDATA[
+            SELECT COUNT(1)
+            FROM COM_CRON_LOG_TAB
+            WHERE TASK_ID = #taskID#
+        ]]>
+	</select>
+
+	<insert id="insertTaskLog" parameterClass="map">
+        <![CDATA[
+            INSERT INTO COM_CRON_LOG_TAB (TASK_ID, EXECUTE_TIME, EXECUTE_RESULT, EXECUTE_LOG)
+            VALUES (#TASK_ID#, DATE_FORMAT(NOW(),'%Y%m%d%H%i%s'), #EXECUTE_RESULT#, #EXECUTE_LOG#)
+        ]]>
+	</insert>
+
+	<!-- 工程启动时查询任务信息 -->
+	<select id="getTaskListForLoader" resultClass="HashMap">
+		SELECT TASK_ID,
+			TASK_NAME,
+			EXCUTE_TIME,
+			ADD_TIME,
+			UPDATE_TIME,
+			TASK_TYPE,
+			TASK_PARA,
+			TASK_STATUS,
+			SS_ID
+		FROM COM_CRONEXPRESSION_MANAGER_TAB
+		WHERE SS_ID = '' OR SS_ID IS NULL
+	</select>
+
+</sqlMap>

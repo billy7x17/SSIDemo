@@ -1,0 +1,11 @@
+@charset "utf-8";
+/* CSS Document */
+
+
+/*layoutTLR*/
+.wrapper{ min-width:1001px; margin:0 auto; width:100%;}
+.header, .footer, .main{ width:100%;}
+.left_side{ float:left; width:228px; background:#fff;}
+#mainTest{background:#D8D8D8;}
+.workarea{ float:left; min-width:800px; width:0px; display:inline;}
+.footer{ clear:both; height:25px;}

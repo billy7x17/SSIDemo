@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="userInfo">
+	<typeAlias alias="user" type="com.cloudmaster.cmp.web.authority.user.UserInfo" />
+	<!--<typeAlias alias="knowledge"
+		type="com.cloudmaster.cmp.core.kmApiImpl.domain.knowledge.CommonKnowledge" />-->
+
+	<select id="getSingleUser" resultClass="user">
+		SELECT 
+			u.USER_ID AS userId,
+			u.USER_NAME AS userName,
+			u.PASSWORD AS password,
+			u.STATUS AS status,
+			u.SEX AS sex,
+			u.MOBILE AS mobile,
+			u.EMAIL AS email,
+			u.PERSONNEL_ID AS personnelId,
+			DATE_FORMAT(u.CREATE_TIME, '%Y-%m-%d %H:%T:%S') AS creatTime,
+			DATE_FORMAT(u.UPDATE_TIME, '%Y-%m-%d %H:%T:%S') AS updateTime,
+			u.DESCRIPTION AS description,
+			u.SITE_ID as siteId,
+			r.ROLE_TYPE as roleType
+	    FROM 
+		    KM_USER_T u,km_user_role_t t,km_role_t r
+	    where 
+			u.USER_ID = t.USER_ID
+		and
+			t.ROLE_ID = r.ROLE_ID
+		and
+	    	u.USER_ID = binary #userId#
+	</select>
+	
+	<select id="getSingleUserByMobile" resultClass="user">
+	SELECT  u.USER_ID		AS userId,
+			u.USER_NAME     AS userName,
+			u.PASSWORD      AS password,
+			u.SEX           AS sex,
+			u.MOBILE        AS mobile,
+			u.EMAIL         AS email,
+			u.STATUS        AS status,
+			STR_TO_DATE(u.CREATE_TIME, '%Y-%m-%d %H:%T:%S') AS creatTime,
+	       	STR_TO_DATE(u.UPDATE_TIME, '%Y-%m-%d %H:%T:%S') AS updateTime,
+			u.PERSONNEL_ID	AS personnelId,
+			u.DESCRIPTION   AS description,
+			u.SITE_ID       AS siteId
+	  FROM KM_USER_T u
+	 WHERE MOBILE = #mobile#
+	</select>
+	
+	<select id="getUserAuth" parameterClass="java.lang.String" resultClass="java.lang.String">
+	SELECT DISTINCT ra.AUTH_ID AS authId, r.*
+	  FROM KM_USER_ROLE_T u, KM_ROLE_AUTH_T ra, KM_ROLE_T r
+	 WHERE u.USER_ID = #userId#
+	   AND ra.ROLE_ID = u.ROLE_ID
+	   AND ra.ROLE_ID = r.ROLE_ID
+	   AND r.STATUS = '0'
+	</select>
+	<select id="getUserPositionInfo" parameterClass="java.lang.String" resultClass="java.lang.String">
+	select p.position_name
+  from km_user_position_t up, km_position_t p
+ where up.position_id = p.position_id
+   and up.user_id =#userId#
+	</select>
+	<!-- 查询用户下一级虚拟岗位名称 -->
+<select id="getVirtualLevel" parameterClass="String" resultClass="String">
+select ut.title_name
+  from km_user_title_t ut,
+       (select max(title_id)+1 title_id
+          from km_user_title_change_t
+         where user_id = #userId#) uc
+ where ut.title_id = uc.title_id
+</select>
+<select id="getTitlesJustFornAME" resultClass="String">
+		SELECT 
+			  title_name
+		  FROM KM_USER_TITLE_T
+		  where TITLE_ID=2
+		  ORDER BY TITLE_INDEX ASC
+	</select>
+<!--	<select id="getAuthReport" resultClass="java.lang.String">
+		SELECT DISTINCT r.AUTH_ID AS authId FROM KM_USER_ROLE_T u,KM_ROLE_AUTH_T r
+        WHERE r.ROLE_ID=u.ROLE_ID 
+	</select>  -->
+	
+</sqlMap>

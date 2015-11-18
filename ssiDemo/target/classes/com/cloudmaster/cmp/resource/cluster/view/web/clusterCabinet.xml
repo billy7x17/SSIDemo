@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="clusterCabinet">
+	<typeAlias alias="user" type="com.cloudmaster.cmp.web.authority.user.UserInfo" />
+	<typeAlias alias="cluster" type="com.cloudmaster.cmp.resource.cluster.view.dao.ClusterCabinetDomain"/>
+	<typeAlias alias="int" type="java.lang.Integer"/>
+	<typeAlias alias="string" type="java.lang.String"/>
+	<!-- 查站点信息 -->
+	<select id="findSiteInfo" parameterClass="user" resultClass="cluster">
+		SELECT
+			site_id AS siteId,
+			site_name AS siteName
+		FROM
+		honeywell_site_tab
+		<dynamic prepend="WHERE">
+			<isEqual property="roleType" compareValue="2" prepend="AND">
+				site_id = #siteId#
+			</isEqual>
+		</dynamic>
+	</select>
+	<!-- 查询机柜列表 -->
+	<select id="getList" parameterClass="cluster" resultClass="cluster">
+		SELECT
+			cluster_id AS clusterId,
+			cluster_name AS clusterName,
+			c.zone_id AS zoneId,
+			z.zone_name AS zoneName,
+			s.site_id AS siteId,
+			s.site_name AS siteName,
+			Brand,
+			c.description
+		FROM
+			honeywell_cluster_tab c,
+			honeywell_site_tab s,
+			honeywell_zone_tab z
+		WHERE
+			c.Site_id = s.site_id
+		AND c.zone_id = z.zone_id
+		<isNotEmpty prepend="AND" property="clusterName">
+			c.cluster_name  like '%$clusterName$%'
+		</isNotEmpty>
+		<isNotEmpty property="zoneName" prepend="AND">
+			z.zone_name like '%$zoneName$%'
+		</isNotEmpty>
+		<isNotEmpty property="siteId" prepend="AND">
+			c.site_id = #siteId#
+		</isNotEmpty>
+		<isNotEmpty property="brand" prepend="AND">
+			brand like '%$brand$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+        </isNotEmpty>
+		ORDER BY  $sortName$ $sortOrder$
+	</select>
+	
+	<!-- 查询机柜总数. -->
+	<select id="getCount" parameterClass="cluster" resultClass="int">
+		SELECT
+			COUNT(1)
+		FROM
+			honeywell_cluster_tab c,
+			honeywell_site_tab s,
+			honeywell_zone_tab z
+		WHERE
+			c.Site_id = s.site_id
+		AND c.zone_id = z.zone_id
+		<isNotEmpty prepend="AND" property="clusterName">
+			c.cluster_name  like '%$clusterName$%'
+		</isNotEmpty>
+		<isNotEmpty property="zoneName" prepend="AND">
+			z.zone_name like '%$zoneName$%'
+		</isNotEmpty>
+		<isNotEmpty property="siteId" prepend="AND">
+			c.site_id = #siteId#
+		</isNotEmpty>
+		<isNotEmpty property="brand" prepend="AND">
+			brand like '%$brand$%'
+		</isNotEmpty>
+	</select>
+	<!-- 查询机房信息. -->
+	<select id="findZoneBySiteId" resultClass="cluster" parameterClass="string">
+		SELECT
+			zone_id as zoneId,
+			zone_name as zoneName
+		FROM
+			honeywell_zone_tab
+		WHERE
+			Site_id = #siteId#
+	</select>
+	<!-- 验证同一机房内的机柜名称不重复 -->
+	<select id="validSameName" resultClass="int" parameterClass="cluster">
+		SELECT
+			COUNT(1)
+		FROM
+			honeywell_cluster_tab
+		WHERE
+			cluster_name =#clusterName#
+		AND zone_id = #zoneId#
+		<isNotEmpty property="clusterId" prepend="AND">
+			cluster_id <![CDATA[ <> #clusterId#]]>  
+		</isNotEmpty>
+	</select>
+	<!-- 添加机柜信息 -->
+	<insert id="insert" parameterClass="cluster">
+		INSERT INTO honeywell_cluster_tab (
+				cluster_name,
+				zone_id,
+				site_id,
+				brand,
+				manufacturer,
+				length,
+				width,
+				height,
+				Unum,
+				power,
+				size,
+				description,
+				createtime
+			)
+			VALUES(
+				#clusterName#,
+				#zoneId#,
+				#siteId#,
+				#brand#,
+				#manufacturer#,
+				#length#,
+				#width#,
+				#height#,
+				#Unum#,
+				#power#,
+				#size#,
+				#description#,
+				NOW()
+			)
+	</insert>
+	<!-- 验证机柜下存在设备 -->
+	<select id="findDeviceByClusterId" parameterClass="string" resultClass="int">
+		SELECT
+			COUNT(1)
+		FROM
+			mals_nm_agent_info_t
+		WHERE
+			Cluster_id = #clusterId#
+	</select>
+	<!-- 删除机柜. -->
+	<delete id="deleteCluster" parameterClass="string">
+		DELETE
+		FROM
+			honeywell_cluster_tab
+		WHERE
+			cluster_id = #clusterId#
+	</delete>
+	<!-- 机柜详细信息 -->
+	<select id="detail" parameterClass="string" resultClass="cluster">
+		SELECT
+			cluster_id AS clusterId,
+			cluster_name as clusterName,
+			c.zone_id as zoneId,
+			z.zone_name as zoneName,
+			c.Site_id as siteId,
+			s.site_name as siteName,
+			Brand as brand,
+			Manufacturer,
+			Length,
+			Width,
+			Height,
+			Unum,
+			Power,
+			Size,
+			c.description
+		FROM
+			honeywell_cluster_tab c,
+			honeywell_site_tab s,
+			honeywell_zone_tab z
+		WHERE
+			c.Site_id = s.site_id
+		AND c.zone_id = z.zone_id
+		AND c.cluster_id = #clusterId#
+	</select>
+	<!-- 修改机柜信息 -->
+	<update id="update" parameterClass="cluster">
+		UPDATE honeywell_cluster_tab
+		SET
+			cluster_name=#clusterName#,
+			zone_id = #zoneId#,
+			Site_id =#siteId#,
+			Brand = #brand#,
+			Manufacturer = #manufacturer#,
+			Length = #length#,
+			Width = #width#,
+			Height = #height#,
+			Unum = #Unum#,
+			Power = #power#,
+			Size =#size#,
+			description =#description#,
+			createtime = now()
+		WHERE cluster_id = #clusterId#
+	</update>
+</sqlMap>

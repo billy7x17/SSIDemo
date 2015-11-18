@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ThresholdInfo">
+	<typeAlias alias="thresholdDomain" type="com.cloudmaster.cmp.alarm.threshold.dao.ThresholdDomain" />
+	<typeAlias alias="thresholdContentDomain" type="com.cloudmaster.cmp.alarm.threshold.dao.ThresholdContentDomain" />
+	<typeAlias alias="alarmLevelDomain" type="com.cloudmaster.cmp.alarm.threshold.dao.AlarmLevelDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	
+	<!-- 设备列表 -->
+	<select id="getThresholdList"  resultClass="thresholdDomain" parameterClass="thresholdDomain">
+		SELECT 
+			threshold.ID AS id,
+			threshold.EVENT_NAME AS eventName,
+			threshold.WARN_ID AS warnType,
+			threshold.LEVEL_ID AS level,
+			CASE 
+			    WHEN threshold.PER_CONDITION = 1  THEN '等于'
+			    WHEN threshold.PER_CONDITION = 2  THEN '不等于'
+	            WHEN threshold.PER_CONDITION = 3  THEN '区间'
+	            ELSE '未知'
+            END perConditionName,
+           	threshold.PER_CONDITION perCondition,
+			threshold.PER_VALUE AS value,
+			threshold.PER_VALUE_2 AS value2,
+			threshold.EVENT_TYPE_DESC AS eventTypeDesc,
+			level.NAME AS levelName,
+			threshold.MIB_ID AS mibId,
+			t4.typeId AS typeId,
+			t4.agentType AS agentType,
+			t4.mibName AS mibName,
+			DATE_FORMAT(threshold.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+		FROM mals_nm_threshold_valve_t threshold
+		     LEFT JOIN mals_nm_alarm_level_t level on threshold.LEVEL_ID = level.LEVEL_ID ,
+			 (
+			 	SELECT
+					mib.MIB_ID AS mibId,
+					mib.OID AS oid,
+					mib.MIB_NAME AS mibName,
+					mib.DESCRIPTION AS description,
+					agent.AGENT_NAME AS agentType,
+					agent.TYPE_ID AS typeId
+				FROM mals_nm_mib_t mib,
+				 	 mals_nm_agent_type_t agent
+				WHERE
+					mib.TYPE_ID = agent.TYPE_ID
+		      )t4
+		WHERE threshold.MIB_ID = t4.mibId
+		<isNotEmpty prepend="AND" property="mibId">
+			threshold.MIB_ID =#mibId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="agentType">
+			t4.typeId=#agentType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="eventName">
+			threshold.EVENT_NAME like '%$eventName$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="level">
+			threshold.LEVEL_ID=#level#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="perCondition">
+			threshold.PER_CONDITION=#perCondition#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="value">
+			threshold.PER_VALUE=#value#
+		</isNotEmpty>
+		 <isNotEmpty prepend="AND" property="qtype">
+			$qtype$ like concat('%',#query#,'%')
+		</isNotEmpty>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<select id="getThresholdListCount"  resultClass="java.lang.Integer" parameterClass="thresholdDomain">
+		SELECT count(*)
+       FROM mals_nm_threshold_valve_t threshold
+             LEFT JOIN mals_nm_alarm_level_t level on threshold.LEVEL_ID = level.LEVEL_ID ,
+             (
+                SELECT
+                    mib.MIB_ID AS mibId,
+                    mib.OID AS oid,
+                    mib.MIB_NAME AS mibName,
+                    mib.DESCRIPTION AS description,
+                    agent.AGENT_NAME AS agentType,
+                    agent.TYPE_ID AS typeId
+                FROM mals_nm_mib_t mib,
+                     mals_nm_agent_type_t agent
+                WHERE
+                    mib.TYPE_ID = agent.TYPE_ID
+              )t4
+        WHERE threshold.MIB_ID = t4.mibId
+		<isNotEmpty prepend="AND" property="mibId">
+			threshold.MIB_ID =#mibId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="agentType">
+			t4.typeId=#agentType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="eventName">
+			threshold.EVENT_NAME like '%$eventName$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="level">
+			threshold.LEVEL_ID=#level#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="perCondition">
+			threshold.PER_CONDITION=#perCondition#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="value">
+			threshold.PER_VALUE=#value#
+		</isNotEmpty>
+		 <isNotEmpty prepend="AND" property="qtype">
+			$qtype$ like concat('%',#query#,'%')
+		</isNotEmpty>
+	</select>
+	<!-- 获取告警等级 -->
+	<select id="getAlarmLevelList"  resultClass="alarmLevelDomain" parameterClass="alarmLevelDomain">
+			SELECT 
+			LEVEL_ID AS levelId,
+			NAME AS levelName,
+			VALUE AS levelValue,
+			DESCRIPTION AS levelDesc
+		FROM mals_nm_alarm_level_t
+		WHERE (1=1)
+	ORDER BY LEVEL_ID 
+	</select>
+	<!-- 获取阈值标题 -->
+	<select id="getThresholdContentList" parameterClass="thresholdContentDomain" resultClass="thresholdContentDomain">
+		SELECT 
+			tc_id AS tcId,
+			tc_title AS tcTitle,
+			tc_type AS tcType,
+			tc_desc AS tcDesc,
+			create_time AS createTime,
+			AlarmIdentityID as alarmIdentityID
+		FROM mals_nm_threshold_content_t
+		<dynamic prepend="WHERE">
+            <isNotEmpty prepend="AND" property="tcId">
+                tc_id =#tcId#
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="type">
+                $type$
+            </isNotEmpty>
+          <isNotEmpty prepend="AND" property="alarmTitleCondition">
+                $alarmTitleCondition$
+            </isNotEmpty>   
+        </dynamic>
+         order by tc_id asc
+	</select>
+    
+    
+	<!-- 删除 -->
+	<delete id="deleteThresholdById" parameterClass="thresholdDomain">
+		DELETE FROM mals_nm_threshold_valve_t
+		WHERE ID=#id#
+	</delete>
+	<!-- 删除 -->
+	<delete id="deleteThresholdByMibId" parameterClass="String">
+		DELETE FROM mals_nm_threshold_valve_t
+		WHERE MIB_ID=#mibId#
+	</delete>
+	
+	<!-- 根据ID查询 -->
+	<select id="getThresholdById"  resultClass="thresholdDomain" parameterClass="String">
+		SELECT
+            threshold.ID AS id,
+            threshold.AlarmIdentityID AS alarmIdentityID,
+            threshold.AlarmImpact AS alarmImpact,
+            threshold.EVENT_NAME AS eventName,
+            threshold.WARN_ID AS warnType,
+            threshold.LEVEL_ID AS level,
+            CASE 
+                WHEN threshold.PER_CONDITION = 1  THEN '等于'
+                WHEN threshold.PER_CONDITION = 2  THEN '不等于'
+                WHEN threshold.PER_CONDITION = 3  THEN '区间'
+                ELSE '未知'
+            END perConditionName,
+            threshold.PER_CONDITION perCondition,
+            threshold.PER_VALUE AS value,
+            threshold.PER_VALUE_2 AS value2,
+            threshold.EVENT_TYPE_DESC AS eventTypeDesc,
+            level.NAME AS levelName,
+            threshold.MIB_ID AS mibId,
+            t4.typeId AS typeId,
+            t4.agentType AS agentType,
+            DATE_FORMAT(threshold.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+            t4.mibName as oid,
+            t4.mibName AS mibName,
+            content.tc_title as tcTitle,
+            content.tc_id as tcId,
+            threshold.system_id as systemId,
+            system.system_name as systemName
+        FROM mals_nm_threshold_valve_t threshold
+             left join  system_info_tab system on system.system_id = threshold.system_id
+             LEFT JOIN mals_nm_alarm_level_t level on threshold.LEVEL_ID = level.LEVEL_ID
+             LEFT JOIN mals_nm_threshold_content_t content on content.tc_id = threshold.tc_id,
+             (
+                SELECT
+                    ta.MIB_ID AS mibId,
+                    ta.OID AS oid,
+                    ta.MIB_NAME AS mibName,
+                    ta.DESCRIPTION AS description,
+                    tc.AGENT_NAME AS agentType,
+                    tc.TYPE_ID AS typeId
+                FROM mals_nm_mib_t ta,
+                     mals_nm_agent_type_t tc
+                WHERE
+                    ta.TYPE_ID = tc.TYPE_ID
+        )t4
+            
+        WHERE  threshold.MIB_ID = t4.mibId
+        AND threshold.ID=#id#
+	</select>
+	
+	
+	<!-- 根据ID查询 -->
+	<select id="detail"  resultClass="thresholdDomain" parameterClass="thresholdDomain">
+		SELECT
+            threshold.ID AS id,
+            threshold.AlarmIdentityID AS alarmIdentityID,
+            threshold.AlarmImpact AS alarmImpact,
+            threshold.EVENT_NAME AS eventName,
+            threshold.WARN_ID AS warnType,
+            threshold.LEVEL_ID AS level,
+            CASE 
+                WHEN threshold.PER_CONDITION = 1  THEN '等于'
+                WHEN threshold.PER_CONDITION = 2  THEN '不等于'
+                WHEN threshold.PER_CONDITION = 3  THEN '区间'
+                ELSE '未知'
+            END perConditionName,
+            threshold.PER_CONDITION perCondition,
+            threshold.PER_VALUE AS value,
+            threshold.PER_VALUE_2 AS value2,
+            threshold.EVENT_TYPE_DESC AS eventTypeDesc,
+            level.NAME AS levelName,
+            threshold.MIB_ID AS mibId,
+            t4.typeId AS typeId,
+            t4.agentType AS agentType,
+            DATE_FORMAT(threshold.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime,
+            t4.mibName as oid,
+            t4.mibName AS mibName,
+            content.tc_title as tcTitle,
+            content.tc_id as tcId,
+            threshold.system_id as systemId,
+            system.system_name as systemName
+        FROM mals_nm_threshold_valve_t threshold
+             left join  system_info_tab system on system.system_id = threshold.system_id
+             LEFT JOIN mals_nm_alarm_level_t level on threshold.LEVEL_ID = level.LEVEL_ID
+             LEFT JOIN mals_nm_threshold_content_t content on content.tc_id = threshold.tc_id,
+             (
+                SELECT
+                    ta.MIB_ID AS mibId,
+                    ta.OID AS oid,
+                    ta.MIB_NAME AS mibName,
+                    ta.DESCRIPTION AS description,
+                    tc.AGENT_NAME AS agentType,
+                    tc.TYPE_ID AS typeId
+                FROM mals_nm_mib_t ta,
+                     mals_nm_agent_type_t tc
+                WHERE
+                    ta.TYPE_ID = tc.TYPE_ID
+        )t4
+            
+        WHERE  threshold.MIB_ID = t4.mibId
+        AND threshold.ID=#id#
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="addThresholdDomain" parameterClass="thresholdDomain">
+		INSERT INTO
+		mals_nm_threshold_valve_t
+		(tc_id,LEVEL_ID,MIB_ID,EVENT_NAME,PER_CONDITION,PER_VALUE,EVENT_TYPE_DESC,CREATE_TIME,PER_VALUE_2,AlarmIdentityID,AlarmImpact,system_id)
+		VALUES
+		(#tcTitle#,#level#,#mibId#,#eventName#,#perCondition#,#value#,#eventTypeDesc#,#createTime#,#value2#,#alarmIdentityID#,#alarmImpact#,#systemId#)
+	</insert>
+	<!-- 添加前校验告警唯一标识是否存在 -->
+	<select id="existCount" parameterClass="String" resultClass="int">
+		select
+			count(*)
+		from
+		mals_nm_threshold_valve_t t,
+		mals_nm_access_rule_t r,
+		mals_nm_businessalarm_rule_t busAlarm
+		where t.AlarmIdentityID = #alarmIdentityID#
+		or r.AlarmIdentityID = #alarmIdentityID#
+		or busAlarm.alarmIdentityID = #alarmIdentityID#
+	</select>
+	<!-- 修改 -->
+	<update id="editThresholdDomain" parameterClass="thresholdDomain">
+		UPDATE mals_nm_threshold_valve_t SET
+			tc_id=#tcTitle#,
+			AlarmImpact=#alarmImpact#,
+			EVENT_NAME=#eventName#,
+			LEVEL_ID=#level#,
+			PER_CONDITION=#perCondition#,
+			PER_VALUE=#value#,
+			MIB_ID=#mibId#,
+			EVENT_TYPE_DESC=#eventTypeDesc#,
+			PER_VALUE_2=#value2#,
+			system_id=#systemId#,
+			AlarmIdentityID = #alarmIdentityID#
+		WHERE ID=#id#
+	</update>
+	
+	<!-- 查询设备类型 -->
+	<select id="getDeviceTypeList"  resultClass="thresholdDomain" parameterClass="thresholdDomain">
+		SELECT
+			TYPE_ID AS rowId,
+			AGENT_TYPE AS agentType,
+			AGENT_NAME AS agentName
+		FROM mals_nm_agent_type_t
+	</select>
+	
+	
+	<!-- 查询获取告警等级 -->
+	<select id="getSearchAlarmLevelList"  resultClass="thresholdDomain" parameterClass="thresholdDomain">
+		SELECT 
+			LEVEL_ID AS levelId,
+			NAME AS levelName
+		FROM mals_nm_alarm_level_t
+	</select>
+    
+    <!-- 查询阀值是否关联规则 -->
+    <select id="hasRosterCheck" parameterClass="thresholdDomain" resultClass="int">
+        SELECT COUNT(*)
+        FROM alarmroster_tab
+        WHERE type = '0'
+        AND ID = #id#
+    </select>
+    
+    <!--获取业务实例信息 -->
+    <select id="getSystemList"  resultClass="thresholdDomain" parameterClass="thresholdDomain">
+        select 
+            system_id as systemId,
+            system_name as systemName
+        from system_info_tab
+    </select>
+    
+    <!-- 查询设备类型 对应的告警标题条件-->
+    <select id="getDeviceTitleCondition"  resultClass="String" parameterClass="String">
+        SELECT
+            alarmTitleCondition as alarmTitleCondition
+        FROM mals_nm_agent_type_t
+        WHERE AGENT_TYPE =#agentType#
+    </select>
+    
+</sqlMap>

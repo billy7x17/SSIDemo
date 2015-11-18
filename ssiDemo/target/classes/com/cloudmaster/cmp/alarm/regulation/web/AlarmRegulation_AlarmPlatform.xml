@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmPlatform">
+	<typeAlias alias="AlarmRule"
+		type="com.cloudmaster.cmp.alarm.regulation.dao.AlarmRegulationDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+
+
+	<!-- 查询规则事件信息 -->
+	<select id="getRuleRelation" parameterClass="AlarmRule"
+		resultClass="AlarmRule">
+		SELECT
+		id as ID,
+		alarmFlowName as alarmFlowName
+		FROM
+		t_alarm_rule_relation
+		WHERE ruleName = #ruleName#
+    </select>
+
+	<!-- 删除规则事件 -->
+	<delete id="deleteRuleRelation" parameterClass="AlarmRule">
+		delete from
+		t_alarm_rule_relation
+		WHERE id in $ID$
+    </delete>
+
+	<!-- 删除规则重定义 -->
+	<delete id="deleteRuleRedefine" parameterClass="AlarmRule">
+		delete from
+		t_alarm_redefine_relation
+		WHERE ruleId in $ID$
+    </delete>
+
+	<!-- 删除规则升降级 -->
+	<delete id="deleteRuleLevel" parameterClass="AlarmRule">
+		delete from
+		t_alarm_level_relation
+		WHERE ruleId in $ID$
+    </delete>
+
+	<!-- 添加规则事件  -->
+	<insert id="insertRuleRelation" parameterClass="AlarmRule">
+            <![CDATA[
+            INSERT INTO t_alarm_rule_relation
+            (
+				alarmFlowName,
+				ruleName,
+				status
+            )
+            VALUES
+            (   #alarmFlowName#,
+                #ruleName#,
+                #ruleState#
+            )
+            ]]>
+	</insert>
+
+	<!-- 添加规则重定义信息  -->
+	<insert id="insertRuleRedefine" parameterClass="AlarmRule">
+            <![CDATA[
+            INSERT INTO t_alarm_redefine_relation
+            (
+                ruleId,
+                alarmRedefineColumn,
+                alarmSrcContent,
+                alarmDstContent
+            )
+            VALUES
+            (    
+                #ID#,                        
+                #redefineColumn#,          
+                #originalContent#,          
+                #redefineContent#
+            )
+            ]]>
+	</insert>
+
+	<!-- 添加规则升降级信息  -->
+	<insert id="insertRuleLevel" parameterClass="AlarmRule">
+            <![CDATA[
+            INSERT INTO t_alarm_level_relation
+            (
+                ruleId,
+                alarmDstLevel
+            )
+            VALUES
+            (    
+                #ID#,                        
+                #levelId#
+            )
+            ]]>
+	</insert>
+
+	<!-- 设置中止、激活状态 -->
+	<update id="updateRuleState" parameterClass="AlarmRule">
+		UPDATE
+		t_alarm_rule_relation
+		SET
+		status = #ruleState#
+		WHERE ruleName =
+		#ruleName#
+    </update>
+
+	<!-- 告警处理平台，删除通知信息  -->
+	<delete id="deleteRuleNofity" parameterClass="AlarmRule">
+		delete from
+		t_alarm_notify
+		WHERE ruleId in $ID$
+    </delete>
+
+	<!-- 告警处理平台，添加通知信息  -->
+	<insert id="insertRuleNotify" parameterClass="AlarmRule">
+            <![CDATA[
+            INSERT INTO t_alarm_notify
+            (
+                ruleID,
+                isClearNotify,
+                type,
+                mailAddress,
+                phoneNumber,
+                messageContent,
+                mailTitle,
+                mailContent
+            )
+            VALUES
+            (    
+                #ID#,            
+                #clearNotify#,          
+                #notifyType#,
+                #notifyPersonMail#,
+                #notifyPersonMobile#,
+                #notifySMS#,
+                #notifyTitle#,
+                #notifyContent#
+            )
+            ]]>
+	</insert>
+
+</sqlMap>

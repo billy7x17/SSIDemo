@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="topology" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+		
+		<!-- 南基 -->
+        <action name="PreTopologyAction1" class="PreTopologyAction1">
+        	<result name="success">/WEB-INF/pages/alarm/topology/topology.jsp</result>
+        </action>
+        <!-- 业务拓扑图 -->
+        <action name="ServiceTopologyAction" class="ServiceTopologyAction">
+        	<result name="success">/WEB-INF/pages/alarm/topology/serviceTopology.jsp</result>
+        </action>
+        <!-- 公有云 （展示机房的jsp）-->
+        <action name="TopologyActionPCZYC" class="TopologyPCAction" method="topologyZYC">
+        	<result name="success">/WEB-INF/pages/alarm/topology/topologyPC.jsp</result>
+        </action>
+        <action name="TopologyActionPCM" class="TopologyPCAction" method="managerTopo">
+        	<result name="success">/WEB-INF/pages/alarm/topology/topologyPCM.jsp</result>
+        </action>
+        <action name="twaverTopo" class="TopologyPCAction" method="twaverTopo">
+        	<result name="success" type="redirectAction">
+        		<param name="actionName">topoDeviceGraph</param>
+                <param name="siteId">${siteId}</param>
+        	</result>
+        	<!-- 
+        	type="redirect"
+        	<result name="success">/WEB-INF/pages/alarm/topology/topologyPC.jsp</result>
+        	 -->
+        </action>
+        
+        <!-- 新增拓扑分组和设备管理的配置BEAN  begin-->
+        <!-- 拓扑分组列表 begin -->
+	        <action name="topologyGroupBeforeList" class="TopologyGroupListAction" method="beforeList">
+	        	<result name="SUCCESS">/WEB-INF/pages/alarm/topology/topologyManage/groupList.jsp</result>
+	        </action>
+	        <action name="topologyGroupList" class="TopologyGroupListAction" method="list">
+	        </action>
+        <!-- 拓扑分组列表 end -->
+        <!-- 拓扑组内设备列表 begin -->
+	        <action name="topologyDeviceBeforeList" class="TopologyDeviceListAction" method="beforeList">
+	        	<result name="SUCCESS">/WEB-INF/pages/alarm/topology/topologyManage/groupDeviceList.jsp</result>
+	        </action>
+	        <action name="topologyDeviceList" class="TopologyDeviceListAction" method="list">
+	        </action>
+        <!-- 拓扑组内设备列表 end -->
+        <!-- 拓扑上层设备列表 begin -->
+	        <action name="topologyUPDeviceBeforeList" class="TopologyUPDeviceListAction" method="beforeList">
+	        	<result name="SUCCESS">/WEB-INF/pages/alarm/topology/topologyManage/upDeviceList.jsp</result>
+	        </action>
+	        <action name="topologyUPDeviceList" class="TopologyUPDeviceListAction" method="list">
+	        </action>
+	        <action name="updateLine" class="TopologyUPDeviceListAction" method="updateLine">
+	        	<result name="SUCCESS"  type="redirectAction">
+	        		<param name="actionName">topologyDeviceBeforeList</param>
+					<param name="domain.groupID">${groupID}</param>
+					<param name="msg">${msg}</param>
+				</result>
+	        </action>
+        <!-- 拓扑上层设备列表 end -->
+        <!-- 拓扑组内设备添加列表 	begin -->
+	        <action name="groupDeviceBeforeAdd" class="TopologyDeviceAddAction" method="beforeAdd">
+	        	<result name="SUCCESS">/WEB-INF/pages/alarm/topology/topologyManage/deviceList.jsp</result>
+	        </action>
+	        <action name="groupDeviceAdd" class="TopologyDeviceAddAction" method="add">
+	        	<result name="SUCCESS"  type="redirectAction">
+					<param name="actionName">topologyDeviceBeforeList</param>
+					<param name="domain.groupID">${groupID}</param>
+					<param name="msg">${msg}</param>
+				</result>
+	        </action>
+        <!-- 拓扑组内设备添加列表	 end -->
+        <!-- 拓扑组内设备删除 begin -->
+	        <action name="groupDeviceDel" class="TopologyDeviceDelAction" method="del">
+	        	<result name="SUCCESS"  type="redirectAction">
+					<param name="actionName">topologyDeviceBeforeList</param>
+					<param name="domain.groupID">${groupID}</param>
+					<param name="msg">${msg}</param>
+				</result>
+	        </action>
+        <!-- 拓扑组内设备删除 end -->
+        <!-- 新增拓扑分组和设备管理的配置BEAN  end-->
+        
+        <action name="topoDeviceGraph" class="topoDeviceGraph" method="drawGraph">
+        	<result name="success" type="redirect">/twaver/flex/TopologyFacade.jsp</result>
+        </action>
+        
+        <action name="topoAlarmGraph" class="topoAlarmGraph" method="drawAlarmGraph">
+        </action>
+        
+        <action name="rightClickMenu" class="rightClickMenu" method="menu">
+        </action>
+        
+        <action name="updateDetailByAjax" class="updateDetailByAjax" method="saveDetail">
+        </action>
+        
+        <action name="topoAlarmDetail" class="alarmDetail" method="alarmDetail">
+        	<result name="success">/WEB-INF/pages/alarm/view/detail.jsp</result>
+        </action>
+
+        <action name="alarmCount" class="alarmCount" method="getAlarmCount">
+        </action>
+	</package>
+</struts>

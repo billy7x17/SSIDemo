@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmHistory">
+	<typeAlias alias="alarmHistory" type="com.cloudmaster.cmp.alarm.history.dao.AlarmHistoryDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	<!-- 告警列表 -->
+	<select id="list" parameterClass="alarmHistory" resultClass="alarmHistory">
+		SELECT
+				alarm.id AS alarmID,
+				alarm.nid AS alarmIdentify,
+				CASE
+					WHEN alarm.lid = 5 THEN
+						'已清除'
+					ELSE
+						gradeLevel. NAME
+					END AS alarmGrade,
+				original AS originalAlarmGrade,
+				alarm.type AS alarmType,
+				alarm.title AS alarmTitle,
+				alarm.maxEventTime AS alarmTime,
+				alarm.rid AS alarmIP,
+				CASE confirmStatus
+					WHEN 1 THEN
+						'未确认'
+					WHEN 2 THEN
+						'手工确认'
+					WHEN 3 THEN
+						'自动确认'
+					ELSE
+						'未知'
+					END AS confirmStatus,
+				CASE clearStatus
+					WHEN 1 THEN
+						'未清除'
+					WHEN 2 THEN
+						'已清除'
+					WHEN 3 THEN
+						'已清除'
+					ELSE
+						'未知'
+					END AS clearStatus,
+				alarm.count AS count,
+				alarm.deviceType AS deviceType,
+				type.agent_group AS deviceTypeName,
+				alarm.eventTime AS firstAlarmTime,
+				device.AGENT_NAME agentName,
+				device.LocalTable_ID_Ref LocalTableIDRef,
+				(
+					SELECT
+					SITE_NAME
+					FROM
+					honeywell_site_tab
+					WHERE
+					site_id = device.site_id
+				) siteName
+		FROM    $nmsDB$.t_alarm_temp alarm
+				LEFT JOIN mals_nm_agent_type_t type ON alarm.deviceType = type.TYPE_ID
+				LEFT JOIN mals_nm_alarm_level_t gradeLevel ON alarm.lid = gradeLevel.LEVEL_ID
+				LEFT OUTER JOIN mals_nm_agent_info_t device ON alarm.rid = device.AGENT_IP
+		WHERE   (alarm.pid IS NULL OR alarm.pid = '')
+		  AND   alarm.clearStatus != 1 AND alarm.lid != '5' 
+		  AND(
+			device.AGENT_ID != ''
+			AND device.AGENT_ID IS NOT NULL
+			)
+		    <isNotEmpty prepend="AND" property="alarmType">
+				alarm.type like concat('%',#alarmType#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmGrade">
+				alarm.lid = #alarmGrade#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIdentify">
+				alarm.nid  like concat('%',#alarmIdentify#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmTitle">
+				alarm.title  like concat('%',#alarmTitle#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="startTime">
+              	alarm.maxEventTime >= #startTime#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+              	#endTime# >= alarm.maxEventTime
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="deviceType">
+			  	(alarm.deviceType = #deviceType#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIP">
+              	alarm.rid like concat('%',#alarmIP#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmID">
+              	alarm.id like concat('%',#alarmID#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="agentName">
+              	device.AGENT_NAME like concat('%',#agentName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="siteId">
+              	device.site_id = #siteId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="deviceTypeName">
+              	type.agent_group = #deviceTypeName#
+            </isNotEmpty>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<!-- 告警数量 -->
+	<select id="count" parameterClass="alarmHistory" resultClass="java.lang.Integer">
+		SELECT  COUNT(1)
+		  FROM  $nmsDB$.t_alarm_temp alarm
+				LEFT JOIN mals_nm_agent_type_t type ON alarm.deviceType = type.TYPE_ID
+				LEFT JOIN mals_nm_alarm_level_t gradeLevel ON alarm.lid = gradeLevel.LEVEL_ID
+				LEFT OUTER JOIN mals_nm_agent_info_t device ON alarm.rid = device.AGENT_IP
+		 WHERE  (alarm.pid IS NULL OR alarm.pid = '')
+		   AND  alarm.clearStatus != 1 AND alarm.lid != '5' 
+		   AND (
+			device.AGENT_ID != ''
+			AND device.AGENT_ID IS NOT NULL
+			)
+            <isNotEmpty prepend="AND" property="alarmType">
+				alarm.type like concat('%',#alarmType#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmGrade">
+				alarm.lid = #alarmGrade#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIdentify">
+				alarm.nid  like concat('%',#alarmIdentify#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmTitle">
+				alarm.title  like concat('%',#alarmTitle#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="startTime">
+              	alarm.maxEventTime >= #startTime#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+              	#endTime# >= alarm.maxEventTime
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="deviceType">
+			  	(alarm.deviceType = #deviceType#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIP">
+              	alarm.rid like concat('%',#alarmIP#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmID">
+              	alarm.id like concat('%',#alarmID#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="agentName">
+              	device.AGENT_NAME like concat('%',#agentName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="siteId">
+              	device.site_id = #siteId#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="deviceTypeName">
+              	type.agent_group = #deviceTypeName#
+            </isNotEmpty>
+	</select>
+	
+	<!-- 详细 -->
+	<select id="detail" parameterClass="alarmHistory" resultClass="alarmHistory">
+		SELECT 
+			alarm.id as alarmID,
+			alarm.nid as alarmIdentify, 
+			case when alarm.lid=5 then '已清除'
+                 else  gradeLevel.NAME end as alarmGrade, 
+			level.NAME as originalAlarmGrade,
+			alarm.type as alarmType,
+			alarm.title as alarmTitle,
+			alarm.text as alarmContent,
+			alarm.maxEventTime as alarmTime,
+			alarm.rid as alarmIP,
+			case confirmStatus when 1 then '未确认' when 2 then '手工确认' when 3 then '自动确认' else '未知' End as confirmStatus,
+			case clearStatus when 1 then '未清除' when 2 then '已清除' when 3 then '已清除'  else '未知' End as clearStatus,
+			alarm.clearTime as clearTime,
+			clearUser.USER_NAME as clearPerson,
+			alarm.acknowledgementtime as confirmTime,
+			confirmUser.USER_NAME as confirmPerson,
+			alarm.count as count,
+			alarm.deviceType as deviceType,
+			type.agent_group as deviceTypeName,
+			alarm.eventTime as firstAlarmTime,
+			alarm.ConfirmDesc as confirmDesc,
+			alarm.ClearDesc as clearDesc,
+			device.AGENT_NAME agentName,
+			device.LocalTable_ID_Ref LocalTableIDRef,
+			(
+				SELECT
+				SITE_NAME
+				FROM
+				honeywell_site_tab
+				WHERE
+				site_id = device.site_id
+			) siteName
+	 from $nmsDB$.t_alarm_temp alarm
+            LEFT JOIN mals_nm_agent_type_t type ON alarm.deviceType = type.TYPE_ID
+            LEFT JOIN mals_nm_alarm_level_t gradeLevel ON alarm.lid = gradeLevel.LEVEL_ID 
+            LEFT JOIN km_user_t clearUser ON alarm.cuid = clearUser.USER_ID
+            LEFT JOIN km_user_t confirmUser ON alarm.auid = confirmUser.USER_ID 
+            LEFT JOIN mals_nm_alarm_level_t level ON alarm.original = level.LEVEL_ID 
+            LEFT OUTER JOIN mals_nm_agent_info_t device ON alarm.rid = device.AGENT_IP
+		where alarm.id = #alarmID# 
+	</select>
+	
+	<!-- 获取告警标题  -->
+	<select id="getAlarmTitle" parameterClass="alarmHistory" resultClass="alarmHistory">
+		SELECT 
+		distinct tc_title as alarmTitle
+		from mals_nm_threshold_content_t
+	</select>
+	
+	<!-- 获取告警类型  -->
+	<select id="getAlarmType" parameterClass="alarmHistory" resultClass="alarmHistory">
+		SELECT 
+		distinct tc_type as alarmType
+		from mals_nm_threshold_content_t
+	</select>
+	
+	
+	<!-- 获取告警设备类型  -->
+	<select id="getDeviceType" parameterClass="alarmHistory" resultClass="alarmHistory">
+		SELECT DISTINCT agent_group as deviceTypeName , agent_group as deviceType
+		from mals_nm_agent_type_t
+	</select>
+	
+	<!-- 获取告警类型  -->
+    <select id="getAlarmLevel" parameterClass="alarmHistory" resultClass="alarmHistory">
+        SELECT 
+        VALUE as alarmGrade,
+        NAME as alarmGradeName
+        from mals_nm_alarm_level_t
+    </select>
+    
+    <!-- 获取车站信息 -->
+	<select id="getSites" resultClass="alarmHistory">
+		SELECT
+			site_id AS siteId,
+			site_name AS siteName
+		FROM
+			honeywell_site_tab
+		WHERE line_num = '2'
+		ORDER BY site_id
+	</select>
+    
+    <!-- 告警数据导出 -->
+    <select id="exportList" parameterClass ="Map" resultClass="alarmHistory" remapResults="true">
+       SELECT
+            alarm.id as alarmID,
+            case when alarm.lid=5 then '已清除'
+                 else level.NAME End as alarmGrade,
+            alarm.rid as alarmIP,
+            case confirmStatus when 1 then '未确认' when 2 then '手工确认' when 3 then '自动确认'  else '未知' End as confirmStatus,
+            alarm.title as alarmTitle,
+            alarm.text as alarmContent,
+            type.agent_group as deviceTypeName,
+            alarm.type as alarmType,
+            alarm.count as count,
+            alarm.eventTime as firstAlarmTime,
+            alarm.maxEventTime as alarmTime,
+            alarm.nid as alarmIdentify,
+            originallevel.name as originalAlarmGrade,
+            case clearStatus when 1 then '未清除' when 2 then '已清除' when 3 then '已清除'  else '未知' End as clearStatus,
+			device.AGENT_NAME agentName,
+			device.LocalTable_ID_Ref LocalTableIDRef,
+			(
+				SELECT
+				SITE_NAME
+				FROM
+				honeywell_site_tab
+				WHERE
+				site_id = device.site_id
+			) siteName
+       FROM $nmsDB$.t_alarm_temp alarm
+              LEFT JOIN mals_nm_agent_type_t type ON alarm.deviceType = type.TYPE_ID
+              LEFT JOIN mals_nm_alarm_level_t level ON alarm.lid = level.LEVEL_ID
+              LEFT JOIN mals_nm_alarm_level_t originallevel ON alarm.original = originallevel.LEVEL_ID
+              LEFT OUTER JOIN mals_nm_agent_info_t device ON alarm.rid = device.AGENT_IP
+      WHERE (alarm.pid is null or alarm.pid='') and alarm.clearStatus != 1
+            <isNotEmpty prepend="AND" property="alarmGrade">
+                 CONCAT(alarm.lid,'') in $alarmGrade$
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="deviceType">
+                alarm.deviceType in $deviceType$
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmIP">
+                alarm.rid like concat('%',#alarmIP#,'%')
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="alarmTitle">
+                alarm.title like concat('%',#alarmTitle#,'%')
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="alarmType">
+                alarm.type like concat('%',#alarmType#,'%')
+            </isNotEmpty>
+             <isNotEmpty prepend="AND" property="alarmIdentify">
+                alarm.nid like concat('%',#alarmIdentify#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="alarmID">
+              alarm.id like concat('%',#alarmID#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="confirmStatus">
+              (confirmStatus = #confirmStatus#)
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="startTime">
+                maxEventTime >= #startTime#
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+                #endTime# >= maxEventTime
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="agentName">
+              	device.AGENT_NAME like concat('%',#agentName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="siteId">
+              (device.site_id = #siteId#)
+            </isNotEmpty>
+        ORDER BY $sortName$ $sortOrder$
+    </select>
+	
+</sqlMap>

@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+    <constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+    <constant name="struts.i18n.encoding" value="UTF-8"></constant>
+    <constant name="struts.objectFactory" value="spring" />
+
+    <!-- 作业计划管理 -->
+    <package name="cronExpression" extends="struts-default">
+        <interceptors>
+            <interceptor name="authenticate" class="authenticateInterceptor" />
+            <interceptor name="turnPageInter" class="turnPageInterceptor" />
+            <interceptor name="logInter" class="loginterceptor" />
+            <interceptor-stack name="kmStack">
+                <interceptor-ref name="authenticate" />
+                <interceptor-ref name="turnPageInter" />
+                <interceptor-ref name="logInter" />
+                <interceptor-ref name="defaultStack" />
+            </interceptor-stack>
+        </interceptors>
+        <default-interceptor-ref name="kmStack" />
+
+        <global-results>
+            <result name="LOGIN" type="redirectAction">logout</result>
+            <result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+            <result name="error" type="chain">ExceptionIntercepor</result>
+        </global-results>
+
+        <global-exception-mappings>
+            <exception-mapping exception="java.lang.Exception"
+                result="error" />
+        </global-exception-mappings>
+
+        <action name="cronExpressionList" class="CronExpressionListAction"
+			method="tolist">
+			<result name="success">
+                /WEB-INF/pages/itil/cronExpressionManager/list.jsp
+            </result>
+            <result name="error">
+                /WEB-INF/pages/itil/cronExpressionManager/list.jsp
+            </result>
+		</action>
+
+        <!-- 周期任务列表 -->
+        <action name="cronExpressionListData" class="CronExpressionListAction" method="list">
+        </action>
+
+        <!-- 周期任务添加前跳转-->
+        <action name="cronExpressionBeforeAdd" class="CronExpressionBeforeAddAction" method="beforeAdd">
+            <result name="success">
+                /WEB-INF/pages/itil/cronExpressionManager/add.jsp
+            </result>
+        </action>
+
+        <!-- 周期任务添加 -->
+        <action name="cronExpressionAdd" class="CronExpressionAddAction" method="add">
+            <result name="success" type="redirectAction">
+                <param name="actionName">cronExpressionList</param>
+                <param name="msg">${msg}</param>
+            </result>
+            <result name="input">
+                /WEB-INF/pages/itil/cronExpressionManager/add.jsp
+            </result>
+        </action>
+
+        <!-- 周期任务编辑前跳转-->
+        <action name="cronExpressionBeforeEdit" class="CronExpressionBeforeEditAction" method="beforeEdit">
+            <result name="success">
+                /WEB-INF/pages/itil/cronExpressionManager/edit.jsp
+            </result>
+            <result name="error" type="redirectAction">
+                <param name="actionName">cronExpressionList</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>
+        </action>
+        <!-- 周期任务编辑 -->
+        <action name="cronExpressionEdit" class="CronExpressionEditAction" method="edit">
+            <result name="success" type="redirectAction">
+                <param name="actionName">cronExpressionList</param>
+                <param name="msg">${msg}</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>
+            <result name="input">
+                /WEB-INF/pages/itil/cronExpressionManager/edit.jsp
+            </result>
+        </action>
+
+        <!-- 周期任务删除 -->
+        <action name="cronExpressionDelete" class="CronExpressionDeleteAction" method="delete">
+            <result name="success" type="redirectAction">
+                <param name="actionName">cronExpressionList</param>
+                <param name="msg">${msg}</param>
+            </result>
+            <result name="error" type="redirectAction">
+                <param name="actionName">cronExpressionList</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>
+        </action>
+
+        <!-- 周期任务查询页面跳转-->
+        <action name="cronExpressionBeforeSearch" class="CronExpressionBeforeSearchAction" method="beforeSearch">
+            <result name="success">
+                /WEB-INF/pages/itil/cronExpressionManager/search.jsp
+            </result>
+        </action>
+
+        <!-- 周期任务查询 -->
+        <action name="cronExpressionSearch" class="CronExpressionSearchAction" method="search">
+            <result name="success">
+                /WEB-INF/pages/itil/cronExpressionManager/list.jsp
+            </result>
+            <result name="error">
+                /WEB-INF/pages/itil/cronExpressionManager/list.jsp
+            </result>
+        </action>
+
+        <!-- 周期任务详细-->
+        <action name="cronExpressionDetail" class="CronExpressionDetailAction" method="detail">
+            <result name="success">
+            /WEB-INF/pages/itil/cronExpressionManager/detail.jsp
+            </result>
+            <result name="error" type="redirectAction">
+                <param name="actionName">cronExpressionList</param>
+                <param name="msg">${msg}</param>
+                <param name="errorMsg">${errorMsg}</param>
+            </result>
+        </action>
+
+        <!-- 周期任务执行记录 -->
+        <action name="cronExpressionTasklog" class="CronExpressionTaskLogAction" method="tolist">
+            <result name="success">
+                /WEB-INF/pages/itil/cronExpressionManager/task_log.jsp
+            </result>
+            <result name="error">
+                /WEB-INF/pages/itil/cronExpressionManager/task_log.jsp
+            </result>
+        </action>
+
+        <action name="cronExpressionTasklogData" class="CronExpressionTaskLogAction" method="tasklog">
+        </action>
+
+        <!-- 日期控件跳转 -->
+        <action name="cronExpressionDate" class="CronExpressionAddAction" method="cronExpression">
+            <result name="success">
+                /WEB-INF/pages/itil/cronExpressionManager/cronExpressionDate.jsp
+            </result>
+        </action>
+
+        <!-- 根据子系统标识获取任务列表 -->
+        <action name="getJobsBySSID" class="CronExpressionBeforeAddAction" method="getJobsBySSID"></action>
+
+    </package>
+</struts>

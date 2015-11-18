@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<!-- 列表 -->
+	<bean id="alarmHistoryListAction"
+		class="com.cloudmaster.cmp.alarm.history.web.AlarmHistoryListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmHistory.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmHistory.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+        <property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property> 
+	</bean>
+	
+	<!-- 详细 -->
+	<bean id="alarmHistoryDetailAction"
+		class="com.cloudmaster.cmp.alarm.history.web.AlarmHistoryDetailAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmHistoryDetail.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${alarmHistory.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+        <property name="nmsDBName">
+            <value>${nmsDB_name}</value>
+        </property>
+	</bean>
+	
+</beans>

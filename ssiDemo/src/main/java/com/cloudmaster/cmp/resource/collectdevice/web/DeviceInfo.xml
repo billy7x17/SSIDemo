@@ -1,0 +1,627 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="DeviceInfo">
+	<typeAlias alias="deviceDomain"
+		type="com.cloudmaster.cmp.resource.collectdevice.dao.DeviceDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+
+	<!-- 设备列表 -->
+	<select id="getDeviceList" resultClass="deviceDomain"
+		parameterClass="deviceDomain">
+		SELECT
+		t1.AGENT_ID AS agentId,
+		t6.LocalTable_ID_Ref localTableIDRef,
+		t1.AGENT_NAME AS agentName,
+		t2.AGENT_GROUP AS agentGroup,
+		t1.TYPE_ID AS typeId,
+		t2.AGENT_NAME AS typeName,
+		t1.AGENT_IP AS agentIp,
+		t1.CL_PORT AS clPort,
+		t1.COMMUNITY AS community,
+		t1.ACQUISITION_MODE acquisitionMode,
+		t1.DEVICE_TYPE deviceType,
+		t1.AGENT_COMP AS agentComp,
+		t1.DISKNUM diskNum,
+		t1.SITE_ID siteId,
+		t3.site_name siteName,
+		t1.zone_id zoneId,
+		t4.zone_name zoneName,
+		t1.cluster_id ClusterId,
+		t5.cluster_name clusterName,
+		t1.VMS_ID vmsId,
+		(
+		SELECT
+		AGENT_NAME
+		FROM
+		mals_nm_agent_info_t
+		WHERE
+		AGENT_ID = vmsId
+		) vmsName,
+		t1.NVR_ID nvrId,
+		(
+		SELECT
+		AGENT_NAME
+		FROM
+		mals_nm_agent_info_t
+		WHERE
+		AGENT_ID = nvrId
+		) nvrName,
+		t1.switch_id switchId,
+		(
+		SELECT
+		AGENT_NAME
+		FROM
+		mals_nm_agent_info_t
+		WHERE
+		AGENT_ID = switchId
+		) switchName,
+		t1.switch_port switchPort,
+		t1.AGENT_DESC AS agentDesc,
+		DATE_FORMAT(t1.CREATE_TIME, '%Y-%m-%d') AS createTime
+		FROM
+		mals_nm_agent_info_t t1
+		LEFT OUTER JOIN honeywell_site_tab t3 ON t1.SITE_ID = t3.SITE_ID
+		LEFT OUTER JOIN honeywell_zone_tab t4 ON t1.Zone_id = t4.zone_id
+		AND
+		t1.site_id = t4.Site_id
+		LEFT OUTER JOIN honeywell_cluster_tab t5 ON
+		t1.Cluster_id = t5.cluster_id
+		AND t1.site_id = t5.Site_id
+		AND t4.zone_id
+		= t5.zone_id,
+		mals_nm_agent_type_t t2,
+		zone_cluster_instance_tab t6
+		WHERE
+		t1.TYPE_ID = t2.TYPE_ID
+		AND t1.AGENT_ID = t6.ZCI_ID
+		<isNotEmpty prepend="AND" property="agentName">
+			t1.AGENT_NAME like
+			'%$agentName$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="agentGroup">
+			t2.AGENT_GROUP=#agentGroup#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="siteId">
+			t1.SITE_ID=#siteId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="agentIp">
+			t1.AGENT_IP like
+			'%$agentIp$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="qtype">
+			$qtype$ like
+			concat('%',#query#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="importDevice">
+   			(
+   			<iterate prepend=" " property="idevice"
+				open="(" close=")" conjunction="OR">
+				t6.LocalTable_ID_Ref=#idevice[]#
+			</iterate> 
+			)
+		</isNotEmpty>
+		order by $sortName$ $sortOrder$
+	</select>
+
+	<!-- 设备个数 -->
+	<select id="getDeviceListCount" resultClass="java.lang.Integer"
+		parameterClass="deviceDomain">
+		SELECT
+		COUNT(1)
+		FROM
+		mals_nm_agent_info_t t1
+		LEFT OUTER JOIN honeywell_site_tab t3 ON t1.SITE_ID = t3.SITE_ID
+		LEFT OUTER JOIN honeywell_zone_tab t4 ON t1.Zone_id = t4.zone_id
+		AND
+		t1.site_id = t4.Site_id
+		LEFT OUTER JOIN honeywell_cluster_tab t5 ON
+		t1.Cluster_id = t5.cluster_id
+		AND t1.site_id = t5.Site_id
+		AND t4.zone_id
+		= t5.zone_id,
+		mals_nm_agent_type_t t2,
+		zone_cluster_instance_tab t6
+		WHERE
+		t1.TYPE_ID = t2.TYPE_ID
+		AND t1.AGENT_ID = t6.ZCI_ID
+		<isNotEmpty prepend="AND" property="agentName">
+			t1.AGENT_NAME like
+			'%$agentName$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="agentGroup">
+			t2.AGENT_GROUP=#agentGroup#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="siteId">
+			t1.SITE_ID=#siteId#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="agentIp">
+			t1.AGENT_IP like
+			'%$agentIp$%'
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="qtype">
+			$qtype$ like
+			concat('%',#query#,'%')
+		</isNotEmpty>
+	</select>
+
+	<!-- 设备分组 -->
+	<select id="getDeviceGroupList" resultClass="deviceDomain"
+		parameterClass="deviceDomain">
+		SELECT
+			distinct agent_group AS agentGroup
+		FROM
+			mals_nm_agent_type_t
+	</select>
+
+	<!-- 设备类型 -->
+	<select id="getDeviceTypeList" resultClass="deviceDomain"
+		parameterClass="String">
+		SELECT
+			AGENT_TYPE AS typeId,
+			AGENT_NAME AS typeName
+		FROM
+			mals_nm_agent_type_t
+		WHERE 
+			AGENT_GROUP = #agentGroup#
+	</select>
+	
+	<!-- 设备分组及类型 -->
+	<select id="getGroupTypeList" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			AGENT_TYPE AS typeId,
+			agent_group AS agentGroup,
+			AGENT_NAME AS typeName
+		FROM
+			mals_nm_agent_type_t
+		<isNotEmpty prepend="WHERE" property="typeId">
+			AGENT_TYPE = #typeId#
+		</isNotEmpty>
+		ORDER BY
+			TYPE_ID
+	</select>
+
+	<!-- 根据ID获取 -->
+	<select id="detail" resultClass="deviceDomain" parameterClass="String">
+		SELECT
+		t1.AGENT_ID AS agentId,
+		t6.LocalTable_ID_Ref localTableIDRef,
+		t1.AGENT_NAME AS agentName,
+		t2.AGENT_GROUP AS agentGroup,
+		t1.TYPE_ID AS typeId,
+		t2.AGENT_NAME AS typeName,
+		t1.AGENT_IP AS agentIp,
+		t1.CL_PORT AS clPort,
+		t1.COMMUNITY AS community,
+		t1.ACQUISITION_MODE acquisitionMode,
+		t1.DEVICE_TYPE deviceType,
+		t1.AGENT_COMP AS agentComp,
+		t1.DISKNUM diskNum,
+		t1.SITE_ID siteId,
+		t3.site_name siteName,
+		t1.zone_id zoneId,
+		t4.zone_name zoneName,
+		t1.cluster_id ClusterId,
+		t5.cluster_name clusterName,
+		t1.VMS_ID vmsId,
+		(
+		SELECT
+		AGENT_NAME
+		FROM
+		mals_nm_agent_info_t
+		WHERE
+		AGENT_ID = vmsId
+		) vmsName,
+		t1.NVR_ID nvrId,
+		(
+		SELECT
+		AGENT_NAME
+		FROM
+		mals_nm_agent_info_t
+		WHERE
+		AGENT_ID = nvrId
+		) nvrName,
+		t1.switch_id switchId,
+		(
+		SELECT
+		AGENT_NAME
+		FROM
+		mals_nm_agent_info_t
+		WHERE
+		AGENT_ID = switchId
+		) switchName,
+		t1.switch_port switchPort,
+		t1.AGENT_DESC AS agentDesc,
+		DATE_FORMAT(t1.CREATE_TIME, '%Y-%m-%d') AS createTime
+		FROM
+		mals_nm_agent_info_t t1
+		LEFT OUTER JOIN honeywell_site_tab t3 ON t1.SITE_ID = t3.SITE_ID
+		LEFT OUTER JOIN honeywell_zone_tab t4 ON t1.Zone_id = t4.zone_id
+		AND
+		t1.site_id = t4.Site_id
+		LEFT OUTER JOIN honeywell_cluster_tab t5 ON
+		t1.Cluster_id = t5.cluster_id
+		AND t1.site_id = t5.Site_id
+		AND t4.zone_id
+		= t5.zone_id,
+		mals_nm_agent_type_t t2,
+		zone_cluster_instance_tab t6
+		WHERE
+		t1.TYPE_ID = t2.TYPE_ID
+		AND t1.AGENT_ID = t6.ZCI_ID
+		AND t1.AGENT_ID=#agentId#
+	</select>
+	
+	<!-- 获取Encoder（E4V）设备通道信息 修改、详情页使用-->
+	<select id="getChannels" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			t3.PROP_ID channelId,
+			t2.PROP_DESC channelName
+		FROM
+			mals_nm_agent_info_t t1
+		LEFT OUTER JOIN mals_nm_agent_prop_info_t t2 ON t1.AGENT_ID = t2.AGENT_ID
+		LEFT OUTER JOIN mals_nm_agent_prop_type_t t3 ON t2.AGENT_PROP_ID = t3.AGENT_PROP_ID
+		AND t1.TYPE_ID = t3.TYPE_ID
+		WHERE
+			t1.TYPE_ID = '46'
+		AND t3.PROP_TYPE = '0'
+		AND t1.AGENT_ID = #agentId#
+	</select>
+	
+	<!-- 获取Encoder（E4V）设备通道信息  添加页使用-->
+	<select id="getChannelIds" resultClass="deviceDomain">
+		SELECT
+			PROP_ID channelId
+		FROM
+			mals_nm_agent_prop_type_t
+		WHERE
+			TYPE_ID = '46'
+		AND PROP_TYPE = '0'
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="addDeviceDomain" parameterClass="deviceDomain">
+		INSERT INTO
+		mals_nm_agent_info_t(AGENT_NAME,TYPE_ID,AGENT_IP,DEVICE_TYPE,AGENT_COMP,CL_PORT,
+		COMMUNITY,AGENT_DESC,CREATE_TIME,VERSION_NUM,LocalTable_ID_Ref,acquisition_mode,diskNum,
+		site_id,Zone_id,Cluster_id,Vms_id,Nvr_id,switch_id,switch_port)
+		VALUES
+		(#agentName#,#typeId#,#agentIp#,#deviceType#,#agentComp#,#clPort#,#community#,
+		#agentDesc#,CURDATE(),'1',#localTableIDRef#,#acquisitionMode#,#diskNum#,#siteId#,
+		#zoneId#,#clusterId#,#vmsId#,#nvrId#,#switchId#,#switchPort#)
+		<selectKey resultClass="String" keyProperty="agentId"> 
+	        <![CDATA[SELECT LAST_INSERT_ID() AS agentId ]]>
+		</selectKey>
+	</insert>
+	
+	<!-- 添加ZoneCluster实例信息 -->
+	<insert id="insertZoneClusterInstance" parameterClass="deviceDomain">
+		INSERT INTO zone_cluster_instance_tab (
+			ZCI_ID,
+			Resource_Type,
+			LocalTable_ID_Ref,
+			Leaf_Name,
+			CMDB_ID_Ref,
+			LocalTable_Name
+		) VALUES(
+			#zciId#,
+			#resourceType#,
+			#localTableIDRef#,
+			#leafName#,
+			#cMDBIDRef#,
+			#localTableName#
+		)
+	</insert>
+	
+	<!-- 添加通道信息 -->
+	<insert id="insertChannel" parameterClass="deviceDomain">
+		INSERT INTO mals_nm_agent_prop_info_t (
+			AGENT_ID,
+			AGENT_PROP_ID,
+			PROP_DESC
+		) VALUES(
+			#agentId#,
+			#channelId#,
+			#channelName#
+		)
+	</insert>
+	
+	<!-- 修改 -->
+	<update id="updateDeviceDomain" parameterClass="deviceDomain">
+		UPDATE
+		mals_nm_agent_info_t SET
+		AGENT_NAME = #agentName#,
+		TYPE_ID=#typeId#,
+		AGENT_IP=#agentIp#,
+		DEVICE_TYPE = #deviceType#,
+		AGENT_COMP=#agentComp#,
+		CL_PORT=#clPort#,
+		COMMUNITY=#community#,
+		AGENT_DESC=#agentDesc#,
+		acquisition_mode=#acquisitionMode#,
+		diskNum = #diskNum#,
+		site_id = #siteId#,
+		zone_id = #zoneId#,
+		cluster_id = #clusterId#,
+		vms_id = #vmsId#,
+		nvr_id = #nvrId#,
+		switch_id = #switchId#,
+		switch_port = #switchPort#,
+		LocalTable_ID_Ref = #localTableIDRef#
+		WHERE AGENT_ID=#agentId#
+	</update>
+	
+	<!-- 修改zoneclusterinstance表 -->
+	<update id="editZoneClusterInstance" parameterClass="deviceDomain">
+		UPDATE zone_cluster_instance_tab 
+		   SET LocalTable_ID_Ref = #localTableIDRef#,
+		   	   Resource_Type=#resourceType#,
+			   Leaf_Name=#leafName#,
+			   LocalTable_Name=#localTableName#
+		 WHERE ZCI_ID=#zciId#
+	</update>
+	
+	<!-- 删除通道信息 -->
+	<insert id="deleteChannel" parameterClass="String">
+		DELETE FROM mals_nm_agent_prop_info_t
+		WHERE AGENT_ID=#agentId#
+	</insert>
+
+	<!-- 删除 -->
+	<delete id="deleteDeviceById" parameterClass="String">
+		DELETE FROM
+		mals_nm_agent_info_t
+		WHERE AGENT_ID=#agentId#
+	</delete>
+	
+	<!-- 删除zoneclusterinstance表 -->
+	<delete id="deleteZoneClusterInstance" parameterClass="String">
+		DELETE FROM zone_cluster_instance_tab 
+		 WHERE ZCI_ID=#zciId#
+	</delete>
+
+	<!-- 校验设备编码等是否重复 -->
+	<select id="existIDCount" resultClass="int" parameterClass="deviceDomain">
+		SELECT count(LocalTable_ID_Ref)
+		FROM mals_nm_agent_info_t
+		WHERE LocalTable_ID_Ref = #localTableIDRef#
+		<isNotEmpty prepend="AND" property="agentId">
+			AGENT_ID != #agentId#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 校验当前站点设备名称是否重复 -->
+	<select id="existNameCount" resultClass="int" parameterClass="deviceDomain">
+		SELECT count(agent_name)
+		  FROM mals_nm_agent_info_t
+		 WHERE agent_name = #agentName#
+		   AND SITE_ID = #siteId#		
+		<isNotEmpty prepend="AND" property="agentId">
+			AGENT_ID != #agentId#
+		</isNotEmpty>
+	</select>
+
+	<!-- 校验采集IP等是否重复 -->
+	<select id="existIPCount" resultClass="int" parameterClass="deviceDomain">
+		SELECT count(AGENT_IP)
+		FROM mals_nm_agent_info_t
+		WHERE AGENT_IP = #agentIp#
+		<isNotEmpty prepend="AND" property="agentId">
+			AGENT_ID != #agentId#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 校验交换机端口等是否重复 -->
+	<select id="existPortCount" resultClass="int" parameterClass="deviceDomain">
+		SELECT count(SWITCH_PORT)
+		  FROM mals_nm_agent_info_t
+		 WHERE SWITCH_ID = #switchId#
+		   AND SWITCH_PORT = #switchPort#
+		   AND SITE_ID = #siteId#			 
+		<isNotEmpty prepend="AND" property="agentId">
+			AGENT_ID != #agentId#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 获取车站信息 -->
+	<select id="getSites" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			site_id AS siteId,
+			site_name AS siteName,
+			site_type AS siteType
+		FROM
+			honeywell_site_tab
+		WHERE 1=1
+		<isNotEmpty prepend="AND" property="lineNum">
+			line_num = #lineNum#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="siteType">
+			site_type = #siteType#
+		</isNotEmpty>
+		<isNotEmpty prepend="AND" property="siteId">
+			site_id = #siteId#
+		</isNotEmpty>
+		ORDER BY
+			site_id
+	</select>
+	
+	<!-- 获取机房信息 -->
+	<select id="getZones" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			zone_id AS zoneId,
+			zone_name AS zoneName
+		FROM
+			honeywell_zone_tab
+		WHERE site_id = #siteId#
+		ORDER BY
+			zone_id
+	</select>
+	
+	<!-- 获取机柜信息 -->
+	<select id="getClusters" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			cluster_id AS clusterId,
+			cluster_name AS clusterName
+		FROM
+			honeywell_cluster_tab
+		WHERE zone_id = #zoneId#
+		ORDER BY
+			cluster_id
+	</select>
+	
+	<!-- 获取所属VMS信息 -->
+	<select id="getVms" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			agent_id AS vmsId,
+			info.agent_name AS vmsName
+		FROM
+			mals_nm_agent_info_t info
+		LEFT JOIN mals_nm_agent_type_t type ON info.TYPE_ID = type.AGENT_TYPE
+		WHERE
+			type.AGENT_GROUP = 'VMS'
+		AND site_id = #siteId#
+	</select>
+	
+	<!-- 获取所属NVR信息 -->
+	<select id="getNvrs" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			agent_id AS nvrId,
+			info.agent_name AS nvrName
+		FROM
+			mals_nm_agent_info_t info
+		LEFT JOIN mals_nm_agent_type_t type ON info.TYPE_ID = type.AGENT_TYPE
+		WHERE
+			type.AGENT_GROUP = 'NVR'
+		AND site_id = #siteId#
+	</select>
+	
+	<!-- 获取交换机信息 -->
+	<select id="getSwitchs" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT
+			agent_id AS switchId,
+			info.agent_name AS switchName
+		FROM
+			mals_nm_agent_info_t info
+		LEFT JOIN mals_nm_agent_type_t type ON info.TYPE_ID = type.AGENT_TYPE
+		WHERE
+			type.AGENT_GROUP = 'Switch'
+		AND site_id = #siteId#
+	</select>
+	
+	<!-- 获取主键自动增长当前值 -->
+	<select id="getCurrPara" resultClass="String">
+		select max(LAST_INSERT_ID()) as agentId from mals_nm_agent_info_t
+	</select>
+	
+	<!-- 在网管nmsdb中查询设备是否有ping告警，如果无则为在线，否则离线 -->
+	<select id="getResourceStatus" parameterClass="deviceDomain" resultClass="String">
+		SELECT
+			CASE count(id)
+			WHEN 0 THEN '0'
+			ELSE '1'
+			END status
+		FROM
+			nmsdb.t_alarm_temp
+		WHERE
+			type = '通断性'
+		AND clearStatus = '1'
+		AND rid = #agentIp#
+		AND eventTime > date_add(now(), INTERVAL - #agentFrequency# MINUTE)
+	</select>
+
+	<!-- 查询设备个数 -->
+	<select id="getCountIshave" parameterClass="deviceDomain" resultClass="int">
+		SELECT count(agent_Id) 
+		  FROM mals_nm_agent_info_t
+		 WHERE LocalTable_ID_Ref = #localTableIDRef#
+		<isNotEmpty prepend="AND" property="siteId">
+			site_id = #siteId#
+		</isNotEmpty>
+	</select>
+	
+	<!-- 查询设备个数 -->
+	<select id="getDevice" parameterClass="deviceDomain" resultClass="deviceDomain">
+		SELECT site_id siteId 
+		  FROM mals_nm_agent_info_t
+		 WHERE LocalTable_ID_Ref = #localTableIDRef#
+	</select>
+	
+	<!-- 批量导入更新数据 -->
+	<update id="updateBatchInto" parameterClass="deviceDomain">
+		 UPDATE
+			    mals_nm_agent_info_t 
+		    SET
+				AGENT_NAME = #agentName#,
+				TYPE_ID=#typeId#,
+				AGENT_IP=#agentIp#,
+				acquisition_mode=#acquisitionMode#,
+				site_id = #siteId#
+				<isNotEmpty property="deviceType">
+				,DEVICE_TYPE = #deviceType#
+				</isNotEmpty>
+				<isNotEmpty property="agentComp">
+				,AGENT_COMP=#agentComp#
+				</isNotEmpty>
+				<isNotEmpty property="clPort">
+				,CL_PORT=#clPort#
+				</isNotEmpty>
+				<isNotEmpty property="community">
+				,COMMUNITY=#community#
+				</isNotEmpty>
+				<isNotEmpty property="diskNum">
+				,diskNum = #diskNum#
+				</isNotEmpty>
+				<isNotEmpty property="switchId">
+				,switch_id = #switchId#
+				</isNotEmpty>
+				<isNotEmpty property="switchPort">
+				,switch_port = #switchPort#
+				</isNotEmpty>
+				<isNotEmpty property="agentDesc">
+				,AGENT_DESC=#agentDesc#
+				</isNotEmpty>
+		  WHERE LocalTable_ID_Ref = #localTableIDRef#
+	</update>
+	
+	<update id="updateBatchIntoInstance" parameterClass="deviceDomain">
+		UPDATE zone_cluster_instance_tab 
+		   SET Resource_Type=#resourceType#,
+			   Leaf_Name=#leafName#,
+			   LocalTable_Name=#localTableName#
+		 WHERE LocalTable_ID_Ref = #localTableIDRef#
+	</update>
+	
+	<select id="getAgentIpBySite" parameterClass="java.util.Map" resultClass="java.lang.String">
+		SELECT
+			i.AGENT_IP
+		FROM
+			mals_nm_agent_info_t i
+		LEFT JOIN
+			mals_nm_agent_type_t t
+		ON
+			i.TYPE_ID = t.AGENT_TYPE
+		WHERE
+			i.site_id = #siteId#
+		AND
+			t.AGENT_GROUP = #agentGroup#
+		GROUP BY
+			i.AGENT_ID
+	</select>
+	
+	<select id="getDevices" resultClass="deviceDomain"
+		parameterClass="deviceDomain">
+		SELECT
+			t1.TYPE_ID AS typeId,
+			t1.AGENT_IP AS agentIp
+		FROM
+			mals_nm_agent_info_t t1,
+			mals_nm_agent_type_t t2,
+			zone_cluster_instance_tab t6
+		WHERE
+			t1.TYPE_ID = t2.TYPE_ID
+		AND t1.AGENT_ID = t6.ZCI_ID
+	</select>
+</sqlMap>

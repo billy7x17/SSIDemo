@@ -1,0 +1,30 @@
+@charset "utf-8";
+/* CSS Document */
+.buttonbar{ width:100%; background:url(../images/buttonbar_bg_.png) repeat-x left top; font-weight:bold; height:50px; position:absolute; left:0; bottom:0; overflow:visible;}
+
+.btn_sel:hover{ border:1px solid #808080; border-top:1px solid #fff; border-left:1px solid #fff;}
+
+a.btn_first, a.btn_previous, a.btn_next, a.btn_last{ width:32px; height:28px; border:none; margin-top:12px; margin-left:2px; cursor:pointer; display:block; float:left;}
+a.btn_first{ background:url(../images/btn_first_normal.png) no-repeat left top; margin-left:10px;}
+a.btn_first:hover{ background:url(../images/btn_frist_focus.png) no-repeat left top;}
+a.btn_previous{ background:url(../images/btn_previous_normal.png) no-repeat left top;}
+a.btn_previous:hover{ background:url(../images/btn_previous_focus.png) no-repeat left top;}
+a.btn_next{ background:url(../images/btn_next_normal.png) no-repeat left top;}
+a.btn_next:hover{ background:url(../images/btn_next_focus.png) no-repeat left top;}
+a.btn_last{ background:url(../images/btn_last_normal.png) no-repeat left top; margin-right:10px;}
+a.btn_last:hover{ background:url(../images/btn_last_focus.png) no-repeat left top;}
+
+.pageNo{ width:57px; height:22px; border:1px solid #acb2b4; font-weight:bold; text-align:right; padding-right:3px; background:url(../images/inputBg.png) repeat-x left top; margin-top:13px; float:left; line-height:22px;}
+.buttonbar span{ float:left; display:block; width:auto; height:30px; line-height:54px;}
+.buttonbar input{ float:left; display:block;}
+.buttonbarLef{float:left; width:auto;}
+.buttonbarRig{width:170px; float:right;}
+.buttonbarLine{ font-weight:normal; margin:0px 5px;}
+
+.btn_disable{  margin-top:7px; margin-left:12px;}
+
+
+a.button{ width:84px; height:34px; text-align:center; line-height:35px; border:none; cursor:pointer; font-weight:bold; background: url(../images/btn_disable.png) no-repeat left top; color:#646464; display:block; float:left;}
+
+a.button:hover, a.btnImp{width:84px; height:34px; text-align:center; line-height:34px; border:none; cursor:pointer; font-weight:bold; color:#fff; background:url(../images/btn_focus.png) no-repeat left top; display:block; float:left;}
+a.button:hover, a.btnImp:hover{ text-decoration:underline;}

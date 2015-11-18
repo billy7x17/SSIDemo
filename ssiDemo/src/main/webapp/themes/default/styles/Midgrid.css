@@ -1,0 +1,42 @@
+@charset "UTF-8";
+/* CSS Document */
+.midgrid {
+}
+
+.midgrid.dragDiv {
+    border: 1px solid #316ac5;
+    position: absolute;
+    background: none;
+}
+
+.midgrid.line{
+	position:absolute;
+	top: 0;
+	display:inline;
+	background: url(../images/line.gif) repeat-y 11px center ;
+	width:20px;
+}
+
+.midgrid.line.mouseover,.midgrid.moving{
+	cursor: col-resize;
+	/**z-index :-10;*/
+}
+
+
+.resizeDivClass {
+    position: relative;
+    background-color:#aab9c8;
+    width:0px;
+    height:18px;
+    z-index: -1;
+    left: expression(this.parentElement.offsetWidth-1);
+    cursor: e-resize;
+    margin-bottom: -18px;
+    margin-left: -5px;
+}
+
+.midgrid td div,th{
+    text-overflow:ellipsis;
+    overflow:hidden;
+    white-space:nowrap;
+}

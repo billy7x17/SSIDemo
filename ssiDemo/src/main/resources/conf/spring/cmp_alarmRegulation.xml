@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 告警规则浏览 -->
+	<bean id="AlarmRegulationListAction"
+		class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRegulationList.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmRegulation.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警规则添加前准备 -->
+	<bean id="AlarmRegulationBeforeAddAction"
+		class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationBeforeAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRegulationAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警规则添加 -->
+	<bean id="AlarmRegulationAddAction"
+		class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRegulationAdd.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmRegulation.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+		<property name="ruleXmlSyncUrl">
+            <value>${ruleXml.syncUrl}</value>
+        </property>
+        <property name="ruleXmlPath">
+            <value>${ruleXml.path}</value>
+        </property>
+	</bean>
+	
+	<!-- 告警规则修改前准备 -->
+	<bean id="AlarmRegulationBeforeEditAction"
+		class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationBeforeEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRegulationEdit.authID}</value>
+		</property>	
+	</bean>
+	
+	<!-- 告警规则修改 -->
+	<bean id="AlarmRegulationEditAction"
+		class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRegulationEdit.authID}</value>
+		</property>	
+		<property name="functionName">
+			<value>${alarmRegulation.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+		<property name="ruleXmlSyncUrl">
+            <value>${ruleXml.syncUrl}</value>
+        </property>
+        <property name="ruleXmlPath">
+            <value>${ruleXml.path}</value>
+        </property>
+	</bean>
+	
+	<!-- 告警规则删除 -->
+	<bean id="AlarmRegulationDeleteAction"
+		class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationDeleteAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRegulationDelete.authID}</value>
+		</property>	
+		<property name="functionName">
+			<value>${alarmRegulation.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+		 <property name="ibatisDAOAlarm">
+            <ref bean="ibatisDAOProxyAlarm" />
+        </property>
+        <property name="ruleXmlSyncUrl">
+            <value>${ruleXml.syncUrl}</value>
+        </property>
+        <property name="ruleXmlPath">
+            <value>${ruleXml.path}</value>
+        </property>
+	</bean>
+	
+	<!-- 告警规则详细 -->
+	<bean id="AlarmRegulationDetailAction"
+		class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationDetailAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRegulationDetail.authID}</value>
+		</property>	
+		<property name="functionName">
+			<value>${alarmRegulation.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警规则绑定前准备 -->
+    <bean id="AlarmRegulationBeforeBindAction"
+        class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationBeforeBindAction"
+        singleton="false" >
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${alarmRegulationBind.authID}</value>
+        </property> 
+    </bean>
+    
+    <!-- 告警规则绑定 -->
+    <bean id="AlarmRegulationBindAction"
+        class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationBindAction"
+        singleton="false" >
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${alarmRegulationBind.authID}</value>
+        </property> 
+        <property name="functionName">
+            <value>${alarmRegulation.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${edit}</value>
+        </property>
+        <property name="ibatisDAOAlarm">
+            <ref bean="ibatisDAOProxyAlarm" />
+        </property>
+    </bean>
+    
+    <!-- 告警规则解绑 -->
+    <bean id="AlarmRegulationUnbindAction"
+        class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationUnbindAction"
+        singleton="false" >
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${alarmRegulationUnbind.authID}</value>
+        </property> 
+        <property name="functionName">
+            <value>${alarmRegulation.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${edit}</value>
+        </property>
+         <property name="ibatisDAOAlarm">
+            <ref bean="ibatisDAOProxyAlarm" />
+        </property>
+    </bean>
+    <!-- 选择用户 -->
+    <bean id="userListAction" class="com.cloudmaster.cmp.web.authority.user.UserListAction"
+        singleton="false" parent="abstractAction">
+        <property name="functionName">
+            <value>${user.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${browse}</value>
+        </property>
+    </bean>
+
+    <!-- 告警规则 中止 -->
+    <bean id="AlarmRegulationSuspendAction"
+        class="com.cloudmaster.cmp.alarm.regulation.web.AlarmRegulationSuspendAction"
+        singleton="false" >
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${alarmRegulationSuspend.authID}</value>
+        </property> 
+        <property name="functionName">
+            <value>${alarmRegulation.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${edit}</value>
+        </property>
+         <property name="ibatisDAOAlarm">
+            <ref bean="ibatisDAOProxyAlarm" />
+        </property>
+    </bean>
+	
+</beans>

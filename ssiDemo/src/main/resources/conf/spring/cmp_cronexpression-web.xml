@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+    <bean id="taskType" class="java.util.HashMap">
+        <constructor-arg>
+        <map>
+            <entry key="SPRING" value="SPRING"/>
+            <entry key="JAVA" value="JAVA"/>
+            <entry key="ETL" value="ETL"/>
+        </map>
+        </constructor-arg>
+    </bean>
+
+    <bean id="CronExpressionListAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionListAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${cronExpression.authID}</value>
+        </property>
+        <property name="functionName">
+            <value>${cronExpressionManager.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${browse}</value>
+        </property>
+    </bean>
+    
+    <!-- 添加前准备 -->
+    <bean id="CronExpressionBeforeAddAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionBeforeAddAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy"/>
+        </property>
+        <property name="authId">
+            <value>${cronExpression.add.authID}</value>
+        </property>
+        <property name="taskType" ref="taskType"></property>
+    </bean>
+    
+    <!-- 添加 -->
+        <bean id="CronExpressionAddAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionAddAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy"/>
+        </property>
+        <property name="authId">
+            <value>${cronExpression.add.authID}</value>
+        </property>
+        <property name="functionName">
+            <value>${cronExpressionManager.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${add}</value>
+        </property>
+        <property name="quzrtzManager" ref="quzrtzManager"></property>
+        <property name="taskType" ref="taskType"></property>
+    </bean>
+    
+    <!-- 修改前准备 -->
+        <bean id="CronExpressionBeforeEditAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionBeforeEditAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${cronExpression.edit.authID}</value>
+        </property>
+        <property name="taskType" ref="taskType"></property>
+    </bean>
+    
+    <!-- 修改 -->
+        <bean id="CronExpressionEditAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionEditAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${cronExpression.edit.authID}</value>
+        </property>
+        <property name="functionName">
+            <value>${cronExpressionManager.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${edit}</value>
+        </property>
+        <property name="quzrtzManager" ref="quzrtzManager"></property>
+        <property name="taskType" ref="taskType"></property>
+    </bean>
+    
+    <!-- 删除 -->
+        <bean id="CronExpressionDeleteAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionDeleteAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${cronExpression.delete.authID}</value>
+        </property>
+        <property name="functionName">
+            <value>${cronExpressionManager.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${delete}</value>
+        </property>
+        <property name="quzrtzManager" ref="quzrtzManager"></property>
+    </bean>
+    
+    <!-- 查询前准备 -->
+        <bean id="CronExpressionBeforeSearchAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionBeforeSearchAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${cronExpression.search.authID}</value>
+        </property>
+        <property name="taskType" ref="taskType"></property>
+    </bean>
+    
+    <!-- 查询 -->
+    <bean id="CronExpressionSearchAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionSearchAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${cronExpression.authID}</value>
+        </property>
+        <property name="functionName">
+            <value>${cronExpressionManager.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${browse}</value>
+        </property>
+    </bean>
+    
+    <!-- 详细 -->
+        <bean id="CronExpressionDetailAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionDetailAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy"/>
+        </property>
+        <property name="authId">
+            <value>${cronExpression.detail.authID}</value>
+        </property>
+        <property name="functionName">
+            <value>${cronExpressionManager.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${browse}</value>
+        </property>
+    </bean>
+    
+    <!-- 查询执行记录 -->
+    <bean id="CronExpressionTaskLogAction" class="com.cloudmaster.cmp.ITIL.cronexpression.web.CronExpressionTaskLogAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="authId">
+            <value>${cronExpression.detail.authID}</value>
+        </property>
+        <property name="functionName">
+            <value>${cronExpressionManager.functionName}</value>
+        </property>
+        <property name="opType">
+            <value>${browse}</value>
+        </property>
+    </bean>
+
+</beans>

@@ -1,0 +1,8 @@
+@charset "utf-8";
+/* CSS Document */
+.workarea{background-color:#f4f6f8; position:relative;}
+/** add by wengcz 2012-1-16 设置iframe背景色  */
+.iframeWorkarea{ background-color:#f4f6f8; position:relative;}
+
+
+

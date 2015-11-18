@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmRoster">
+
+	<typeAlias alias="alarmRoster"
+		type="com.cloudmaster.cmp.alarm.alarmaoster.dao.AlarmRosterDomain" />
+
+	<!-- 列表页面查询记录 -->
+	<select id="getAlarmRosterCount" parameterClass="alarmRoster"
+		resultClass="java.lang.Integer">
+		SELECT
+		COUNT(*)
+		FROM ALARMROSTER_TAB 
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="manufactureID">
+				Manufacture_ID like '%$manufactureID$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="alarmGrade">
+				Alarm_Grade =#alarmGrade# 
+			</isNotEmpty>	
+			<isNotEmpty prepend="AND" property="type">
+				type = #type# 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="startTime">
+			<![CDATA[
+			Modify_Time >= #startTime#
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="endTime">
+			<![CDATA[
+			Modify_Time <=  #endTime#
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+		  </dynamic>
+	</select>	
+	
+	<!-- 列表页面查询 -->
+	<select id="getalarmrosterSearch" parameterClass="alarmRoster"
+		resultClass="alarmRoster">
+		SELECT
+			Roster_ID AS rosterID,
+			Manufacture_ID AS manufactureID,
+			gradeLevel.name AS alarmGrade,
+			DATE_FORMAT(Modify_Time, '%Y-%m-%d') AS modifyTime,
+			roster.Description AS description,
+			type as type,
+			ID as id
+		FROM ALARMROSTER_TAB roster
+		LEFT JOIN mals_nm_alarm_level_t gradeLevel ON roster.Alarm_Grade = gradeLevel.LEVEL_ID 
+		<dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="manufactureID">
+				Manufacture_ID like '%$manufactureID$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="alarmGrade">
+			Alarm_Grade =#alarmGrade# 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="type">
+				type = #type# 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="startTime">
+			<![CDATA[
+			Modify_Time >= #startTime#
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="endTime">
+			<![CDATA[
+			Modify_Time <=  #endTime#
+			]]>
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+		  </dynamic>
+		  order by $sortName$ $sortOrder$
+	</select>
+	<!--添加前查询阀值信息-->
+	<select id="getID" parameterClass="alarmRoster" resultClass="alarmRoster">
+		select ID as thresholdID,
+				EVENT_NAME as eventName
+		from 
+				mals_nm_threshold_valve_t 	
+	</select>
+	
+	<!--添加前查询告警规则信息-->
+	<select id="getrRowID" parameterClass="alarmRoster"
+		resultClass="alarmRoster">
+		select  rule.ROWID as rowID,
+				rule.ALARM_TITLE as alarmTitle,
+				rule.TYPE_ID as typeId,
+				type.AGENT_NAME  as agentName
+		from 
+				mals_nm_access_rule_t rule,mals_nm_agent_type_t type
+		where 
+				rule.TYPE_ID=type.TYPE_ID
+	</select>
+	
+	<!--插入一条记录-->
+	<insert id="insertAlarmRoster" parameterClass="alarmRoster" >
+		INSERT ALARMROSTER_TAB
+		(Manufacture_ID,Alarm_Grade,Modify_Time,Description,type,ID)
+		VALUES
+		(#manufactureID#,#alarmGrade#,DATE_FORMAT(current_date(), '%Y%m%d'),#description#,#type#,#id#)
+	</insert>
+	
+	
+	<!-- 修改前准备查询type为0 的 -->
+	<select id="getType0" parameterClass="alarmRoster"
+		resultClass="alarmRoster">
+		SELECT 
+			Roster_ID AS rosterID,
+			Manufacture_ID AS manufactureID,
+			Alarm_Grade AS alarmGrade,
+			gradeLevel.name AS alarmGradeName,
+			DATE_FORMAT(Modify_Time, '%Y-%m-%d') AS modifyTime,
+			a.Description AS description,
+			type  as type,
+			a.ID as thresholdID,
+			t.EVENT_NAME as eventName
+		FROM 
+			alarmroster_tab a 
+			LEFT JOIN mals_nm_alarm_level_t gradeLevel ON a.Alarm_Grade = gradeLevel.LEVEL_ID
+			LEFT JOIN mals_nm_threshold_valve_t t ON a.ID = t.ID
+		WHERE 
+			Roster_ID = #rosterID# 
+			
+	</select>
+	
+	<!-- 修改前准备查询type为0 的 -->
+	<select id="getType1" parameterClass="alarmRoster"
+		resultClass="alarmRoster">
+			SELECT 
+				Roster_ID AS rosterID,
+				Manufacture_ID AS manufactureID,
+				Alarm_Grade AS alarmGrade,
+				gradeLevel.name AS alarmGradeName,
+				DATE_FORMAT(Modify_Time, '%Y-%m-%d') AS modifyTime,
+				a.Description AS description,
+				type  as type,
+				a.ID as rowID,
+				r.ALARM_TITLE as alarmTitle,
+				type.AGENT_NAME  as agentName
+			FROM 
+				alarmroster_tab a 
+				LEFT JOIN mals_nm_alarm_level_t gradeLevel ON a.Alarm_Grade = gradeLevel.LEVEL_ID
+				LEFT JOIN mals_nm_access_rule_t r ON a.ID = r.ROWID
+				LEFT JOIN mals_nm_agent_type_t type ON r.TYPE_ID=type.TYPE_ID
+		WHERE 
+			Roster_ID = #rosterID# 
+	</select>
+	
+	<!-- 修改单个信息 -->
+	<update id="updateAlarmRoster" parameterClass="alarmRoster">
+		UPDATE ALARMROSTER_TAB
+		SET
+		Manufacture_ID = #manufactureID#,
+		Alarm_Grade = #alarmGrade#,
+		Modify_Time =DATE_FORMAT(current_date(), '%Y%m%d'),
+		Description = #description#,
+		type =#type#,
+		ID =#id#
+		WHERE Roster_ID =#rosterID#
+	</update>
+
+
+	<!-- 删除花名册 -->
+	<delete id="deleteAlarmRoster" parameterClass="alarmRoster">
+		delete from
+		ALARMROSTER_TAB WHERE Roster_ID = #rosterID#
+	</delete>
+	
+	<!--查询rostID是否被占用-->
+	<select  id="getRostID" parameterClass="alarmRoster" resultClass="java.lang.Integer">
+		select 
+			count(1) 
+		from 
+			alarmfilter_tab 
+		where 
+			Roster_ID=#rosterID#
+	</select>
+	
+	<!-- 获取告警等级 -->
+    <select id="getAlarmLevelList"  resultClass="alarmRoster" parameterClass="alarmRoster">
+            SELECT 
+            NAME AS alarmGradeName,
+            VALUE AS alarmGrade
+        FROM mals_nm_alarm_level_t
+    ORDER BY VALUE
+    </select>
+    
+    <!-- 查询规则匹配记录，用于添加时对唯一告警或阀值校验  -->
+    <select id="checkAlarmRoster" parameterClass="alarmRoster" resultClass="int">
+        SELECT COUNT(*)
+        FROM alarmroster_tab
+        WHERE type = #type#
+        AND ID = #id#
+        <isNotEmpty prepend="AND" property="rosterID">
+            Roster_ID != #rosterID#
+        </isNotEmpty>
+    </select>
+    
+</sqlMap>

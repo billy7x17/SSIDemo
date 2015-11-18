@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 物理机资源分配信息查询 -->
+	<bean id="PMResourceSearchAction" class="com.cloudmaster.cmp.performance.physics.web.PMResourceSearchAction"
+		singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${performance.pmResource.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${performance.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- Decoder 性能管理 -->
+	<bean id="DecoderResourceAction" class="com.cloudmaster.cmp.performance.decoder.web.DecoderResourceAction"
+		singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${performance.pmResource.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${performance.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	
+	<!--  IPC 资源分配信息查询 -->	
+	<bean id="IPCResourceAction" class="com.cloudmaster.cmp.performance.ipc.web.IPCResourceAction" 
+	singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${performance.pmResource.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${performance.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 物理机性能信息查询全部复制资源分配 的配置  -->
+	<bean id="PMPropertySearchAction" class="com.cloudmaster.cmp.performance.physics.web.PMPropertySearchAction"
+		singleton="false" parent="abstractAction">
+		<property name="authId">
+			<value>${performance.pmProperty.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${performance.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+
+	<!-- IPSAN存储资源信息 -->
+	<bean id="IpSANResourceSearcheAction" class="com.cloudmaster.cmp.performance.ipsan.web.IpSANResourceSearcheAction"
+	  singleton="false" parent="abstractAction">
+		  <property name="authId">
+		  	  <value>${performance.ipsanResource.authID}</value>
+		  </property>
+		  <property name="functionName">
+		  	<value>${performance.functionName}</value>
+		  </property>
+		  <property name="opType">
+				<value>${browse}</value>
+		  </property>
+	</bean>
+	
+	<!-- IPC等设备的历史数据 -->
+	<bean id="IpcHistoryResourceAction" class="com.cloudmaster.cmp.performance.ipc.web.IpcHistoryResourceAction"
+	 singleton="false"  parent="abstractAction">
+		<property name="authId">
+			<value>${performance.pmProperty.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${performance.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- Encoder等设备 -->
+	<bean id="EncoderResourceAction" class="com.cloudmaster.cmp.performance.encoder.web.EncoderResourceAction"
+	  singleton="false"  parent="abstractAction">
+	  <property name="authId">
+	  	 <value>${performance.pmProperty.authID}</value>
+	  </property>
+	  <property name="functionName">
+		<value>${performance.functionName}</value>
+	  </property>
+	  <property name="opType">
+		<value>${browse}</value>
+	  </property>
+	</bean>
+	
+</beans>
+

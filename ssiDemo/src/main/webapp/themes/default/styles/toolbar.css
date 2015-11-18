@@ -1,0 +1,93 @@
+@charset "utf-8";
+/* CSS Document */
+.toolbar{ width:100%; height:42px; background:url(../images/toolbarBg.gif) repeat-x left top;}
+.toolbar input{ width:23px; height:23px; background-position:left top;  background-repeat:no-repeat; border:none; cursor:pointer;}
+
+.tolAdd{ background:url(../images/tol_add.png);}
+.tolAdd_gra{ background:url(../images/tol_add_gra.png);}
+.tolEdit{ background:url(../images/tol_edit.png);}
+.tolEdit_gra{ background:url(../images/tol_edit_gra.png);}
+.tolDelete{ background:url(../images/tol_delete.png);}
+.tolDelete_gra{ background:url(../images/tol_delete_gra.png);}
+.tolSearch{ background:url(../images/tol_exportReport.png);}
+.tolSearch_gra{ background:url(../images/tol_exportReport_gra.png);}
+.tolFind{ background:url(../images/tol_find.png);}
+.tolFind_gra{ background:url(../images/tol_find_gra.png);}
+.tolDetail{ background:url(../images/tol_detail.png);}
+.tolDetail_gra{ background:url(../images/tol_detail_gra.png);}
+.tolclearPwd{ background:url(../images/clearpwd.png);}
+.tolclearPwd_gra{ background:url(../images/tol_clearpwd_gra.png);}
+.tolOnlyDetail{ background:url(../images/tol_only_detail.png);}
+
+
+.tolStart{ background:url(../images/tol_start.png);}
+.tolStart_gra{ background:url(../images/tol_start_gra.png);}
+.tolShut{ background:url(../images/tol_shut.png);}
+.tolShut_gra{ background:url(../images/tol_shut_gra.png);}
+.tolRestart{ background:url(../images/tol_restart.png);}
+.tolRestart_gra{ background:url(../images/tol_restart_gra.png);}
+.tolRecover{ background:url(../images/tol_recover.png);}
+.tolRecover_gra{ background:url(../images/tol_recover_gra.png);}
+.tolEnd{ background:url(../images/tol_end.png);}
+.tolEnd_gra{ background:url(../images/tol_end_gra.png);}
+.tolBackUp{ background:url(../images/tol_backUp.png);}
+.tolBackUp_gra{ background:url(../images/tol_backUp_gra.png);}
+.tolHotMigrate{ background:url(../images/tol_hotMigrate.png);}
+.tolHotMigrate_gra{ background:url(../images/tol_hotMigrate_gra.png);}
+.tolColdMigrate{ background:url(../images/tol_coldMigrate.png);}
+.tolColdMigrate_gra{ background:url(../images/tol_coldMigrate_gra.png);}
+
+.tolExamine{ background:url(../images/tol_Examine.png);}
+.toExamine_gra{ background:url(../images/tol_Examine_gra.png);}
+.tolSuspend{ background:url(../images/tol_Suspend.png);}
+.toSuspend_gra{ background:url(../images/tol_Suspend_gra.png);}
+.tolRecover{ background:url(../images/tol_RecoverStatus.png);}
+.toRecover_gra{ background:url(../images/tol_RecoverStatus_gra.png);}
+
+
+.tol_upload{ background:url(../images/tol_upload.png);}
+.tol_upload_gra{ background:url(../images/tol_upload_gra.png);}
+.tol_download{ background:url(../images/tol_download.png);}
+.tol_download_gra{ background:url(../images/tol_download_gra.png);}
+.tol_resetPassword{ background:url(../images/tol_resetPassword.png);}
+.tol_resetPassword_gra{ background:url(../images/tol_resetPassword_gra.png);}
+.tol_softOff{ background:url(../images/tol_softOff.png);}
+.tol_softOff_gra{ background:url(../images/tol_softOff_gra.png);}
+.tol_hardOff{ background:url(../images/tol_hardOff.png);}
+.tol_hardOff_gra{ background:url(../images/tol_hardOff_gra.png);}
+.tol_softReset{ background:url(../images/tol_softReset.png);}
+.tol_softReset_gra{ background:url(../images/tol_softReset_gra.png);}
+.tol_hardReset{ background:url(../images/tol_hardReset.png);}
+.tol_hardReset_gra{ background:url(../images/tol_hardReset_gra.png);}
+.tol_lightOn{ background:url(../images/tol_lightOn.png);}
+.tol_lightOn_gra{ background:url(../images/tol_lightOn_gra.png);}
+.tol_lightOff{ background:url(../images/tol_lightOff.png);}
+.tol_lightOff_gra{ background:url(../images/tol_lightOff_gra.png);}
+.tol_apply{ background:url(../images/tol_apply.png);}
+.tol_apply_gra{ background:url(../images/tol_apply_gra.png);}
+.tol_release{ background:url(../images/tol_release.png);}
+.tol_release_gra{ background:url(../images/tol_release_gra.png);}
+.tol_bind{ background:url(../images/tol_bind.png);}
+.tol_bind_gra{ background:url(../images/tol_bind_gra.png);}
+.tol_unBind{ background:url(../images/tol_unBind.png);}
+.tol_unBind_gra{ background:url(../images/tol_unBind_gra.png);}
+.tol_safeRule{ background:url(../images/tol_safeRule.png);}
+.tol_safeRule_gra{ background:url(../images/tol_safeRule_gra.png);}
+.tol_networkCard{ background:url(../images/tol_networkCard.png);}
+.tol_networkCard_gra{ background:url(../images/tol_networkCard_gra.png);}
+
+.tol_flowHistory{ background:url(../images/tol_only_detail.png);}
+.tol_flowHistory_gra{ background:url(../images/tol_only_detail.png);}
+ 
+
+.tolNext{ background:url(../images/tol_next.png);}
+.tolPrevious{ background:url(../images/tol_previous.png);}
+
+.toolbar_page{ float:left; background:url(../images/tolLine.png) no-repeat right top; width:auto; padding:9px 0px 0 10px; height:33px;}
+.toolbar_operate{ float:left; padding:9px 0 0 6px;}
+
+.toolbar span{ display:block; float:left; width:29px; height:25px;}
+
+.tol_addIcoText {
+    background: url("../images/tol_add.png") no-repeat scroll left center transparent;
+}

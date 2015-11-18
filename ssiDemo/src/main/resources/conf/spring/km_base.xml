@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+	destroy-method="close">
+		<property name="driverClassName">
+			<value>com.mysql.jdbc.Driver</value>
+		</property>
+		<property name="url">
+			<value>${njdb.jdbc.url}</value>
+		</property>
+		<property name="username">
+			<value>${njdb.jdbc.username}</value>
+		</property>
+		<property name="password">
+			<value>${njdb.jdbc.password}</value>
+		</property>
+		
+		<!--maxActive: 最大连接数量-->  
+		<property name="maxActive" value="80" />
+		<!--maxIdle: 最大空闲连接,超过的空闲连接将被释放-->  
+        <property name="maxIdle" value="10" />
+        <!--minIdle: 最小空闲连接,低于这个数量会被创建新的连接-->  
+        <property name="minIdle" value="5" />
+        <!--  超时等待时间,毫秒, 当没有可用连接时，连接池等待连接释放的最大时间，超过该时间限制会抛出异常-->
+        <property name="maxWait" value="5000" />
+        
+        <!-- 对无效的链接校验的间隔时间 ，毫秒-->
+        <property name="timeBetweenEvictionRunsMillis" value="1800000" />
+        <!-- 在时间段内一直空闲， 被逐出连接池的时间,毫秒 -->
+        <property name="minEvictableIdleTimeMillis" value="3600000" />
+        
+        <property name="validationQuery" value="select 1" />
+        <!-- 指明连接是否被空闲连接回收器(如果有)进行检验.如果检测失败,则连接将被从池中去除 -->
+        <property name="testWhileIdle" value="true" />
+        <!-- 是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个 
+        <property name="testOnBorrow" value="true" />-->
+        <!-- 是否在归还到池中前进行检验
+        <property name="testOnReturn" value="true" /> -->
+
+        <!--超过removeAbandonedTimeout时间后，是否进行没用连接（废弃）的回收-->  
+        <property name="removeAbandoned" value="true"/>
+        <!-- 单位秒 -->
+        <property name="removeAbandonedTimeout" value="300"/>
+        <!-- 标记当Statement或连接被泄露时是否打印程序的stack traces日志 -->
+        <property name="logAbandoned" value="true"/>
+		
+	</bean>
+	
+	<bean id="sqlMapClient" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="configLocation">
+			<value>classpath:conf/ibatis/sqlmapconfig.xml</value>
+		</property>
+	</bean>
+
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+	<!-- dao-->
+	<bean id="ibatisDAO" class="com.cloudmaster.cmp.container.ibatis.SqlMapIbatisDAO">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="sqlMapClient">
+			<ref local="sqlMapClient" />
+		</property>
+	</bean>
+
+	<bean id="ibatisDAOProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManager" />
+		</property>
+		<property name="target">
+			<ref local="ibatisDAO" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="insert*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="update*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="ibatisService" class="com.cloudmaster.cmp.container.ibatis.IbatisService"
+		abstract="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+
+	<bean id="abstractAction" abstract="true">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+	
+	<!--================= ganlia 数据库链接============== -->
+	<bean id="sqlMapClientCM" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="configLocation">
+			<value>classpath:conf/ibatis/sqlmapconfigGanlia.xml</value>
+		</property>
+	</bean>
+
+
+	<bean id="transactionManagerCM"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+	</bean>
+	<!-- dao-->
+	<bean id="ibatisDAOCM" class="com.cloudmaster.cmp.container.ibatis.SqlMapIbatisDAO">
+		<property name="dataSource">
+			<ref local="dataSource" />
+		</property>
+		<property name="sqlMapClient">
+			<ref local="sqlMapClientCM" />
+		</property>
+	</bean>
+
+	<bean id="ibatisDAOProxyCM"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="transactionManager">
+			<ref bean="transactionManagerCM" />
+		</property>
+		<property name="target">
+			<ref local="ibatisDAOCM" />
+		</property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="insert*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="update*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="delete*">PROPAGATION_REQUIRED,-Exception</prop>
+				<prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="ibatisServiceCM" class="com.cloudmaster.cmp.container.ibatis.IbatisService"
+		abstract="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxyCM" />
+		</property>
+	</bean>
+
+	<bean id="abstractActionCM" abstract="true">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxyCM" />
+		</property>
+	</bean>
+	
+	<!--================= 研发中心告警数据库链接============== -->
+   <bean id="dataSourceAlarm" class="org.apache.commons.dbcp.BasicDataSource"
+        destroy-method="close">
+        <property name="driverClassName">
+            <value>com.mysql.jdbc.Driver</value>
+        </property>
+       <property name="url">
+            <value>${alarm.jdbc.url}</value>
+        </property>
+        <property name="username">
+            <value>${alarm.jdbc.username}</value>
+        </property>
+        <property name="password">
+            <value>${alarm.jdbc.password}</value>
+        </property>
+    </bean>
+
+
+    <bean id="sqlMapClientAlarm" class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+        <property name="dataSource">
+            <ref local="dataSourceAlarm" />
+        </property>
+        <property name="configLocation">
+            <value>classpath:conf/ibatis/sqlmapconfigAlarm.xml</value>
+        </property>
+    </bean>
+
+
+    <bean id="transactionManagerAlarm"
+        class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource">
+            <ref local="dataSourceAlarm" />
+        </property>
+    </bean>
+    <!-- dao-->
+    <bean id="ibatisDAOAlarm" class="com.cloudmaster.cmp.container.ibatis.SqlMapIbatisDAO">
+        <property name="dataSource">
+            <ref local="dataSourceAlarm" />
+        </property>
+        <property name="sqlMapClient">
+            <ref local="sqlMapClientAlarm" />
+        </property>
+    </bean>
+
+    <bean id="ibatisDAOProxyAlarm"
+        class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+        <property name="transactionManager">
+            <ref bean="transactionManagerAlarm" />
+        </property>
+        <property name="target">
+            <ref local="ibatisDAOAlarm" />
+        </property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="insert*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="update*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="delete*">PROPAGATION_REQUIRED,-Exception</prop>
+                <prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="ibatisServiceAlarm" class="com.cloudmaster.cmp.container.ibatis.IbatisService"
+        abstract="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxyAlarm" />
+        </property>
+    </bean>
+
+    <bean id="abstractActionAlarm" abstract="true">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxyAlarm" />
+        </property>
+    </bean>
+    
+</beans>

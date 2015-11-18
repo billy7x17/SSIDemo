@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AlarmStandardize">
+	<typeAlias alias="AlarmStandardize" type="com.cloudmaster.cmp.alarm.standardize.dao.AlarmDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	
+	
+	<!-- 获取hot_event_tab告警 -->
+	<select id="getHotEventAlarm" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+		SELECT 
+		    '1' as alarmSourceType,
+		    Eventype_Id as alarmIdentify, 
+			Level as originalAlarmGrade,
+			Tc_Type as alarmType,
+			Tc_Title as alarmTitle,
+			Event_Desc as alarmContent,
+			DATE_FORMAT(Last_Time,'%Y%m%d%H%i%S') as alarmTime,
+			Event_Hid as alarmIP,
+			'1' as deviceType,
+			ALARM_ID as thresholdId
+		FROM hot_event_tab t
+		  <dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="alarmTime">
+				(DATE_FORMAT(Last_Time,'%Y%m%d%H%i%S') >#alarmTime#)
+            </isNotEmpty>
+          </dynamic>
+        order by  alarmTime asc 
+	</select>
+	
+	<!-- 获取vm_hot_event_tab告警 -->
+	<select id="getVmHotEventAlarm" parameterClass="AlarmStandardize" resultClass="AlarmStandardize">
+		SELECT 
+		    '2' as alarmSourceType,
+		    Eventype_Id as alarmIdentify, 
+			Level as originalAlarmGrade,
+			Tc_Type as alarmType,
+			Tc_Title as alarmTitle,
+			Event_Desc as alarmContent,
+			DATE_FORMAT(Last_Time,'%Y%m%d%H%i%S') as alarmTime,
+			Event_Hid as alarmIP,
+			'2' as deviceType,
+			ALARM_ID as thresholdId
+		FROM vm_hot_event_tab t
+		  <dynamic prepend="WHERE">
+			<isNotEmpty prepend="AND" property="alarmTime">
+				(DATE_FORMAT(Last_Time,'%Y%m%d%H%i%S') >#alarmTime#)
+            </isNotEmpty>
+          </dynamic>
+        order by  alarmTime asc 
+	</select>
+
+	
+</sqlMap>

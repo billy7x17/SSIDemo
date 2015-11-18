@@ -1,0 +1,58 @@
+
+.mk-icon-16-message {
+  background: url("../images/icons/16/i_16_message.png") no-repeat scroll 0 0 transparent;
+}
+.mk-icon-16-close {
+  background: url("../images/icons/16/i_16_close.png") no-repeat scroll 0 0 transparent;
+}
+.mk-icon-16-min {
+  background: url("../images/icons/16/i_16_min.png") no-repeat scroll 0 0 transparent;
+}
+.mk-icon-16-max {
+  background: url("../images/icons/16/i_16_add.png") no-repeat scroll 0 0 transparent;
+}
+.mk-icon-16-logout {
+  background: url("../images/icons/16/i_16_logout.png") no-repeat scroll 0 0 transparent;
+}
+.mk-icon-16-add {
+  background: url("../images/add.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-add {
+  background: url("../images/icons/20/ico_sAdd.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-bulk {
+  background: url("../images/icons/20/ico_sBulk.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-chart {
+  background: url("../images/icons/20/ico_sChart.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-delete {
+  background: url("../images/icons/20/ico_sDelete.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-edit {
+  background: url("../images/icons/20/ico_sEdit.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-evaluate {
+  background: url("../images/icons/20/ico_sEvaluate.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-export {
+  background: url("../images/icons/20/ico_sExport.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-home {
+  background: url("../images/icons/20/ico_sHome.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-import {
+  background: url("../images/icons/20/ico_sImport.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-refresh {
+  background: url("../images/icons/20/ico_sRefresh.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-report {
+  background: url("../images/icons/20/ico_sReport.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-sms {
+  background: url("../images/icons/20/ico_sSMS.png") no-repeat scroll left center transparent;
+}
+.mk-icon-20-user {
+  background: url("../images/icons/20/ico_sUser.png") no-repeat scroll left center transparent;
+}

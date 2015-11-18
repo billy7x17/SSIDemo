@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- MIB信息 -->
+	<bean id="mibinfoDomain" 
+		class="com.cloudmaster.cmp.performance.mibinfo.dao.MibinfoDomain" 
+		singleton="false">
+	</bean>
+	<bean id="thresholdDomain" 
+		class="com.cloudmaster.cmp.alarm.threshold.dao.ThresholdDomain" 
+		singleton="false">
+	</bean>
+	
+	<!-- 浏览MIB -->
+	<bean id="mibListAction"
+		class="com.cloudmaster.cmp.performance.mibinfo.web.MibinfoListAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${mibinfo.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${performanceGeter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	
+	<!-- 删除 -->
+	<bean id="mibInfoDeleteAction"
+		class="com.cloudmaster.cmp.performance.mibinfo.web.MibInfoDeleteAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${mibinfoDel.authID}</value>
+		</property>
+		<property name="mibinfoDomain">
+			<ref bean="mibinfoDomain" />
+		</property>
+		<property name="thresholdDomain">
+			<ref bean="thresholdDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${performanceGeter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${delete}</value>
+        </property>	
+	</bean>
+	
+	<!-- 详细 -->
+	<bean id="mibInfoDetailAction"
+		class="com.cloudmaster.cmp.performance.mibinfo.web.MibInfoDetailAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${mibinfoDetail.authID}</value>
+		</property>
+		<property name="mibinfoDomain">
+			<ref bean="mibinfoDomain"/>
+		</property>
+		<property name="functionName"> 
+		    <value>${performanceGeter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	<!-- 添加初始化 -->
+	<bean id="mibInfoBeforeAddAction"
+		class="com.cloudmaster.cmp.performance.mibinfo.web.MibInfoBeforeAddAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${mibinfoAdd.authID}</value>
+		</property>
+	</bean>
+	<!-- 添加-->
+	<bean id="mibInfoAddAction"
+		class="com.cloudmaster.cmp.performance.mibinfo.web.MibInfoAddAction"
+		singleton="false" parent="abstractAction" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${mibinfoAdd.authID}</value>
+		</property>
+		<property name="mibinfoDomain">
+			<ref bean="mibinfoDomain"/>
+		</property>
+		<property name="functionName"> 
+		    <value>${performanceGeter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${add}</value>
+        </property>	
+	</bean>
+	<!-- 修改初始化 -->
+	<bean id="mibInfoBeforeUpdateAction"
+		class="com.cloudmaster.cmp.performance.mibinfo.web.MibInfoBeforeUpdateAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${mibinfoEdit.authID}</value>
+		</property>
+	</bean>
+	<!-- 修改-->
+	<bean id="mibInfoUpdateAction"
+		class="com.cloudmaster.cmp.performance.mibinfo.web.MibInfoUpdateAction"
+		singleton="false" parent="abstractAction">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${mibinfoEdit.authID}</value>
+		</property>
+		<property name="mibinfoDomain">
+			<ref bean="mibinfoDomain"/>
+		</property>
+		<property name="functionName"> 
+		    <value>${performanceGeter.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${edit}</value>
+        </property>	
+	</bean>
+</beans>

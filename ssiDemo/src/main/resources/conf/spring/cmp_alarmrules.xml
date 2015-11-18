@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 告警配置浏览 -->
+	<bean id="alarmRulesListAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.AlarmRulesListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesList.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmrules.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警配置添加前准备 -->
+	<bean id="AlarmRulesBeforeAddAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.AlarmRulesBeforeAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警配置添加 -->
+	<bean id="AlarmRulesAddAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.AlarmRulesAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesAdd.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmrules.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${add}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警配置修改前准备 -->
+	<bean id="alarmrulesBeforeEditAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.alarmrulesBeforeEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesEdit.authID}</value>
+		</property>	
+	</bean>
+	
+	<!-- 告警配置修改 -->
+	<bean id="alarmrulesEditAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.alarmrulesEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesEdit.authID}</value>
+		</property>	
+		<property name="functionName">
+			<value>${alarmrules.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${edit}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警配置删除 -->
+	<bean id="alarmrulesDeleteAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.alarmrulesDeleteAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesDelete.authID}</value>
+		</property>	
+		<property name="functionName">
+			<value>${alarmrules.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${delete}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警配置详细 -->
+	<bean id="alarmrulesDetailAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.alarmrulesDetailAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesDetail.authID}</value>
+		</property>	
+		<property name="functionName">
+			<value>${alarmrules.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+		
+	<!-- 告警配置查询前准备 -->
+	<bean id="alarmrulesBeforeSearchAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.alarmrulesBeforeSearchAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesSearch.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 告警配置查询 -->
+	<bean id="alarmrulesSearchAction"
+		class="com.cloudmaster.cmp.system.alarmrules.web.alarmrulesSearchAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${alarmRulesSearch.authID}</value>
+		</property>
+		<property name="functionName">
+			<value>${alarmrules.functionName}</value>
+		</property>
+		<property name="opType">
+			<value>${browse}</value>
+		</property>
+	</bean>
+</beans>

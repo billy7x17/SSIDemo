@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<!-- 阈值信息管理 -->
+	<package name="thresholdview" extends="json-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- 进入阈值浏览页面 -->
+		<action name="thresholdList" class="thresholdBeforeSearchAction" method="beforeSearch">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/threshold/list.jsp</result>
+		</action>
+		<!-- 进入阈值浏览页面 -->
+		<action name="thresholdBaseList" class="thresholdListAction" method="thresholdList">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/threshold/list.jsp</result>
+		</action>
+		<!-- 查询初始化 -->
+		<action name="thresholdBeforeSearch" class="thresholdBeforeSearchAction" method="beforeSearch">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/threshold/search.jsp</result>
+		</action>
+		<!-- 查询 -->
+		<action name="thresholdSearch" class="thresholdSearchAction" method="search">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/threshold/list.jsp</result>
+		</action>
+		<!-- 删除 -->
+		<action name="thresholdDelete" class="thresholdDeleteAction" method="delete">
+			<result name="SUCCESS" type="redirectAction">
+					<param name="actionName">thresholdList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		<!-- 详细 -->
+		<action name="thresholdDetail" class="thresholdDetailAction" method="detail">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/threshold/detail.jsp</result>
+		</action>
+		<!-- 添加初始化 -->
+		<action name="thresholdBeforeAdd" class="thresholdBeforeAddAction" method="beforeAdd">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/threshold/add.jsp</result>
+		</action>
+		<action name="thresholdBeforeAddValidateAlarmIdentityID" class="thresholdBeforeAddAction" method="validateAlarmIdentityID">
+		</action>
+		
+		<action name="getDeviceOid" class="thresholdBeforeAddAction" method="getDeviceOID">
+		</action>
+		
+		<action name="thresholdAdd" class="thresholdAddAction" method="add">
+			<result name="SUCCESS" type="redirectAction">
+					<param name="actionName">thresholdList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="INPUT" type="redirectAction">
+				<param name="actionName">thresholdBeforeAdd</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+		<!-- 修改初始化 -->
+		<action name="thresholdBeforeEdit" class="thresholdBeforeEditAction" method="beforeEdit">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/threshold/edit.jsp</result>
+		</action>
+		<action name="thresholdEdit" class="thresholdEditAction" method="edit">
+			<result name="SUCCESS" type="redirectAction">
+					<param name="actionName">thresholdList</param>
+					<param name="msg">${msg}</param>
+					<param name="errorMsg">${errorMsg}</param>
+			</result>
+			<result name="INPUT" type="redirectAction">
+				<param name="actionName">thresholdBeforeEdit</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+	</package>
+</struts>

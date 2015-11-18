@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="GB2312"?>
+<!DOCTYPE sqlMap PUBLIC "-//iBATIS.com//DTD SQL Map 2.0//EN" "http://www.ibatis.com/dtd/sql-map-2.dtd">
+<sqlMap namespace="LogInfo">
+	<typeAlias alias="logInfo"
+		type="com.cloudmaster.cmp.web.operationlog.OperationLogInfo" />
+	<typeAlias alias="searchLogInfo"
+		type="com.cloudmaster.cmp.web.operationlog.SearchLogInfo" />
+	
+		 
+	<!-- 搜索操作日志  确认日志表约束条件 -->
+	
+	<select id="getSearchLogInfos" resultClass="logInfo">
+	    select l.LOG_ID AS logId,l.USER_ID AS userId,l.USERNAME AS userName,l.IP AS ip,DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T') AS dateTime,
+        l.ACTION AS action,l.OPERATION_INFO AS operationInfo,l.SESSIONID AS sessionId, OPTYPE AS opType
+        from KM_OPERATION_LOG_T l 
+        <dynamic prepend="WHERE">	     
+<!--        <dynamic prepend="and" open="(" close=")">   -->
+            
+			<isNotEmpty prepend="AND" property="userId">
+				l.USER_ID like '%$userId$%'  
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="userName">
+				l.USERNAME like '%$userName$%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="ip">
+				l.IP=#ip#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="startTime">
+				<![CDATA[  DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')>=#startTime# ]]>               
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+                <![CDATA[  DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')<=#endTime# ]]>                
+            </isNotEmpty>
+       </dynamic>
+		ORDER BY DATETIME DESC
+	</select>
+	
+	<!-- 搜索操作日志 -->
+	<select id="getSearchLogInfoCount" resultClass="java.lang.Integer">
+		select count(*)
+		from KM_OPERATION_LOG_T l 
+	<dynamic prepend="WHERE">
+            
+			<isNotEmpty prepend="AND" property="userId">
+				l.USER_ID like '%$userId$%'  
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="userName">
+				l.USERNAME like '%$userName$%' 
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="ip">
+				l.IP=#ip#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="startTime">
+				<![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')>=#startTime# ]]>               
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+                <![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')<=#endTime# ]]>                
+            </isNotEmpty>
+ </dynamic>
+	</select>	
+
+    <!-- 一条操作日志的详细信息 -->
+    
+	<select id="getLogInfo" parameterClass="java.lang.String"
+		resultClass="logInfo">		        
+        select l.LOG_ID AS logId,l.USER_ID AS userId,l.USERNAME AS userName,l.IP AS ip,DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T') AS dateTime,
+        l.ACTION AS action,l.OPERATION_INFO AS operationInfo,l.SESSIONID AS sessionId,l.OPTYPE AS opType 
+        from KM_OPERATION_LOG_T l 
+        where l.LOG_ID=#LOG_ID# 
+	</select>
+	
+	<!-- 用户在一次session中的相关操作 -->
+	<select id="getOperationLogInfos" resultClass="logInfo">
+		select LOG_ID AS logId,
+		USER_ID AS userId,
+		USERNAME AS userName,
+		IP AS ip,
+		DATE_FORMAT(DATETIME,'%Y-%m-%d %T') AS dateTime,
+		ACTION AS action,
+		OPTYPE AS opType,
+		OPERATION_INFO AS operationInfo,	
+		SESSIONID AS sessionId
+		from KM_OPERATION_LOG_T	
+		where SESSIONID = #sessionId# 	
+		ORDER BY DATETIME DESC
+	</select>
+	
+	<!-- 用户在一次session中的相关操作 -->
+	<select id="getOperationLogInfoCount" resultClass="java.lang.Integer">
+		select count(*)
+		from KM_OPERATION_LOG_T	
+		where SESSIONID = #sessionId#
+	</select>
+	
+	<!-- 获取系统当前时间 -->
+	<select id="getSysDate" resultClass="java.util.Date">
+		select now();  
+	</select>
+	
+	<!-- 插入一条操作日志 -->
+	<insert id="insertOperationLog" parameterClass="logInfo">
+	<!--  
+       <selectKey resultClass="java.lang.Long" type="pre" keyProperty="logId" >  
+           SELECT OPERATION_LOG_ID.NEXTVAL AS LOG_ID FROM DUAL  
+       </selectKey>  
+     -->      
+		INSERT INTO
+		KM_OPERATION_LOG_T
+		(USER_ID,USERNAME,IP,DATETIME,ACTION,OPERATION_INFO,SESSIONID,OPTYPE)
+		VALUES
+		(#userId#,#userName#,#ip#,now(),#action#,#operationInfo#,#sessionId#,#opType#)
+	</insert>
+	
+	
+	<!-- 浏览操作日志 -->
+	<select id="getAllLogInfo" resultClass="logInfo">
+	    select l.LOG_ID AS logId,
+	    l.USER_ID AS userId,
+	    l.USERNAME AS userName,
+	    l.IP AS ip,
+	    DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T') AS dateTime,
+        l.ACTION AS action,
+        l.OPERATION_INFO AS operationInfo,
+        l.SESSIONID AS sessionId, 
+        OpType as opType
+        from KM_OPERATION_LOG_T l
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="userId">
+                l.USER_ID like concat('%',#userId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="userName">
+                l.USERNAME like concat('%',#userName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="ip">
+                l.IP like concat('%',#ip#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="startTime">
+				<![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')>=#startTime# ]]>               
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+                <![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')<=#endTime# ]]>                
+            </isNotEmpty>
+        </dynamic>
+        order by $sortName$ $sortOrder$
+        limit $offset$,$rows$
+	</select>
+	<!-- 浏览操作日志 -->
+	<select id="getAllLogInfoCount" resultClass="java.lang.Integer">
+		select count(*)
+        from KM_OPERATION_LOG_T l
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="userId">
+                l.USER_ID like concat('%',#userId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="userName">
+                l.USERNAME like concat('%',#userName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="ip">
+                l.IP like concat('%',#ip#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="startTime">
+				<![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')>=#startTime# ]]>               
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+                <![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')<=#endTime# ]]>                
+            </isNotEmpty>
+        </dynamic>
+	</select>
+	
+	<!-- 浏览操作日志 -->
+	<select id="exportList" resultClass="logInfo" parameterClass ="java.util.Map">
+	    select l.LOG_ID AS logId,
+	    l.USER_ID AS userId,
+	    l.USERNAME AS userName,
+	    l.IP AS ip,
+	    DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T') AS dateTime,
+        l.ACTION AS action,
+        l.OPERATION_INFO AS operationInfo,
+        l.SESSIONID AS sessionId, 
+        OpType as opType
+        from KM_OPERATION_LOG_T l
+        <dynamic prepend="WHERE">
+            <isNotEmpty prepend="AND" property="qtype">
+                $qtype$ like concat('%',#query#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="userId">
+                l.USER_ID like concat('%',#userId#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="userName">
+                l.USERNAME like concat('%',#userName#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="ip">
+                l.IP like concat('%',#ip#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="startTime">
+				<![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')>=#startTime# ]]>               
+            </isNotEmpty>
+            <isNotEmpty prepend="AND" property="endTime">
+                <![CDATA[   DATE_FORMAT(l.DATETIME,'%Y-%m-%d %T')<=#endTime# ]]>                
+            </isNotEmpty>
+        </dynamic>
+        order by $sortName$ $sortOrder$
+	</select>
+	
+</sqlMap>

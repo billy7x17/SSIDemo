@@ -1,0 +1,56 @@
+.onShow
+{
+    background:url(../images/GrayExclamatory.png) no-repeat; 
+	line-height:16px;
+	margin-top: 1px;
+	float: left;
+	height: 16px;
+	margin-right: 7px;
+	padding-left: 22px;
+	vertical-align:middle;
+	color: #ccc;
+}
+.onFocus
+{
+    background:url(../images/icon-blue.png) no-repeat; 
+    line-height:16px;
+	margin-top: 3px;
+	float: left;
+	height: 16px;
+	margin-right: 7px;
+	padding-left: 22px;
+	vertical-align:middle;
+	color: #aaa;
+}
+.onError
+{
+    background:url(../images/Minus.png) no-repeat;
+    line-height:16px;
+	margin-top: 1px;
+	float: left;
+	height: 16px;
+	margin-right: 7px;
+	padding-left: 22px;
+	vertical-align:middle;
+	color: #888;
+}
+.onCorrect
+{
+    background:url(../images/right.png) no-repeat;
+    line-height:16px;
+	margin-top: 1px;
+	float: left;
+	height: 16px;
+	margin-right: 7px;
+	padding-left: 22px;
+	vertical-align:middle;
+	color: #888;
+}
+.onLoad
+{
+    background:url(../images/onLoad.gif) no-repeat 3px 3px;
+    padding-left:25px;
+	font-size: 12px;
+	line-height:22px; 
+	vertical-align:middle;
+} 

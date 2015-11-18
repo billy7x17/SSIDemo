@@ -1,0 +1,69 @@
+@charset "utf-8";
+/* CSS Document */
+* {
+	              padding: 0;
+	              margin: 0;
+              }
+         
+			
+			
+			.ui-radio-state-disabled,
+			.ui-radio-state-checked-disabled,
+			.ui-radio-state-disabled-hover,
+			.ui-radio-state-checked-disabled-hover {
+				color: #999;
+			}
+			
+			span.ui-checkbox {
+				display: block;
+				float: left;
+				width: 16px;
+				height: 16px;
+				background: url(../images/icon_checkbox.png) 0 -41px no-repeat;
+				
+			}
+			
+			span.ui-radio {
+				display: block;
+				float: left;
+				width: 16px;
+				height: 16px;
+				background:  url(../images/icon_checkbox.png) 0 -243px no-repeat;
+			}
+			
+			
+			
+			span.ui-checkbox-state-hover {
+				background-position: 0 -114px;
+			}
+			
+			span.ui-radio-state-hover{
+				background-position: 0 -282px;
+			}
+			
+			span.ui-checkbox-state-checked {
+				background-position: 0 -1px;
+			}
+			
+			span.ui-checkbox-state-checked-hover {
+				background-position: 0 -75px;
+			}
+			span.ui-radio-state-checked-disabled-hover,
+			span.ui-radio-state-checked-disabled,
+			span.ui-radio-state-checked {
+				background-position: 0 -161px;
+			}
+			
+			span.ui-radio-state-checked-hover {
+				background-position: 0 -200px;
+			}
+			.ui-radio-disabled,
+			.ui-checkbox-disabled {
+				opacity: 0.7;
+			}
+			
+			
+			.ui-helper-hidden-accessible {
+				position: absolute;
+				left: -999em;
+			}

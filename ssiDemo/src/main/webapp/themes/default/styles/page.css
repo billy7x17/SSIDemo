@@ -1,0 +1,58 @@
+@charset "utf-8";
+/*go to pages*/
+
+.WordsH {
+	line-height:30px;
+}
+.input60 {
+	width:60px;
+	font-size:12px;
+	height:18px;
+	line-height:18px;
+	margin:0 2px;
+	border:1px solid #50a0dc;
+}
+#gotoPage ul {
+	width:250px;
+	height:30px;
+	list-style:none;
+	margin:0px;
+	padding:0px;
+}
+#gotoPage li {
+	/*position:relative; del by sunwei */
+	float:left;
+	margin:0 5px;
+	width: auto;
+}
+#gotoPage a {
+	text-decoration:none;
+	display:block;
+	width:24px;
+	height:24px;
+	margin-top:3px;
+}
+a.btnFirst {
+	background: url(../images/btn_first.gif) no-repeat left top;
+}
+a.btnFirst:hover {
+	background: url(../images/btn_first.gif) no-repeat right top;
+}
+a.btnPrevious {
+	background: url(../images/btn_previous.gif) no-repeat left top;
+}
+a.btnPrevious:hover {
+	background: url(../images/btn_previous.gif) no-repeat right top;
+}
+a.btnNext2 {
+	background: url(../images/btn_next.gif) no-repeat left top;
+}
+a.btnNext2:hover {
+	background: url(../images/btn_next.gif) no-repeat right top;
+}
+a.btnLast {
+	background: url(../images/btn_last.gif) no-repeat left top;
+}
+a.btnLast:hover {
+	background: url(../images/btn_last.gif) no-repeat right top;
+}

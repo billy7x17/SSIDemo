@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8">
+  <title>mk-ui:Notify演示</title> 
+  <link rel="stylesheet" href="./default/css/mk.icons.css" />
+  <link rel="stylesheet" href="./default/css/mk.notify.css" />
+  <script type="text/javascript" src="./jquery-1.8.3.min.js"></script>
+  <script type="text/javascript" src="./mk.notify.min.js"></script>
+  <script type="text/javascript">
+    var notify = null;
+    var flag = 1;
+    $(function() {
+      
+    });
+
+    function open_notify(type) {
+      notify = $.mk_notify({
+        title: '汽泡泡泡哦' + (flag++),
+        type: type,
+        delay: 3000,
+        body: '书中自有黄金屋;<a href ="http://baidu.com">书中自有黄金屋</a>;书中自有黄金屋;书中自有黄金屋;书中自有黄金屋;书中自有黄金屋;书中自有黄金屋;书中自有黄金屋;书中自有黄金屋;书中自有黄金屋;'
+      });
+    }
+  </script>
+</head>
+<body>
+  <a href="javascript:void(0);" onclick="open_notify();">气泡泡泡正常</a>
+  <a href="javascript:void(0);" onclick="open_notify('success');">气泡泡泡成功</a>
+  <a href="javascript:void(0);" onclick="open_notify('info');">气泡泡泡信息</a>
+  <a href="javascript:void(0);" onclick="open_notify('error');">气泡泡泡错误</a>
+  <!-- <div class="mk-notify" style="top: 200px;">
+    <div class="mk-notify-container mk-notify-shadow">
+      <div class="mk-notify-icon mk-icon-16-message"></div>
+      <div class="mk-notify-close mk-icon-16-close"></div>
+      <div class="mk-notify-title">Notify演示</div>
+      <div class="mk-notify-body">
+        这里是提示内容哦，可以有多长呢？
+        <h1>H1也可以用的哦</h1>
+      </div>      
+    </div>
+  </div>
+  <div class="mk-notify" style="top: 200px; right: 350px;">
+    <div class="mk-notify-container alert-success mk-notify-shadow">
+      <div class="mk-notify-icon"></div>
+      <div class="mk-notify-close mk-icon-16-close"></div>
+      <div class="mk-notify-title">Notify演示-success</div>
+      <div class="mk-notify-body">
+        这里是提示内容哦，可以有多长呢？<br />
+        这是第二行哦
+      </div>      
+    </div>
+  </div>
+  <div class="mk-notify" style="top: 200px; right: 700px;">
+    <div class="mk-notify-container alert-info mk-notify-shadow">
+      <div class="mk-notify-icon"></div>
+      <div class="mk-notify-close mk-icon-16-close"></div>
+      <div class="mk-notify-title">Notify演示-info</div>
+      <div class="mk-notify-body">
+        这里是提示内容哦，可以有多长呢？<br />
+        这是第二行哦
+      </div>      
+    </div>
+  </div>
+  <div class="mk-notify" style="top: 200px; right: 1050px;">
+    <div class="mk-notify-container alert-error mk-notify-shadow">
+      <div class="mk-notify-icon"></div>
+      <div class="mk-notify-close mk-icon-16-close"></div>
+      <div class="mk-notify-title">Notify演示-error</div>
+      <div class="mk-notify-body">
+        这里是提示内容哦，可以有多长呢？<br />
+        这是第二行哦
+      </div>      
+    </div>
+  </div> -->
+</body>
+</html>

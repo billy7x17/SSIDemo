@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="systemparamter" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+
+		
+		<!-- 系统参数管理 -->
+		
+		<!-- 系统参数浏览 -->
+		<action name="systemparameterList" class="SystemParameterListAction"
+			method="base">
+			<result name="base">/WEB-INF/pages/system/systemparameter/list.jsp</result>
+		</action>
+		
+		<!-- 系统参数浏览 -->
+		<action name="systemparameterBaseList" class="SystemParameterListAction"
+			method="list">
+			<result name="SUCCESS">/WEB-INF/pages/system/systemparameter/list.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/system/systemparameter/list.jsp</result>
+		</action>
+		
+		<!-- 系统参数添加前准备 -->
+		<action name="systemparameterBeforeAdd" class="SystemParameterBeforeAddAction"
+			method="beforeAdd">
+			<result name="SUCCESS">/WEB-INF/pages/system/systemparameter/add.jsp</result>
+		</action>
+		
+		<!-- 系统参数配置添加 -->
+		<action name="systemParamAdd" class="SystemParameterAddAction"
+			method="add">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">systemparameterList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/system/systemparameter/add.jsp</result>			
+		</action>
+		
+		<!-- 系统参数管理修改前准备 -->
+		<action name="systemParamBeforeEdit" class="SystemParamBeforeEditAction"
+			method="beforeEdit">
+			<result name="SUCCESS">/WEB-INF/pages/system/systemparameter/edit.jsp</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">systemparameterList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>	
+		</action>
+		
+		<!-- 系统参数修改 -->
+		<action name="systemParamEdit" class="SystemParamterEditAction"
+			method="edit">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">systemparameterList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/system/systemparameter/edit.jsp</result>		
+		</action>
+		
+		<!-- 系统参数删除 -->
+		<action name="systemParamDelete" class="SystemParameterDeleteAction"
+			method="delete">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">systemparameterList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">systemparameterList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>	
+		</action>
+		
+	</package>
+</struts>

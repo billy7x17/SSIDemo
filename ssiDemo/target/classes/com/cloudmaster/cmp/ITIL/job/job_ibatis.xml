@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="jobSql">
+    <typeAlias alias="String" type="java.lang.String" />
+    <resultMap id="logCleanInfo" class="java.util.HashMap">
+        <result property="logPath" column="LOG_PATH" />
+        <result property="logFirstName" column="LOG_FIRSTNAME" />
+        <result property="days" column="DAYS" />
+        <result property="suffix" column="SUFFIX" />
+    </resultMap>
+    
+    <!-- 日志归档信息查询 -->
+    <select id="getLogCleanConfig" resultMap="logCleanInfo">
+        SELECT LOG_PATH,
+            LOG_FIRSTNAME,
+            DAYS,
+            SUFFIX
+        FROM LOG_CLEAN_CONFIG_TAB
+    </select>
+    
+</sqlMap>

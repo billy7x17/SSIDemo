@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<!-- edited with XMLSpy v2009 (http://www.altova.com) by dreams (LG) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://www.neusoft.com/mid" targetNamespace="http://www.neusoft.com/mid" elementFormDefault="qualified">
+    <xs:include schemaLocation="base.xsd"/>
+    <xs:element name="construction">
+        <xs:complexType>
+            <xs:complexContent>
+                <xs:extension base="networkType">
+                    <xs:sequence>
+                        <xs:element name="setting" type="settingType"/>
+                        <xs:element name="layout" type="layoutType"/>
+                        <xs:element name="alerm" type="alermType" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:element name="synch" type="xs:string"/>
+                    </xs:sequence>
+                </xs:extension>
+            </xs:complexContent>
+        </xs:complexType>
+    </xs:element>
+</xs:schema>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="alarmrules">
+
+	<typeAlias alias="alarmrules"
+		type="com.cloudmaster.cmp.system.alarmrules.dao.AlarmRulesDomain" />
+	
+	<!-- start  -->
+	<select id="getCount" parameterClass="alarmrules"
+			resultClass="java.lang.Integer">
+			SELECT
+			COUNT(*)
+			FROM mals_nm_access_rule_t r
+             LEFT JOIN mals_nm_agent_type_t t ON r.TYPE_ID=t.TYPE_ID 
+             LEFT JOIN mals_nm_alarm_level_t level ON r.ALARM_LEVEL=level.VALUE
+             LEFT JOIN mals_nm_threshold_content_t title ON r.ALARM_TITLE=title.tc_id 
+        WHERE 1=1
+                <isNotEmpty prepend="AND" property="alarmTitle">             
+                   title.tc_title like concat('%',#alarmTitle#,'%')
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="alarmLevel">
+                    level.VALUE  = #alarmLevel#  
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="typeID">
+                    r.TYPE_ID = #typeID#
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="alarmOID">
+                        r.ALARM_OID like concat('%',#alarmOID#,'%')
+                </isNotEmpty>
+                <isNotEmpty prepend="AND" property="qtype">
+                        $qtype$ like concat('%',#query#,'%')
+                </isNotEmpty>
+	</select>
+	
+	<!-- 条件查询 -->
+	<select id="getLists" parameterClass="alarmrules"
+		resultClass="alarmrules">
+		SELECT
+		r.ROWID AS rowID,
+		<!-- r.AGENT_ID AS agentID, -->
+		r.ALARM_OID AS alarmOID,
+		r.AlarmImpact AS alarmImpact,
+		r.ALARM_TITLE AS alarmTitle,
+		r.EVENT_CODE AS eventCode,
+		r.ALARM_INDEX AS alarmIndex,
+		r.ALARM_TIME AS alarmTime,
+		r.ALARM_TYPE AS alarmType,
+		r.ALARM_CONTENT AS alarmContent,
+		r.ALARM_LEVEL AS alarmLevel,
+		r.TROUBLE_SHOOTING AS troubleShooting,
+		r.TYPE_ID AS typeID,	
+		r.AlarmIdentityID as alarmIdentityID,
+		t.AGENT_NAME AS agentName,
+		level.NAME as alarmLevelName,
+    	title.tc_title as alarmTitleContent
+		FROM mals_nm_access_rule_t r
+		     LEFT JOIN mals_nm_agent_type_t t ON r.TYPE_ID=t.TYPE_ID 
+             LEFT JOIN mals_nm_alarm_level_t level ON r.ALARM_LEVEL=level.VALUE
+             LEFT JOIN mals_nm_threshold_content_t title ON r.ALARM_TITLE=title.tc_id 
+		WHERE  1=1
+				<isNotEmpty prepend="AND" property="alarmTitle">			 
+				   title.tc_title like concat('%',#alarmTitle#,'%')
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="alarmLevel">
+					level.VALUE  = #alarmLevel#  
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="typeID">
+				    r.TYPE_ID = #typeID#
+				</isNotEmpty>
+				<isNotEmpty prepend="AND" property="alarmOID">
+                        r.ALARM_OID like concat('%',#alarmOID#,'%')
+                </isNotEmpty>
+				<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+				</isNotEmpty>
+		order by $sortName$ $sortOrder$
+	</select>
+	
+	<select id="getTypeID" parameterClass="alarmrules"
+		resultClass="alarmrules">
+			SELECT
+				TYPE_ID AS typeID,
+				AGENT_TYPE AS agentType,
+				AGENT_NAME AS agentName
+			FROM mals_nm_agent_type_t
+			<isNotEmpty prepend="WHERE" property="typeID">
+			    TYPE_ID = #typeID#
+			</isNotEmpty>
+			ORDER BY TYPE_ID
+			
+	</select>
+	
+	<select id="getLevelName" parameterClass="alarmrules"
+		resultClass="alarmrules">
+			select
+				 NAME as alarmLevelName,
+				 value as alarmLevel
+			from mals_nm_alarm_level_t 
+	</select>
+	
+	<select id="getAlarmTitle" parameterClass="alarmrules"
+		resultClass="alarmrules">
+			select 
+				tc_id as alarmTitle,  
+				tc_title as alarmTitleContent,
+				AlarmIdentityID as alarmIdentityID
+			from mals_nm_threshold_content_t
+		    <dynamic prepend="WHERE">
+	            <isNotEmpty prepend="AND" property="alarmTitle">
+	                tc_id =#alarmTitle#
+		        </isNotEmpty>
+	            <isNotEmpty prepend="AND" property="type">
+	                $type$
+	            </isNotEmpty>
+	            <isNotEmpty prepend="AND" property="alarmTitleCondition">
+	                $alarmTitleCondition$
+	            </isNotEmpty>   
+	        </dynamic>
+	        order by tc_id asc
+	</select>
+	
+	<!--插入一条记录-->
+	<insert id="insert" parameterClass="alarmrules">
+		INSERT mals_nm_access_rule_t
+		(AGENT_ID,ALARM_OID,ALARM_TITLE,EVENT_CODE,ALARM_INDEX,ALARM_TIME,ALARM_TYPE,ALARM_CONTENT,ALARM_LEVEL,TROUBLE_SHOOTING,TYPE_ID,AlarmIdentityID,AlarmImpact)
+		VALUES
+		(#agentID#,#alarmOID#,#alarmTitle#,#eventCode#,#alarmIndex#,#alarmTime#,#alarmType#,
+		#alarmContent#,#alarmLevel#,#troubleShooting#,#typeID#,#alarmIdentityID#,#alarmImpact#)
+	</insert>
+	
+	<!-- 查询单个信息 -->
+	<select id="getSingle" parameterClass="alarmrules"
+		resultClass="alarmrules">
+	 SELECT
+		r.ROWID AS rowID,
+		r.AlarmIdentityID AS alarmIdentityID,
+		r.AlarmImpact AS alarmImpact,
+		<!-- r.AGENT_ID AS agentID, -->
+		r.ALARM_OID AS alarmOID,
+		r.ALARM_TITLE AS alarmTitle,
+		r.EVENT_CODE AS eventCode,
+		r.ALARM_INDEX AS alarmIndex,
+		r.ALARM_TIME AS alarmTime,
+		r.ALARM_TYPE AS alarmType,
+		r.ALARM_CONTENT
+		AS alarmContent,
+		r.ALARM_LEVEL AS alarmLevel,
+		r.TROUBLE_SHOOTING AS troubleShooting,
+		r.TYPE_ID AS typeID,
+		t.AGENT_NAME AS agentName,
+        level.NAME as alarmLevelName,
+        title.tc_title as alarmTitleContent
+        FROM mals_nm_access_rule_t r
+             LEFT JOIN mals_nm_agent_type_t t ON r.TYPE_ID=t.TYPE_ID 
+             LEFT JOIN mals_nm_alarm_level_t level ON r.ALARM_LEVEL=level.VALUE
+             LEFT JOIN mals_nm_threshold_content_t title ON r.ALARM_TITLE=title.tc_id 
+		 WHERE ROWID = #rowID#
+		
+	</select>
+	
+	<!-- 修改单个信息 -->
+	<update id="update" parameterClass="alarmrules">
+		UPDATE mals_nm_access_rule_t
+		SET
+		AlarmImpact = #alarmImpact#,
+		AGENT_ID = #agentID#,
+		ALARM_OID= #alarmOID#,
+		ALARM_TITLE=#alarmTitle#,
+		EVENT_CODE = #eventCode#,
+		ALARM_INDEX = #alarmIndex#,
+		ALARM_TIME = #alarmTime#,
+		ALARM_TYPE = #alarmType#,
+		ALARM_CONTENT = #alarmContent#,
+		ALARM_LEVEL = #alarmLevel#,
+		TROUBLE_SHOOTING = #troubleShooting#,
+		TYPE_ID = #typeID#,
+		AlarmIdentityID = #alarmIdentityID#
+		WHERE ROWID =#rowID# 
+	</update>
+	
+	<!-- 删除告警配置 -->
+	<delete id="delete" parameterClass="alarmrules">
+		delete from
+		mals_nm_access_rule_t WHERE ROWID =#rowID# 
+	</delete>
+    
+    <!-- 查询设备类型 对应的告警标题条件-->
+    <select id="getDeviceTitleCondition"  resultClass="String" parameterClass="String">
+        SELECT
+            alarmTitleCondition as alarmTitleCondition
+        FROM mals_nm_agent_type_t
+        WHERE AGENT_TYPE =#agentType#
+    </select>
+    
+</sqlMap>

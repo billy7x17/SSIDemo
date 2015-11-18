@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<!--
+		请求默认以*.action做后缀，可修改为其他后缀 <constant name="struts.action.extension"
+		value="shtml" />
+	-->
+	<!--
+		该属性设置Struts
+		2应用是否使用开发模式。如果设置该属性为true，则可以在应用出错时显示更多、更友好的出错提示。该属性的默认值是false。
+	-->
+	<constant name="struts.devMode" value="false" />
+
+	<!-- 该属性指定视图标签默认的视图主题，该属性的默认值是 xhtml -->
+	<constant name="struts.ui.theme" value="simple" />
+
+	<!-- 该属性指定上传文件的临时保存路径，该属性的默认值是javax.servlet.context.tempdir -->
+	<constant name="struts.multipart.saveDir" value="/tmp" />
+
+	<!-- 该属性设置Struts 2是否支持动态方法调用，该属性的默认值是true。 -->
+	<constant name="struts.enable.DynamicMethodInvocation" value="false" />
+
+	<!-- 该属性指定Struts 2文件上传中整个请求内容允许的最大字节数 -->
+	<constant name="struts.multipart.maxSize" value="524288000" />
+
+	<!-- 指定Web应用的默认Locale -->
+	<constant name="struts.locale" value="UTF-8" />
+
+	<!--
+		指定Web应用的默认编码集。该属性对于处理中文请求参数非常有用，对于获取中文请求参数值，应该将该属性值设置为GBK或者GB2312。
+	-->
+	<!-- 提示  当设置该参数为GBK时，相当于调用HttpServletRequest的setCharacterEncoding方法。 -->
+	<constant name="struts.i18n.encoding" value="UTF-8" />
+
+	<!-- 该属性指定Struts 2应用所需要的国际化资源文件，如果有多份国际化资源文件，则多个资源文件的文件名以英文逗号（,）隔开 -->
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+
+	<!-- 指定名字为spring的ObjectFactory是Struts 2的ObjectFactory -->
+	<constant name="struts.objectFactory" value="spring" />
+
+	<!--
+		该属性指定Struts
+		2生成URL时是否包含请求参数。该属性接受none、get和all三个属性值，分别对应于不包含、仅包含GET类型请求参数和包含全部请求参数。
+	-->
+	<constant name="struts.url.includeParams" value="none" />
+
+	<!-- 该属性设置浏览器是否缓存静态内容。当应用处于开发阶段时，我们希望每次请求都获得服务器的最新响应，则可设置该属性为false。 -->
+	<constant name="struts.serve.static.browserCache" value="false" />
+
+
+	<include file="struts-default.xml" />
+
+	<include file="conf/struts/alarm_struts.xml" />
+	<include file="conf/struts/alarmfilter_struts.xml" />
+	<include file="conf/struts/alarmhistory_struts.xml" />
+	<include file="conf/struts/alarmRegulation_struts.xml" />
+	<include file="conf/struts/alarmroster_struts.xml" />
+	<include file="conf/struts/alarmrules_struts.xml" />
+	<include file="conf/struts/alarmtitle_struts.xml"/>
+	<include file="conf/struts/authority_struts.xml" />
+	<include file="conf/struts/cronexpression_struts.xml" />
+	<include file="conf/struts/firstPage_struts.xml" />
+	<include file="conf/struts/mibinfo_struts.xml" />
+	<include file="conf/struts/performance_struts.xml" />
+	<include file="conf/struts/performanceDeviceView_struts.xml" />
+	<include file="conf/struts/performanceTree_struts.xml" />
+	<include file="conf/struts/resource_struts.xml" />
+	<include file="conf/struts/systemparameter_struts.xml" />
+	<include file="conf/struts/threshold_struts.xml" />
+	<include file="conf/struts/topology_struts.xml" />
+</struts>

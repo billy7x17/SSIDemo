@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<!-- 树 -->
+	<bean id="PerformanceTreeAction"
+		class="com.cloudmaster.cmp.performance.tree.web.PerformanceTreeAction"
+		singleton="false">
+	</bean>
+	
+	<bean id="PerformanceTreeRefrashAction"
+		class="com.cloudmaster.cmp.performance.tree.web.PerformanceTreeRefrashAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="treeRootId">
+        	<value>${resource.zone.parentid}</value>
+        </property>
+		<property name="perTeeeNodeRedSwitch">
+        	<value>${perTeeeNodeRedSwitch}</value>
+        </property>
+	</bean>
+	
+	
+	<!-- 设备视图树 -->
+	<bean id="DeviceTreeAction"
+		class="com.cloudmaster.cmp.performance.tree.web.DeviceTreeAction"
+		singleton="false">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="resourceZoneParentid">
+			<value>${resource.zone.parentid}</value>
+		</property>
+		<property name="perTeeeNodeRedSwitch">
+			<value>${perTeeeNodeRedSwitch}</value>
+		</property>
+		<property name="ibatisDAOCM">
+            <ref bean="ibatisDAOProxyCM" />
+        </property>
+	</bean>
+	
+	<!-- 业务视图树 -->
+    <bean id="ServiceTreeAction"
+        class="com.cloudmaster.cmp.performance.tree.web.ServiceTreeAction"
+        singleton="false">
+        <property name="ibatisDAO">
+            <ref bean="ibatisDAOProxy" />
+        </property>
+        <property name="functionName">
+        	<value>${performance.functionName}</value>
+        </property>
+        <property name="opType">
+        	<value>${browse}</value>
+        </property>
+    </bean>
+	
+</beans>

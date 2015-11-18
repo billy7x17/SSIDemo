@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0014)about:internet -->
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"> 
+    <!-- 
+    Smart developers always View Source. 
+    
+    This application was built using Adobe Flex, an open source framework
+    for building rich Internet applications that get delivered via the
+    Flash Player or to desktops via Adobe AIR. 
+    
+    Learn more about Flex at http://flex.org 
+    // -->
+    <head>
+        <title></title>
+        <meta name="google" value="notranslate" />         
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <!-- Include CSS to eliminate any default margins/padding and set the height of the html element and 
+             the body element to 100%, because Firefox, or any Gecko based browser, interprets percentage as 
+             the percentage of the height of its parent container, which has to be set explicitly.  Fix for
+             Firefox 3.6 focus border issues.  Initially, don't display flashContent div so it won't show 
+             if JavaScript disabled.
+        -->
+        <style type="text/css" media="screen"> 
+            html, body  { height:100%; }
+            body { margin:0; padding:0; overflow:auto; text-align:center; 
+                   background-color: #ffffff; }   
+            object:focus { outline:none; }
+            #flashContent { display:none; }
+        </style>
+        
+        
+        <!-- liujingwei add begin -->
+        <script type="text/javascript" src="jquery-1.10.1.js"></script>
+        <script type="text/javascript" src="swfobject.js"></script>
+		<script type="text/javascript" src="rightClick.js"></script>
+        <script type="text/javascript">
+           /**
+            * 此方法用于与flex进行数据交互
+            * 用于给flex组件提供基础的配置参数
+            */
+           function config(){
+                var config = {};
+                var host = "/twaver/";
+                //构建交互的url
+                config.construction = host + "CanvasMVC.jsp";
+                //增量交互的url
+                config.increment = host + "incrementMVC.jsp";
+                
+                //详细画面宽度
+                config.detailPanelWidth = "410";
+                //详细画面高度
+                config.detailPanelHeight = "550";
+                
+                //双击选择交互的url
+                config.select = host + "selectMVC.jsp";
+                
+                //双击交互方法
+                config.detailBeforeButtonClickFunction = "detailBeforeButtonClick";
+                
+                //首面的name，用于区分不同面的标识值
+                //当面是通过钻取元素打开时，此属性的值为钻取元素的seq值
+                //与后台交互时，作为表单name的值提交
+                config.topName = "rootLayer";
+                //增量同步时间间隔，毫秒单位
+                config.incrementTimer = 3000;
+                //可以使用控制台
+                config.console = true;
+                
+                /*
+                 * 跨域访问策略文件url
+                 * 此属性为数组，目的是为了跨多个域准备
+                 */ 
+                var policyFileList = new Array();
+                policyFileList[0] = "http://localhost:8080/direc/crossdomain.xml"
+                config.policyFileList = policyFileList;
+                
+                /*
+                 * 字体设置
+                 */
+                 config.font = {
+                   name : "Yahei",
+                   size : "13"
+                 }
+                 
+                 /*
+                 * 调试配置
+                 */
+                 config.debug = {
+                   console : true
+                 }
+                
+                 /*
+                  * 加载资源
+                  */
+                  config.plugins = {
+                    setting : {},
+                    items : [
+                      {
+                        name : "honeywell",
+                        url  : window.location.origin + "/honeywell/twaver/module/HoneywellPlugin.swf"
+                      }
+                    ]
+                  }//end resouces
+
+                return config;
+            }
+            
+            
+            function beforeRightMenu(type, value, mouseX, mouseY){
+              var rv = new Array();
+              if(type == null){
+                return null;
+              }
+              
+              
+              if("node" == type){
+                rv[0] = {
+                  label : "查询查询",
+				  //icon提示图标
+				  image : "http://127.0.0.1:8080/twaver/testImage.png",
+				  //背景填充色
+				  fillColors : [0xE6EEEE, 0xFFFFFF],
+				  group : "",
+				  //鼠标滑过时背景颜色
+				  rollColors : ["0XFEEFEE", "0XFEEFEE"],
+				  //鼠标划过时icon提示图标
+				  rollImage : "select",
+				  //样式
+				  style : {},
+				  click : "onMagnifyMenuItem"
+                }
+                rv[1] = {
+                  image : "select",
+				  label : "编辑",
+				  group : "",
+				  click : "onSelectMenuItem"
+                }
+              }
+              
+              if("link" == type){
+                rv[0] = {
+                  image : "magnify",
+				  label : "Link查询",
+				  group : "",
+				  click : "onMagnifyMenuItem"
+                }
+              }
+              
+              //返回menu对象
+              var menu = {
+                //items数组
+                items : rv,
+                //共通设置
+                setting : {}
+              }
+              return menu;
+            }
+            
+            function onMagnifyMenuItem(type, value){
+              alert("onMagnifyMenuItem:" + type + ":" + value);
+            }
+            
+            function onSelectMenuItem(type, value){
+              alert("onSelectMenuItem:" + type + ":" + value);
+            }
+            
+            function detailBeforeButtonClick(args){
+              var seq = args[0];
+              alert("seq:" + args[0]);
+              alert("name:" + args[1]);
+              alert("image:" + args[2]);
+              alert("type:" + args[3]);
+              
+            }
+                
+            function detailButtonClick(args){
+              var arg = args[0];
+              alert(arg.button + "|" + arg.selectID);
+            }
+            
+            function helloWorld(){
+                //alert("hello world1.");
+            }
+            
+            
+            function showMessage(msg){
+                alert(msg);
+            }
+            
+            function detail(id){
+              window.showModalDialog("http://web.neusoft.com?id=" + id);
+            }
+        </script>
+        
+        <!-- liujingwei add finish -->
+        
+        
+        
+        <!-- Enable Browser History by replacing useBrowserHistory tokens with two hyphens -->
+        <!-- BEGIN Browser History required section -->
+        <link rel="stylesheet" type="text/css" href="history/history.css" />
+        <script type="text/javascript" src="history/history.js"></script>
+        <!-- END Browser History required section -->  
+        <script type="text/javascript" src="swfobject.js"></script>
+        <script type="text/javascript">
+            // For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. 
+            var swfVersionStr = "11.1.0";
+            // To use express install, set to playerProductInstall.swf, otherwise the empty string. 
+            var xiSwfUrlStr = "playerProductInstall.swf";
+            var flashvars = {};
+            var params = {};
+            params.quality = "high";
+            params.bgcolor = "#ffffff";
+            params.allowscriptaccess = "sameDomain";
+            params.allowfullscreen = "true";
+            
+            //右键屏蔽
+            params.wmode = "opaque";
+            params.menu = "false";
+            
+            var attributes = {};
+            attributes.id = "EditorFacade";
+            attributes.name = "EditorFacade";
+            attributes.align = "middle";
+            swfobject.embedSWF(
+                "EditorFacade.swf", "flashContent", 
+                "100%", "100%", 
+                swfVersionStr, xiSwfUrlStr, 
+                flashvars, params, attributes);
+            // JavaScript enabled so display the flashContent div in case it is not replaced with a swf object.
+            swfobject.createCSS("#flashContent", "display:block;text-align:left;");
+        </script>
+		
+		<!-- ##### Google Analytics begin ##### -->
+		<!--
+		<script type="text/javascript">
+		   var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+		   document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		
+		<script type="text/javascript">
+		try {
+		   var pageTracker = _gat._getTracker("UA-7655349-1");
+		   pageTracker._trackPageview();
+		} catch(err) {}
+		
+		</script>
+		-->
+		<!-- ##### Google Analytics end ##### -->
+    </head>
+    <body onload="RightClick.init();">
+        <!-- SWFObject's dynamic embed method replaces this alternative HTML content with Flash content when enough 
+             JavaScript and Flash plug-in support is available. The div is initially hidden so that it doesn't show
+             when JavaScript is disabled.
+        -->
+        
+        <!--[if !IE]>-->
+           <div id="flashContent" style="display:none" style="border:20px solid:#F11">
+	            <p>
+	                To view this page ensure that Adobe Flash Player version 
+	                11.1.0 or greater is installed. 
+	            </p>
+	            <script type="text/javascript"> 
+	                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+	                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+	                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+	            </script> 
+	        </div>
+        <!--<![endif]-->
+        <!--[if IE]> 
+        <div id="flashContentDiv">
+	        <div id="flashContent">
+	            <p>
+	                To view this page ensure that Adobe Flash Player version 
+	                11.1.0 or greater is installed. 
+	            </p>
+	            <script type="text/javascript"> 
+	                var pageHost = ((document.location.protocol == "https:") ? "https://" : "http://"); 
+	                document.write("<a href='http://www.adobe.com/go/getflashplayer'><img src='" 
+	                                + pageHost + "www.adobe.com/images/shared/download_buttons/get_flash_player.gif' alt='Get Adobe Flash player' /></a>" ); 
+	            </script> 
+	        </div>
+        </div>
+        <![endif]-->
+        <noscript>
+            <object classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" width="100%" height="100%" id="EditorFacade">
+                <param name="movie" value="EditorFacade.swf" />
+                <param name="quality" value="high" />
+                <param name="bgcolor" value="#ffffff" />
+                <param name="allowScriptAccess" value="sameDomain" />
+                <param name="allowFullScreen" value="true" />
+                
+                <!--[if !IE]>-->
+                <object type="application/x-shockwave-flash" data="EditorFacade.swf" width="100%" height="100%"  id="EditorFacade">
+                    <param name="quality" value="high" />
+                    <param name="bgcolor" value="#ffffff" />
+                    <param name="allowScriptAccess" value="sameDomain" />
+                    <param name="allowFullScreen" value="true" />
+                <!--<![endif]-->
+                <!--[if gte IE 6]>-->
+                    <p> 
+                        Either scripts and active content are not permitted to run or Adobe Flash Player version
+                        11.1.0 or greater is not installed.
+                    </p>
+                <!--<![endif]-->
+                    <a href="http://www.adobe.com/go/getflashplayer">
+                        <img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash Player" />
+                    </a>
+                <!--[if !IE]>-->
+                </object>
+                <!--<![endif]-->
+            </object>
+        </noscript>     
+   </body>
+</html>

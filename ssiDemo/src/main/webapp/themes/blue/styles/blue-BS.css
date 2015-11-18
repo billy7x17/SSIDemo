@@ -1,0 +1,96 @@
+body{ background-color:#e1e3e6; font:12px/18px 'Microsoft Yahei','Î¢ÈíÑÅºÚ',Arial,Verdana; margin:0; padding:0; }
+img{ border:none;}
+.wapper{ width:100%; height:100%;}
+
+
+.header{ background: #2ab9a6; height:107px; width:100%;}
+.logo{ background:url(../images/logo-bg.png) no-repeat top left; float:left; width:505px; margin:0; padding:0;}
+.logo span{float: left; color:#fff; margin: 37px 0 0 5px;}
+.logo img{float: left}
+.menu{ float:right; list-style:none; margin:0; padding:0;}
+.menu li{ border-left: 1px solid #73d1c4; cursor:pointer; float:left; height:82px; text-align:center; width:90px; }
+.menu a{  color: #084b42; display:block; width:90px;  float: left; text-decoration:none;}
+.menu a:hover{ text-decoration:none;}
+.menu li:hover{ background-color:#2cceb7;}
+
+/**
+.header{ background: #2ab9a6; height:107px; width:100%;}
+.logo{ background:url(../images/logo-bg.png) no-repeat top left; float:left;  height:82px; width:505px; margin:0; padding:0;}
+.logo span{float: left; color:#fff; margin: 37px 0 0 5px;}
+.logo img{float: left}
+.menu{ float:right; height:82px; list-style:none; margin:0; padding:0;}
+.menu li{ border-left: 1px solid #73d1c4; cursor:pointer; float:left; height:82px; text-align:center; width:92px; }
+.menu a{  color: #084b42; display:block; width:92px; margin-top: -6px; float: left; +margin-top: -13px}
+**/
+
+.nav1{ background:url(../images/menu1.png) no-repeat center center;}
+.focus1 { background:url(../images/menu1focus.png) no-repeat center top;}
+
+.nav2{ background:url(../images/menu2.png) no-repeat center center;}
+.focus2 { background:url(../images/menu2focus.png) no-repeat center top;}
+
+.nav3{ background:url(../images/menu3.png) no-repeat center center;}
+.focus3 { background:url(../images/menu3focus.png) no-repeat center top;}
+
+.nav4{ background:url(../images/menu4.png) no-repeat center center;}
+.focus4 { background:url(../images/menu4focus.png) no-repeat center top;}
+
+.nav5{ background:url(../images/menu5.png) no-repeat center center;}
+.focus5 { background:url(../images/menu5focus.png) no-repeat center top;}
+
+.nav6{ background:url(../images/menu6.png) no-repeat center center;}
+.focus6 { background:url(../images/menu6focus.png) no-repeat center top;}
+
+.nav7{ background:url(../images/menu7.png) no-repeat center center;}
+.focus7 { background:url(../images/menu7focus.png) no-repeat center top;}
+
+.nav8{ background:url(../images/menuX2.png) no-repeat center center;}
+.focus8 { background:url(../images/menuX2focus.png) no-repeat center top;}
+
+.nav1,.nav2,.nav3,.nav4,.nav5,.nav6,.nav7,.nav8{ color: #084b42; margin-top: 19px; height: 33px}
+.menu li:hover{ background-color:#2cceb7;}
+.focus1 a,.focus2 a,.focus3 a,.focus4 a,.focus5 a,.focus6 a,.focus7 a,.focus8 a{ color: #fff; margin-top: 58px;}
+
+
+
+/**
+.firstPage{ background:url(../images/menu1.jpg) no-repeat center top;}
+.firstPage:hover { background:url(../images/menu1Hover.jpg) no-repeat center top;}
+.firstPage-focus { background:url(../images/menu1focus.jpg) no-repeat center top;}
+.resource{ background:url(../images/menu2.jpg) no-repeat center top;}
+.resource:hover { background:url(../images/menu2Hover.jpg) no-repeat center top;}
+.resource-focus { background:url(../images/menu2focus.jpg) no-repeat center top;}
+.serviceTemplate{ background:url(../images/menu3.jpg) no-repeat center top;}
+.serviceTemplate:hover { background:url(../images/menu3Hover.jpg) no-repeat center top;}
+.serviceTemplate-focus { background:url(../images/menu3focus.jpg) no-repeat center top;}
+.serviceManager{ background:url(../images/menu4.jpg) no-repeat center top;}
+.serviceManager:hover { background:url(../images/menu4Hover.jpg) no-repeat center top;}
+.serviceManager-focus { background:url(../images/menu4focus.jpg) no-repeat center top;}
+.performance{ background:url(../images/menu5.jpg) no-repeat center top;}
+.performance:hover { background:url(../images/menu5Hover.jpg) no-repeat center top;}
+.performance-focus { background:url(../images/menu5focus.jpg) no-repeat center top;}
+.alarm{ background:url(../images/menu6.jpg) no-repeat center top;}
+.alarm:hover { background:url(../images/menu6Hover.jpg) no-repeat center top;}
+.alarm-focus { background:url(../images/menu6focus.jpg) no-repeat center top;}
+.role{ background:url(../images/menu7.jpg) no-repeat center top;}
+.role:hover { background:url(../images/menu7Hover.jpg) no-repeat center top;}
+.role-focus { background:url(../images/menu7focus.jpg) no-repeat center top;}
+.ITIL{ background:url(../images/menu8.jpg) no-repeat center top;}
+.ITIL:hover { background:url(../images/menu8Hover.jpg) no-repeat center top;}
+.ITIL-focus { background:url(../images/menu8focus.jpg) no-repeat center top;}
+.report{ background:url(../images/menu9.jpg) no-repeat center top;}
+.report:hover { background:url(../images/menu9Hover.jpg) no-repeat center top;}
+.report-focus { background:url(../images/menu9focus.jpg) no-repeat center top;}
+**/
+
+
+.info-bar{ background:url(../images/userBg.jpg) repeat-x; height:25px; line-height:25px; width:100%; clear:both;}
+.user{ width:224px; height:25px; border-right:1px solid #A2A2A2; float:left;}
+.user img{ margin:0 10px 0 20px; float:left;}
+.user strong {color:#4d4d4d;}
+.user a {margin-left:0px; color:#0078c8; font-weight:bold; text-decoration:none;}
+.mainImg{ margin:3px 0 0 8px;; padding:0; width:100%}
+#tab_menu { padding: 0px;overflow: hidden;}
+#page {width: 100%; min-width:1140px;}
+
+.footer{ background:#2ab9a6; color:#fff; height:22px; margin:3px 0 0 0; padding-top:8px; text-align:center; width:100%;}

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<increment xsi:schemaLocation="http://www.neusoft.com/mid increment.xsd" xmlns="http://www.neusoft.com/mid" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <setting>
+        <auto>
+            <zoomOverview>false</zoomOverview>
+            <increment>false</increment>
+        </auto>
+        <style>
+            <bg_fill_color>0xFFFFFF</bg_fill_color>
+            <bg_gradient_color>0xFFFFFF</bg_gradient_color>
+            <selectColor>0X15A230</selectColor>
+        </style>
+        <toolbar>
+            <navigationName> 首页 </navigationName>
+        </toolbar>
+        <operatingSpace>
+            <tree type="show"/>
+        </operatingSpace>
+    </setting>
+
+    <alerm seq="resourceid001" level="CLEARED" count="1">
+    </alerm>
+    <alerm seq="resourceid002" level="CRITICAL" count="2">
+    </alerm>
+    <alerm seq="resourceid003" level="INDETERMINATE" count="2">
+    </alerm>
+     <alerm seq="resourceid004" level="MAJOR" count="1">
+    </alerm>
+     <alerm seq="resourceid008" level="MINOR" count="3">
+    </alerm>
+     <alerm seq="resourceid011" level="WARNING" count="6">
+    </alerm>
+    <synch/>
+</increment>

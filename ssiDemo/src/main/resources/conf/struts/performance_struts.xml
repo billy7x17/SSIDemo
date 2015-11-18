@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="performance" extends="struts-default">
+        <interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="authenticate" />
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+		<!-- ganglia采集性能数据配置文件 -->
+		<action name="presearchPMResource" class="PMResourceSearchAction" method="init">
+        	<result name="SUCCESS">/WEB-INF/pages/performance/pmResource.jsp</result>
+        </action>
+		
+		<action name="getAlreadyConfTab" class="PMResourceSearchAction" method="getAlreadyConfTab">
+        </action>
+        
+        <action name="getAlreadyConfTabIndex" class="PMResourceSearchAction" method="getAlreadyConfTabIndex">
+        </action>
+		
+		<action name="searchPMResource" class="PMResourceSearchAction" method="searchResource">
+        </action>
+        
+        <action name="searchPMResourceIncrease" class="PMResourceSearchAction" method="searchPMResourceIncrease">
+        </action>
+        
+        <action name="searchPMProperty" class="PMPropertySearchAction" method="searchResource">
+        </action>
+        <!-- ganglia采集性能数据配置文件 -->
+        
+        <!-- D4 sunAgent采集方式 配置文件 start -->
+        <action name="decoderResource" class="DecoderResourceAction" method="init">
+        	<result name="success">/WEB-INF/pages/performance/decoder/decoderResource.jsp</result>
+        </action>
+        <!-- tab数据项 -->
+       	<action name="getDecoderConfTab" class="DecoderResourceAction" method="getDecoderConfTab">
+       	</action>
+       	<!-- tab指标数据值 -->
+       	<action name="getDecoderConfTabIndex" class="DecoderResourceAction" method="getDecoderConfTabIndex">
+       	</action>
+       	<!-- 性能数据 -->
+        <action name="searchDecoderResource" class="DecoderResourceAction" method="searchDecoderResource">
+        </action>
+        <!-- 历史数据 -->
+        <action name="searchDecoderHistoryResource" class="DecoderResourceAction" method="searchHistoryResource">
+        </action>
+        
+        <action name="searchDecoderResourceIncrease" class="DecoderResourceAction" method="searchDecoderResourceIncrease">
+        </action> 
+        <!-- D4 sunAgent采集方式 配置文件 end -->
+        
+        <!-- 查询IPC --> 
+        <action name="ipcResource" class="IPCResourceAction" method="init">
+        	<result name="success">/WEB-INF/pages/performance/ipc/ipcResource.jsp</result>
+        	<result name="error">/WEB-INF/pages/performance/ipc/ipcResource.jsp</result>
+        </action>
+        
+        <action name="getAlreadyConfTabIpc" class="IPCResourceAction" method="getAlreadyConfTabIpc">
+        </action>
+        
+        <action name="getAlreadyConfTabIndexIPC" class="IPCResourceAction" method="getAlreadyConfTabIndexIPC">
+        </action>
+        <!-- 查询IPC性能数据 -->
+        <action name="searchIPCResource" class="IPCResourceAction" method="searchIPCResource"></action>
+        <!-- 历史性能数据IPC -->
+        <action name="historyResourceIpc" class="IpcHistoryResourceAction" method="searchHistoryResource"></action>
+        
+        <!-- 增量 -->
+        <action name="searchIPCResourceIncrease" class="IpcHistoryResourceAction" method="searchIPCResourceIncrease">
+        </action>
+        <!-- end  -->
+        
+        <!-- zhangyunfeng IPSAN -->
+        <action name="searchIPSANResource" class="IpSANResourceSearcheAction" method="searchIpSANResource">
+        	<result name="success">/WEB-INF/pages/performance/ipsan/ipsanResource.jsp</result>
+        	<result name="error">/WEB-INF/pages/performance/ipsan/ipsanResource.jsp</result>
+        </action>
+        
+        <!-- 查询IPSAN配置页信息. -->
+        <action name="getAlreadyConfTabIPSAN" class="IpSANResourceSearcheAction" method="getAlreadyConfTabIPSAN">
+        </action>
+        
+        <!-- 查询IPSANTab指标的配置信息 -->
+        <action name="getAlreadyConfTabIndexIPSAN" class="IpSANResourceSearcheAction" method="getAlreadyConfTabIndexIPSAN">
+        </action>
+        
+        <!-- Encoder类型 -->
+        <action name="encoderResouce" class="EncoderResourceAction" method="init">
+        	<result name="success">/WEB-INF/pages/performance/encoder/encoderResource.jsp</result>
+        </action>
+        
+        <action name="getEncoderAlreadyConfTab" class="EncoderResourceAction" method="getEncoderAlreadyConfTab">
+        </action>
+        
+        <action name="getAlreadyConfTabIndexEncoder" class="EncoderResourceAction" method="getEncoderConfTabIndex">
+        </action>
+        <action name="searchEncoderResource" class="EncoderResourceAction" method="searchEncoderResource">
+        </action>
+        
+        <action name="searchEncoderProperty" class="EncoderResourceAction" method="searchEncoderProperty">
+        </action>
+        <!-- 增量 -->
+        <action name="searchEncoderResourceIncrease" class="EncoderResourceAction" method="searchEncoderResourceIncrease">
+        </action>
+        
+        
+	</package>
+</struts>
+
+

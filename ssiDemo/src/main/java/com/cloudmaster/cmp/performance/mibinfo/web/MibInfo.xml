@@ -1,0 +1,357 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MibInfo">
+	<typeAlias alias="mibDomain" type="com.cloudmaster.cmp.performance.mibinfo.dao.MibinfoDomain" />
+	<typeAlias alias="device"
+		type="com.cloudmaster.cmp.resource.collectdevice.dao.DeviceDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	
+	<!-- MIB列表 -->
+	<select id="getMibList"  resultClass="mibDomain" parameterClass="mibDomain">
+		SELECT
+			t1.MIB_ID AS mibId,
+			t1.OID AS oid,
+			t1.MIB_NAME AS mibName,
+			t1.TYPE_ID AS typeId,
+			t3.AGENT_NAME AS typeName,
+			t1.DESCRIPTION AS description,
+			t1.IS_COLLECTION AS isCollection,
+			t1.PARENT_ID AS parentId,
+			CASE 
+				WHEN t1.IS_COLLECTION=0 THEN '否'
+				WHEN t1.IS_COLLECTION=1 THEN '是'
+				ELSE '未知'
+			END isCollectionName,
+			DATE_FORMAT(t1.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+		FROM mals_nm_mib_t t1,
+		 	 mals_nm_agent_type_t t3
+		WHERE t1.TYPE_ID = t3.TYPE_ID
+			<isNotEmpty prepend="AND" property="typeId">
+				t1.TYPE_ID=#typeId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="oid">
+				t1.OID like '%$oid$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="mibName">
+				t1.MIB_NAME like '%$mibName$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isCollection">
+				t1.IS_COLLECTION =#isCollection#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="parentId">
+				t1.PARENT_ID =#parentId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+	</select>
+	
+		<!-- MIB列表 -->
+	<select id="getMibBaseList"  resultClass="mibDomain" parameterClass="mibDomain">
+		SELECT
+			t1.MIB_ID AS mibId,
+			t1.OID AS oid,
+			t1.MIB_NAME AS mibName,
+			t1.TYPE_ID AS typeId,
+			t3.AGENT_NAME AS typeName,
+			t1.DESCRIPTION AS description,
+			t1.IS_COLLECTION AS isCollection,
+			t1.MIB_UNIT as indexUnit,
+			mg.mib_group_name as indexGroup,
+			t1.PARENT_ID AS parentId,
+			CASE 
+				WHEN t1.IS_COLLECTION=0 THEN '否'
+				WHEN t1.IS_COLLECTION=1 THEN '是'
+				ELSE '未知'
+			END isCollectionName,
+			DATE_FORMAT(t1.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+		FROM mals_nm_mib_t t1,
+		 	 mals_nm_agent_type_t t3,
+		 	 mals_nm_mib_group_t mg
+		WHERE t1.TYPE_ID = t3.TYPE_ID
+			AND t1.type_id = mg.type_id 
+			AND t1.MIB_GROUP = mg.mib_group_id
+			<isNotEmpty prepend="AND" property="typeId">
+				t1.TYPE_ID=#typeId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="oid">
+				t1.OID like '%$oid$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="mibName">
+				t1.MIB_NAME like '%$mibName$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isCollection">
+				t1.IS_COLLECTION =#isCollection#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="parentId">
+				t1.PARENT_ID =#parentId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+			order by $sortName$ $sortOrder$
+	</select>
+		<!-- MIB列表 -->
+	<select id="getUpdateMibList"  resultClass="mibDomain" parameterClass="mibDomain">
+		SELECT
+			t1.MIB_ID AS mibId,
+			t1.OID AS oid,
+			t1.MIB_NAME AS mibName,
+			t1.TYPE_ID AS typeId,
+			t3.AGENT_NAME AS typeName,
+			t1.DESCRIPTION AS description,
+			t1.IS_COLLECTION AS isCollection,
+			t1.PARENT_ID AS parentId,
+			CASE 
+				WHEN t1.IS_COLLECTION=0 THEN '否'
+				WHEN t1.IS_COLLECTION=1 THEN '是'
+				ELSE '未知'
+			END isCollectionName,
+			DATE_FORMAT(t1.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+		FROM mals_nm_mib_t t1,
+		 	 mals_nm_agent_type_t t3,
+		 	 mals_nm_mib_group_t mg
+		WHERE t1.TYPE_ID = t3.TYPE_ID
+			AND t1.type_id = mg.type_id 
+			AND t1.MIB_GROUP = mg.mib_group_id
+			<isNotEmpty prepend="AND" property="typeId">
+				t1.TYPE_ID=#typeId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="oid">
+				t1.OID like '%$oid$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="mibName">
+				t1.MIB_NAME like '%$mibName$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isCollection">
+				t1.IS_COLLECTION =#isCollection#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="parentId">
+				t1.PARENT_ID =#parentId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isUpdate">
+				t1.MIB_ID !=#mibId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="qtype">
+						$qtype$ like concat('%',#query#,'%')
+			</isNotEmpty>
+	</select>
+	
+	<select id="getMibListCount"  resultClass="java.lang.Integer" parameterClass="mibDomain">
+		SELECT
+			COUNT(1)
+		FROM mals_nm_mib_t t1,
+		 	 mals_nm_agent_type_t t3,
+		 	 mals_nm_mib_group_t g
+		WHERE (1=1)
+			AND t1.TYPE_ID = t3.TYPE_ID
+			AND t1.type_id = g.type_id
+			AND t1.MIB_GROUP = g.mib_group_id
+			<isNotEmpty prepend="AND" property="typeId">
+				t1.TYPE_ID =#typeId#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="oid">
+				t1.OID like '%$oid$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="mibName">
+				t1.MIB_NAME like '%$mibName$%'
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="isCollection">
+				t1.IS_COLLECTION =#isCollection#
+			</isNotEmpty>
+			<isNotEmpty prepend="AND" property="parentId">
+				t1.PARENT_ID =#parentId#
+			</isNotEmpty>
+	</select>
+	
+	<!-- 删除 -->
+	<delete id="deleteMibinfoById" parameterClass="String">
+		DELETE FROM mals_nm_mib_t
+		WHERE MIB_ID=#mibId#
+	</delete>
+	
+	<!-- 修改前根据ID查询 -->
+	<select id="getMibinfoById"  resultClass="mibDomain" parameterClass="String">
+		SELECT
+			t1.MIB_ID AS mibId,
+			t1.OID AS oid,
+			t1.MIB_NAME AS mibName,
+			t1.TYPE_ID AS typeId,
+			t1.MIB_UNIT as indexUnit,
+			t1.MIB_GROUP as indexGroup,
+			t1.SHOW_LINE as ifShowLine,
+			t3.AGENT_NAME AS typeName,
+			t1.DESCRIPTION AS description,
+			t1.IS_COLLECTION AS isCollection,
+			CASE 
+				WHEN t1.IS_COLLECTION=0 THEN '否'
+				WHEN t1.IS_COLLECTION=1 THEN '是'
+				ELSE '未知'
+			END isCollectionName,
+			t1.PARENT_ID AS parentId,
+			DATE_FORMAT(t1.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+		FROM mals_nm_agent_type_t t3,
+             mals_nm_mib_t t1
+		WHERE (1=1)
+			AND t1.TYPE_ID = t3.TYPE_ID
+			AND t1.MIB_ID=#mibId#
+	</select>
+	
+	<!-- 修改前根据ID查询 -->
+	<select id="getDetailMibinfoById"  resultClass="mibDomain" parameterClass="String">
+		SELECT
+			t1.MIB_ID AS mibId,
+			t1.OID AS oid,
+			t1.MIB_NAME AS mibName,
+			t1.TYPE_ID AS typeId,
+			case
+				when t1.MIB_UNIT = 0 then '%'
+				when t1.MIB_UNIT = 1 then '个'
+				when t1.MIB_UNIT = 2 then 'MHz'
+				when t1.MIB_UNIT = 3 then 'MB'
+				when t1.MIB_UNIT = 4 then 'GB'
+				when t1.MIB_UNIT = 5 then 'Byte/s'
+				when t1.MIB_UNIT = 6 then 'KB'
+				when t1.MIB_UNIT = 7 then 's'
+				when t1.MIB_UNIT = 8 then 'packets/sec'
+				when t1.MIB_UNIT = 9 then '无单位'
+				when t1.MIB_UNIT = 10 then 'degrees C'
+				when t1.MIB_UNIT = 11 then 'Volts'
+				when t1.MIB_UNIT = 12 then 'RPM'
+				when t1.MIB_UNIT = 13 then 'Watts'
+				when t1.MIB_UNIT = 14 then 'Mbps'
+				when t1.MIB_UNIT = 15 then 'Byte'
+				when t1.MIB_UNIT = 16 then '℃'
+				when t1.MIB_UNIT = 17 then 'IOPS'
+				else '未知'
+				end indexUnit,
+			g.mib_group_name as indexGroup,
+			case
+				when t1.SHOW_LINE=0 then '否'
+				when t1.SHOW_LINE=1 then '是'
+				else '未知'
+			end ifShowLine,
+			t3.AGENT_NAME AS typeName,
+			t1.DESCRIPTION AS description,
+			t1.IS_COLLECTION AS isCollection,
+			CASE 
+				WHEN t1.IS_COLLECTION=0 THEN '否'
+				WHEN t1.IS_COLLECTION=1 THEN '是'
+				ELSE '未知'
+			END isCollectionName,
+			t1.PARENT_ID AS parentId,
+			DATE_FORMAT(t1.CREATE_TIME,'%Y-%m-%d %H:%i:%S') AS createTime
+		FROM mals_nm_agent_type_t t3,
+             mals_nm_mib_t t1,
+             mals_nm_mib_group_t g
+		WHERE (1=1)
+			AND t1.TYPE_ID = t3.TYPE_ID
+			AND t1.MIB_ID=#mibId#
+			AND g.type_id = t3.TYPE_ID 
+			AND t1.MIB_GROUP = g.mib_group_id
+	</select>
+	
+	<!-- 用户在页面选择显示在折线图上的单选钮后，判断 -->
+	<select id="getAlreadyShowIndex"  resultClass="mibDomain" parameterClass="mibDomain">
+		SELECT
+		IF(COUNT(*)>=5,'曲线个数过多,不可超过5条',IF(COUNT(*)=0,'yes',CASE MIB_UNIT WHEN #indexUnit# THEN 'yes' ELSE '单位不同,不可同时显示' END)) as indexUnit
+		FROM mals_nm_mib_t
+		WHERE type_id = #typeId#
+		AND MIB_GROUP = #indexGroup#
+		AND SHOW_LINE = '1'
+	</select>
+	<!--查询原始表中是否有该添加指标的OID -->
+	<select id="getOldColomeName"  resultClass="String" parameterClass="mibDomain">
+		SELECT
+		oid
+		FROM mals_nm_oldmib_t
+		WHERE type_id = #typeId#
+		AND oid = #oid#
+		LIMIT 1
+	</select>
+	<!--添加前查询param命名位置 -->
+	<select id="createOtherColomeName"  resultClass="String" parameterClass="mibDomain">
+		SELECT
+		CONCAT(substring(COLOME_NAME,1,POSITION('m' IN COLOME_NAME)),SUBSTR(COLOME_NAME FROM POSITION('m' IN COLOME_NAME)+1)+1)
+		FROM mals_nm_mib_t
+		WHERE MIB_GROUP in (0,1,2,3,4,7,99)
+		AND type_id = #typeId#
+		AND	COLOME_NAME LIKE 'param%'
+		ORDER BY SUBSTR(COLOME_NAME FROM 6)+0 DESC
+		LIMIT 1
+	</select>
+	<!--添加前查询param命名位置 -->
+	<select id="createPCColomeName"  resultClass="String" parameterClass="mibDomain">
+		SELECT
+		CONCAT(substring(COLOME_NAME,1,POSITION('m' IN COLOME_NAME)),SUBSTR(COLOME_NAME FROM POSITION('m' IN COLOME_NAME)+1)+1)
+		FROM mals_nm_mib_t
+		WHERE MIB_GROUP = #indexGroup#
+		AND type_id = #typeId#
+		AND	COLOME_NAME LIKE '%param%'
+		ORDER BY SUBSTR(COLOME_NAME FROM 8)+0 DESC
+		LIMIT 1
+	</select>
+	<!--ajax请求判断页面添加的oid是否重复(同一设备类型下) -->
+	<select id="getMibInfoByTypeIdAndOid"  resultClass="mibDomain" parameterClass="mibDomain">
+		SELECT oid
+		FROM mals_nm_mib_t
+		WHERE type_id = #typeId#
+		    AND oid = #oid#
+            <isNotEmpty prepend="AND" property="mibId">
+                MIB_ID != #mibId#
+            </isNotEmpty>
+	</select>
+	
+	
+	<!-- 添加 -->
+	<insert id="addMibinfoDomain" parameterClass="mibDomain">
+		INSERT INTO
+			mals_nm_mib_t(TYPE_ID,OID,MIB_NAME,DESCRIPTION,CREATE_TIME,IS_COLLECTION,PARENT_ID,MIB_UNIT,MIB_GROUP,COLOME_NAME,SHOW_LINE)
+		VALUES
+		(#typeId#,#oid#,#mibName#,#description#,date_format(now(),'%Y%m%d%H%i%s'),#isCollection#,#parentId#,#indexUnit#,#indexGroup#,#colomeName#,#ifShowLine#)
+	</insert>
+	<!-- 修改 -->
+	<update id="updateMibinfoDomain" parameterClass="mibDomain">
+		UPDATE mals_nm_mib_t SET 
+			MIB_NAME=#mibName#,
+			TYPE_ID=#typeId#,
+			MIB_UNIT=#indexUnit#,
+			MIB_GROUP=#indexGroup#,
+			SHOW_LINE=#ifShowLine#,
+			DESCRIPTION=#description#,
+			IS_COLLECTION=#isCollection#,
+			PARENT_ID=#parentId#,
+			CREATE_TIME=date_format(now(),'%Y%m%d%H%i%s')
+		WHERE MIB_ID=#mibId#
+	</update>
+	
+	<!-- junit测试指标删除 -->
+	<delete id="deleteJunitTestData" parameterClass="String">
+		DELETE FROM mals_nm_mib_t
+		WHERE oid=#oid#
+	</delete>
+	
+	<!-- 获取分组信息. -->
+	<select id="getMibGroupInfo" parameterClass="String" resultClass="mibDomain">
+	SELECT
+		mib_group_id AS indexGroup,
+		mib_group_name AS groupName
+	FROM
+		mals_nm_mib_group_t
+	WHERE
+		type_id = #typeId#
+	</select>
+	<!-- 查询设备类型 -->
+	<select id="getDeviceTypeList" resultClass="device">
+		SELECT
+			AGENT_TYPE AS typeId,
+			AGENT_NAME AS typeName
+		FROM
+			mals_nm_agent_type_t
+	</select>
+</sqlMap>

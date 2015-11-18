@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	<import resource="classpath:conf/spring/km_base.xml" />
+	<bean id="abstractAction" abstract="true">
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+	</bean>
+
+	<bean id="propertyConfigurer"
+		class="com.cloudmaster.cmp.container.ibatis.TrimPropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:conf/other/OperationLogFunctionName.properties</value>
+				<value>classpath:conf/other/OperationLogOptype.properties</value>
+				<value>classpath:conf/other/AuthorityId.properties</value>
+				<value>classpath:conf/other/System.properties</value>
+				<value>classpath:conf/other/MailConfig.properties</value>
+				<value>classpath:conf/other/jdbc.properties</value>
+				<value>classpath:conf/other/Alarm.properties</value>
+				<value>classpath:conf/other/ResourceConfig.properties</value>
+			</list>
+		</property>
+	</bean>
+	
+	<!-- 短信模块  -->
+	<bean id="ssmmclient" class="com.neusoft.ssmm.client.SSMMClientImpl">
+	</bean>
+	<!-- 短信模块  -->
+	<bean id="ssmmclientmanager" class="com.cloudmaster.cmp.util.shortMessage.SSMMClientManager"
+		init-method="init" destroy-method="destroy">
+		<property name="client">
+			<ref local="ssmmclient" />
+		</property>
+		<property name="ssmmPath">
+			<value><![CDATA[conf/other/ssmm.xml]]></value>
+		</property>
+        <property name="systemParameter">
+            <ref bean="SystemParameterService"/>
+        </property>
+	</bean>
+   
+ 
+</beans>

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+	
+	<!-- 阈值信息 -->
+	<bean id="thresholdDomain" 
+		class="com.cloudmaster.cmp.alarm.threshold.dao.ThresholdDomain" 
+		singleton="false">
+	</bean>
+	<!-- MIB信息 -->
+	<bean id="mibinfoDomain" 
+		class="com.cloudmaster.cmp.performance.mibinfo.dao.MibinfoDomain" 
+		singleton="false">
+	</bean>
+	<bean id="alarmLevelDomain" 
+		class="com.cloudmaster.cmp.alarm.threshold.dao.AlarmLevelDomain" 
+		singleton="false">
+	</bean>
+	<bean id="jsonarray" 
+		class="net.sf.json.JSONArray" 
+		singleton="false">
+	</bean>
+	<bean id="jsonobject" 
+		class="net.sf.json.JSONObject" 
+		singleton="false">
+	</bean>
+	
+	<!-- 浏览阈值 -->
+	<bean id="thresholdListAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdListAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${threshold.authID}</value>
+		</property>
+		<property name="functionName"> 
+		    <value>${threshold.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	<!-- 查询初始化 -->
+	<bean id="thresholdBeforeSearchAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdBeforeSearchAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${thresholdSearch.authID}</value>
+		</property>
+	</bean>
+	<!-- 查询 -->
+	<bean id="thresholdSearchAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdSearchAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${thresholdSearch.authID}</value>
+		</property>
+		<property name="thresholdDomain">
+			<ref bean="thresholdDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${threshold.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	<!-- 删除 -->
+	<bean id="thresholdDeleteAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdDeleteAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${thresholdDel.authID}</value>
+		</property>
+		<property name="thresholdDomain">
+			<ref bean="thresholdDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${threshold.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${delete}</value>
+        </property>	
+	</bean>
+	<!-- 详细 -->
+	<bean id="thresholdDetailAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdDetailAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${thresholdDel.authID}</value>
+		</property>
+		<property name="thresholdDomain">
+			<ref bean="thresholdDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${threshold.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${browse}</value>
+        </property>	
+	</bean>
+	
+	<!-- 添加初始化 -->
+	<bean id="thresholdBeforeAddAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdBeforeAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="jsonarray">
+			<ref bean="jsonarray" />
+		</property>
+		<property name="jsonobject">
+			<ref bean="jsonobject" />
+		</property>
+		<property name="mibinfoDomain">
+			<ref bean="mibinfoDomain" />
+		</property>
+		<property name="authId">
+			<value>${thresholdAdd.authID}</value>
+		</property>
+	</bean>
+	
+	<!-- 添加 -->
+	<bean id="thresholdAddAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdAddAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${thresholdAdd.authID}</value>
+		</property>
+		<property name="thresholdDomain">
+			<ref bean="thresholdDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${threshold.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${add}</value>
+        </property>	
+	</bean>
+	<!-- 修改初始化 -->
+	<bean id="thresholdBeforeEditAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdBeforeEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="jsonarray">
+			<ref bean="jsonarray" />
+		</property>
+		<property name="jsonobject">
+			<ref bean="jsonobject" />
+		</property>
+		<property name="mibinfoDomain">
+			<ref bean="mibinfoDomain" />
+		</property>
+		<property name="alarmLevelDomain">
+			<ref bean="alarmLevelDomain" />
+		</property>
+		<property name="authId">
+			<value>${thresholdEdit.authID}</value>
+		</property>
+	</bean>
+	<bean id="thresholdEditAction"
+		class="com.cloudmaster.cmp.alarm.threshold.web.ThresholdEditAction"
+		singleton="false" >
+		<property name="ibatisDAO">
+			<ref bean="ibatisDAOProxy" />
+		</property>
+		<property name="authId">
+			<value>${thresholdEdit.authID}</value>
+		</property>
+		<property name="thresholdDomain">
+			<ref bean="thresholdDomain" />
+		</property>
+		<property name="functionName"> 
+		    <value>${threshold.functionName}</value>
+		</property>
+		<property name="opType">
+            <value>${edit}</value>
+        </property>	
+	</bean>
+</beans>

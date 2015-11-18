@@ -1,0 +1,446 @@
+<twaver v='3.0' p='flex'>
+    <dataBox type='twaver.ElementBox'>
+        <layerBox>
+            <layer name='default' visible='true' editable='true' movable='true'/>
+        </layerBox>
+    </dataBox>
+    <data type='twaver.Node' ref='0' id='74C2A85F-BA8D-89FD-8AFC-ECAC8A4238CB'>
+        <s n='label.yoffset'>-75</s>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[TWaver Router]]>
+        </p>
+        <p n='image'>tw130</p>
+        <p n='location' x='355' y='128'/>
+    </data>
+    <data type='twaver.Node' ref='1' id='6D0424BC-94FC-C8B4-D3C9-ECAC8A42E56E'>
+        <s n='label.yoffset'>-30</s>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[DATA]]>
+        </p>
+        <p n='image'>cloud</p>
+        <p n='location' x='245' y='134'/>
+    </data>
+    <data type='twaver.Link' ref='2' id='2DCFBBE7-E264-65AF-56B2-ECAC8A42A197'>
+        <s n='body.bevel.distance'>4</s>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.color'>2800410</s>
+        <s n='link.width'>2</s>
+        <p n='fromNode' ref='1'/>
+        <p n='toNode' ref='0'/>
+    </data>
+    <data type='twaver.Node' ref='3' id='411FAF65-9AEC-24BE-CEB6-ECAC8A423D07'>
+        <s n='label.yoffset'>-30</s>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[PSTN]]>
+        </p>
+        <p n='image'>cloud</p>
+        <p n='location' x='250' y='209'/>
+    </data>
+    <data type='twaver.Link' ref='4' id='F43F1E40-4650-D04A-3EC8-ECAC8A510374'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='3'/>
+        <p n='toNode' ref='0'/>
+    </data>
+    <data type='twaver.Node' ref='5' id='8B5C334E-DC85-B4A2-ABEB-ECAC8A511B26'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Scrambler]]>
+        </p>
+        <p n='image'>Router</p>
+        <p n='location' x='176.5' y='194'/>
+    </data>
+    <data type='twaver.Link' ref='6' id='11CE5CE8-58BF-7EA8-59D4-ECAC8A51DC73'>
+        <s n='body.bevel.distance'>4</s>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.color'>2800410</s>
+        <s n='link.width'>2</s>
+        <s n='vector.outline.color'>16777215</s>
+        <p n='fromNode' ref='5'/>
+        <p n='toNode' ref='1'/>
+    </data>
+    <data type='twaver.Node' ref='7' id='84FE36EA-0B5F-FEF8-7BA9-ECAC8A51A48B'>
+        <s n='label.color'>16777215</s>
+        <p n='image'>Router</p>
+        <p n='location' x='107' y='69'/>
+    </data>
+    <data type='twaver.Link' ref='8' id='65C4DF8B-D6F7-25AA-F88B-ECAC8A510226'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='7'/>
+        <p n='toNode' ref='5'/>
+    </data>
+    <data type='twaver.Node' ref='9' id='ACDC7AA5-F42B-0F87-D31A-ECAC8A5131CD'>
+        <s n='label.color'>16777215</s>
+        <p n='image'>Router</p>
+        <p n='location' x='106' y='91'/>
+    </data>
+    <data type='twaver.Link' ref='10' id='D9FAB8D5-5A6A-F8A2-EE51-ECAC8A514630'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='9'/>
+        <p n='toNode' ref='5'/>
+    </data>
+    <data type='twaver.Node' ref='11' id='2E3FA599-8115-AB88-BE92-ECAC8A51C84D'>
+        <s n='label.color'>16777215</s>
+        <p n='image'>Router</p>
+        <p n='location' x='106' y='116'/>
+    </data>
+    <data type='twaver.Link' ref='12' id='A3F486FF-34B2-FB90-CBD9-ECAC8A514361'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='11'/>
+        <p n='toNode' ref='5'/>
+    </data>
+    <data type='twaver.Node' ref='13' id='5E75F88E-C18E-CD64-4496-ECAC8A51EE7A'>
+        <s n='label.color'>16777215</s>
+        <p n='image'>Router</p>
+        <p n='location' x='106' y='140'/>
+    </data>
+    <data type='twaver.Link' ref='14' id='5F969E30-D12D-7F30-07BA-ECAC8A517E5B'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='13'/>
+        <p n='toNode' ref='5'/>
+    </data>
+    <data type='twaver.Node' ref='15' id='F44CA2C6-6CBC-0F5E-41B2-ECAC8A51BA5E'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Encoder]]>
+        </p>
+        <p n='image'>Router</p>
+        <p n='location' x='106' y='167'/>
+    </data>
+    <data type='twaver.Link' ref='16' id='36E81634-B376-DAEB-2CAC-ECAC8A61E160'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='15'/>
+        <p n='toNode' ref='5'/>
+    </data>
+    <data type='twaver.Node' ref='17' id='7007B81C-CDDB-C56C-7499-ECAC8A6161CD'>
+        <s n='label.color'>16777215</s>
+        <p n='image'>Router</p>
+        <p n='location' x='106' y='222'/>
+    </data>
+    <data type='twaver.Link' ref='18' id='748E7D41-E47D-F85B-7554-ECAC8A618355'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='17'/>
+        <p n='toNode' ref='5'/>
+    </data>
+    <data type='twaver.Node' ref='19' id='525781CB-0654-A4BA-DFB5-ECAC8A616342'>
+        <s n='label.color'>16777215</s>
+        <p n='image'>Router</p>
+        <p n='location' x='106' y='242'/>
+    </data>
+    <data type='twaver.Link' ref='20' id='1FE8E119-8FD1-C143-138B-ECAC8A6130C5'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='19'/>
+        <p n='toNode' ref='5'/>
+    </data>
+    <data type='twaver.Node' ref='21' id='AEAB9F0C-9AE1-670C-9B3C-ECAC8A614161'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Satellite Feed]]>
+        </p>
+        <p n='image'>satellite_antenna</p>
+        <p n='location' x='31.15' y='84.85000000000001'/>
+    </data>
+    <data type='twaver.Node' ref='22' id='0687BDDE-7677-A9EE-9182-ECAC8A611984'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Off Air]]>
+        </p>
+        <p n='image'>antenna</p>
+        <p n='location' x='33' y='166'/>
+    </data>
+    <data type='twaver.Node' ref='23' id='CF68194D-4553-715C-A64F-ECAC8A61FD49'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Programming]]>
+        </p>
+        <p n='image'>msc</p>
+        <p n='location' x='33' y='291'/>
+    </data>
+    <data type='twaver.Node' ref='24' id='890AFBC8-DFB9-0ED8-4BA8-ECAC8A614C21'>
+        <s n='icons.names'>att1</s>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Pre-Amp]]>
+        </p>
+        <p n='image'>cartridge_system</p>
+        <p n='location' x='191' y='292'/>
+    </data>
+    <data type='twaver.Node' ref='25' id='E4FE7770-8A09-C44F-A7A0-ECAC8A6177F1'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[V-OLT]]>
+        </p>
+        <p n='alarmState'>
+            <n n='Critical' c='5'/>
+        </p>
+        <p n='image'>Router</p>
+        <p n='location' x='105' y='302'/>
+    </data>
+    <data type='twaver.Link' ref='26' id='1FA56BA4-7F17-F237-91BF-ECAC8A610401'>
+        <s n='body.bevel.distance'>4</s>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='icons.names'>att2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='25'/>
+        <p n='toNode' ref='24'/>
+    </data>
+    <data type='twaver.Node' ref='27' id='259B7120-B855-3089-DFA7-ECAC8A712E32'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[WDM]]>
+        </p>
+        <p n='image'>wdm</p>
+        <p n='location' x='443' y='132'/>
+    </data>
+    <data type='twaver.Link' ref='28' id='58FE48FF-C89F-0512-D7F6-ECAC8A71DE29'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.color'>2800410</s>
+        <s n='link.width'>2</s>
+        <s n='vector.outline.color'>16711935</s>
+        <p n='fromNode' ref='24'/>
+        <p n='toNode' ref='27'/>
+    </data>
+    <data type='twaver.Link' ref='29' id='C409E8BD-B632-271D-4F7B-ECAC8A71E903'>
+        <s n='body.bevel.distance'>4</s>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.color'>2800410</s>
+        <s n='link.width'>2</s>
+        <p n='fromNode' ref='0'/>
+        <p n='toNode' ref='27'/>
+    </data>
+    <data type='twaver.Node' ref='30' id='0F340466-CB46-9274-14B6-ECAC8A7179A0'>
+        <s n='label.color'>16777215</s>
+        <p n='alarmState'>
+            <n n='Major' c='1'/>
+        </p>
+        <p n='image'>testing</p>
+        <p n='location' x='497' y='147'/>
+    </data>
+    <data type='twaver.Link' ref='31' id='1ED0EE4D-FB94-4100-1D12-ECAC8A7124A5'>
+        <s n='body.bevel.distance'>4</s>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.color'>2800410</s>
+        <s n='link.width'>2</s>
+        <p n='fromNode' ref='30'/>
+        <p n='toNode' ref='27'/>
+    </data>
+    <data type='twaver.Node' ref='32' id='EF7DF12A-CD15-A015-871C-ECAC8A7184A6'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[WDM]]>
+        </p>
+        <p n='image'>wdm</p>
+        <p n='location' x='535' y='131'/>
+    </data>
+    <data type='twaver.Link' ref='33' id='7AF525D2-EA8B-E6F5-1B56-ECAC8A7115A3'>
+        <s n='body.bevel.distance'>4</s>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.color'>2800410</s>
+        <s n='link.width'>2</s>
+        <p n='fromNode' ref='30'/>
+        <p n='toNode' ref='32'/>
+    </data>
+    <data type='twaver.Node' ref='34' id='2B030103-1B6D-2391-D71F-ECAC8A71BE78'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[ONT]]>
+        </p>
+        <p n='image'>mainframe</p>
+        <p n='location' x='555' y='196'/>
+    </data>
+    <data type='twaver.Link' ref='35' id='F7F4CEF5-3BE2-C161-E29A-ECAC8A719F67'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='icons.names'>att2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='34'/>
+        <p n='toNode' ref='32'/>
+    </data>
+    <data type='twaver.Node' ref='36' id='9148B13D-C54C-F459-2C28-ECAC8A809C1A'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Modem]]>
+        </p>
+        <p n='image'>modem</p>
+        <p n='location' x='560' y='98'/>
+    </data>
+    <data type='twaver.Node' ref='37' id='8F8FDED5-2A8F-D0DF-EBD8-ECAC8A803D9C'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[PC]]>
+        </p>
+        <p n='location' x='651' y='64'/>
+    </data>
+    <data type='twaver.Link' ref='38' id='DA7BF365-D8C4-489C-9948-ECAC8A807743'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='37'/>
+        <p n='toNode' ref='36'/>
+    </data>
+    <data type='twaver.Node' ref='39' id='52DA2030-2BD3-9BD0-3082-ECAC8A808217'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[STB]]>
+        </p>
+        <p n='image'>router2</p>
+        <p n='location' x='614' y='122'/>
+    </data>
+    <data type='twaver.Link' ref='40' id='C0875260-3722-F4BF-15BE-ECAC8A80BC37'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='39'/>
+        <p n='toNode' ref='36'/>
+    </data>
+    <data type='twaver.Node' ref='41' id='950B3C20-90BB-BCE1-2E41-ECAC8A80D8AC'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[IPTV/SDV]]>
+        </p>
+        <p n='image'>terminal</p>
+        <p n='location' x='666' y='152'/>
+    </data>
+    <data type='twaver.Link' ref='42' id='6EB93242-99CF-3D48-3F67-ECAC8A8092F3'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='41'/>
+        <p n='toNode' ref='39'/>
+    </data>
+    <data type='twaver.Node' ref='43' id='2DAF9704-D546-2185-ACE2-ECAC8A90AF40'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[Phone]]>
+        </p>
+        <p n='image'>phone</p>
+        <p n='location' x='648' y='223'/>
+    </data>
+    <data type='twaver.Link' ref='44' id='78B01A71-8CF6-0040-B2A3-ECAC8A908266'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='43'/>
+        <p n='toNode' ref='34'/>
+    </data>
+    <data type='twaver.Node' ref='45' id='93EB708B-F1F3-53ED-7DA4-ECAC8A90D0E0'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[PC]]>
+        </p>
+        <p n='location' x='648' y='266'/>
+    </data>
+    <data type='twaver.Link' ref='46' id='367D9E0B-F222-6DFD-C539-ECAC8A902A38'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='45'/>
+        <p n='toNode' ref='34'/>
+    </data>
+    <data type='twaver.Node' ref='47' id='37AA516B-5B1E-21D0-171F-ECAC8A90E926'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[STB]]>
+        </p>
+        <p n='image'>router2</p>
+        <p n='location' x='612' y='338'/>
+    </data>
+    <data type='twaver.Link' ref='48' id='B076E97F-7DB0-1EB9-5A18-ECAC8A90FE7D'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='47'/>
+        <p n='toNode' ref='34'/>
+    </data>
+    <data type='twaver.Node' ref='49' id='CBF3385F-B668-2D3C-F22F-ECAC8A9016AE'>
+        <s n='label.color'>16777215</s>
+        <p n='name'>
+            <![CDATA[IPTV/SDV]]>
+        </p>
+        <p n='image'>terminal</p>
+        <p n='location' x='628' y='447'/>
+    </data>
+    <data type='twaver.Link' ref='50' id='F03968AB-6C91-3BB2-9F4B-ECAC8A90C9C1'>
+        <s n='label.color'>16777215</s>
+        <s n='body.bevel.distance'>4</s>
+        <s n='link.type'>orthogonal.H.V</s>
+        <s n='body.bevel'>true</s>
+        <s n='link.width'>2</s>
+        <s n='link.color'>2800410</s>
+        <p n='fromNode' ref='49'/>
+        <p n='toNode' ref='47'/>
+    </data>
+</twaver>

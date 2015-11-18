@@ -1,0 +1,25 @@
+@charset "utf-8";
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+.flexigrid div.fbutton .dAdd {
+	background: url(images/add.png) no-repeat center left;
+}
+
+.flexigrid div.fbutton .dDelete {
+	background: url(images/close.png) no-repeat center left;
+}
+.flexigrid div.fbutton .dTmp {
+	background: url(images/accept.png) no-repeat center left;
+}
+.flexigrid div.fbutton .dSearch {
+	background: url(images/magnifier.png) no-repeat center left;
+}
+.flexigrid div.fbutton .dStart{
+	background: url("images/start.png") no-repeat center left;
+}
+.flexigrid div.fbutton .dStop{
+	background: url("images/stop.png") no-repeat center left;
+}

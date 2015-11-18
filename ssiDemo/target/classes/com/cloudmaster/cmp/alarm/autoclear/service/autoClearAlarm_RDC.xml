@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="AutoClearAlarmRDC">
+	<typeAlias alias="AutoClearAlarm" type="com.cloudmaster.cmp.alarm.autoclear.dao.AutoClearAlarmDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+	
+	
+	<!-- 性能告警，获取自动清除告警数据 -->
+    <select id="getPerformanceClearAlarm" parameterClass="AutoClearAlarm" resultClass="AutoClearAlarm">
+      SELECT 
+            alarm.id as alarmID,
+            alarm.nid as alarmOID, 
+            alarm.lid as alarmGrade,
+            alarm.type as alarmType,
+            alarm.title as alarmTitle,
+            alarm.text as alarmContent,
+            alarm.rid as alarmIP, 
+            alarm.deviceType as deviceType,
+            alarm.objectID as deviceId,
+            alarm.alarmImpact as alarmImpact,
+            alarm.oid as alarmReportOID,
+            alarm.alarmTitleID as alarmTitleId,
+            alarm.systemName as deviceName
+        from t_alarm_temp alarm
+        where (alarm.pid is null or alarm.pid='')
+            AND (alarm.clearStatus = '1' or alarm.clearStatus is null)
+           <iterate property="threshodLi" open=" and alarm.nid in (" close=") " conjunction=",">
+                #threshodLi[].alarmOID#
+            </iterate>
+              and DATE_SUB(NOW(),INTERVAL #clearIntervalTime# MINUTE) > alarm.maxEventTime
+              and alarm.maxEventTime > DATE_SUB(NOW(),INTERVAL 12 HOUR)
+    </select>
+    
+    <!-- nagios告警，获取自动清除告警数据 -->
+    <select id="getNagiosClearAlarm" parameterClass="AutoClearAlarm" resultClass="AutoClearAlarm">
+        SELECT 
+            alarm.id as alarmID,
+            alarm.nid as alarmOID, 
+            alarm.lid as alarmGrade,
+            alarm.type as alarmType,
+            alarm.title as alarmTitle,
+            alarm.text as alarmContent,
+            alarm.rid as alarmIP, 
+            alarm.deviceType as deviceType,
+            alarm.objectID as deviceId,
+            alarm.alarmImpact as alarmImpact,
+            alarm.oid as alarmReportOID,
+            alarm.alarmTitleID as alarmTitleId,
+            alarm.systemName as deviceName
+        from t_alarm_temp alarm
+        where (alarm.pid is null or alarm.pid='')
+            AND (alarm.clearStatus = '1' or alarm.clearStatus is null)
+            and lower(alarm.nid) like '%ping'
+            and DATE_SUB(NOW(),INTERVAL #clearIntervalTime# MINUTE) > alarm.maxEventTime
+            and alarm.maxEventTime > DATE_SUB(NOW(),INTERVAL 12 HOUR)
+    </select>
+	
+	
+</sqlMap>

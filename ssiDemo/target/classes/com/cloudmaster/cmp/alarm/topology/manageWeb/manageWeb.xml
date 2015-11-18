@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="topologyManage">
+	<typeAlias alias="topologyDeviceDomain"
+		type="com.cloudmaster.cmp.alarm.topology.manageDomain.TopologyDeviceDomain" />
+	<typeAlias alias="topologyGroupDomain"
+		type="com.cloudmaster.cmp.alarm.topology.manageDomain.TopologyGroupDomain" />
+	<typeAlias alias="topologyLineDomain"
+		type="com.cloudmaster.cmp.alarm.topology.manageDomain.TopologyLineDomain" />
+	<typeAlias alias="String" type="java.lang.String" />
+	<typeAlias alias="int" type="java.lang.Integer" />
+
+	<!-- 拓扑分组列表	begin -->
+	<select id="getgroupCount" parameterClass="topologyGroupDomain" resultClass="int">
+		SELECT
+			count(*)
+		FROM topology_group_tab
+		WHERE group_type != '0'
+	</select>
+	<select id="getgroupList" parameterClass="topologyGroupDomain" resultClass="topologyGroupDomain">
+		SELECT
+			group_id AS groupID,
+			`name` AS groupName
+		FROM topology_group_tab
+		WHERE group_type != '0'
+		ORDER BY $sortName$ $sortOrder$
+	</select>
+	<!-- 拓扑分组列表	end -->
+	<!-- 拓扑分组内设备列表	begin -->
+	<select id="getGroupDeviceCount" parameterClass="topologyDeviceDomain" resultClass="int">
+		SELECT
+		count(*)
+		FROM
+		topology_group_tab gg,
+		topology_group_node_tab g 
+		LEFT JOIN pm_info_tab p ON (g.node_id = p.PM_ID)
+		LEFT JOIN mm_info_tab m ON (g.node_id = m.MM_ID)
+		WHERE 
+		gg.group_id = g.group_id
+		AND
+		g.device_type IN ('0','1')
+		AND
+		g.group_id = #groupID#
+	</select>
+	<select id="getGroupDeviceList" parameterClass="topologyDeviceDomain" resultClass="topologyDeviceDomain">
+		SELECT
+		CASE device_type when '0' THEN p.PM_ID ELSE m.MM_ID END AS deviceID,
+		g.`name` AS deviceName,
+		node_id AS deviceIP,
+		CASE device_type when '0' THEN '物理机' ELSE '小型机' END AS deviceType,
+		gg.`name` AS groupName
+		FROM
+		topology_group_tab gg,
+		topology_group_node_tab g 
+		LEFT JOIN pm_info_tab p ON (g.node_id = p.IP)
+		LEFT JOIN mm_info_tab m ON (g.node_id = m.IP)
+		WHERE 
+		gg.group_id = g.group_id
+		AND
+		g.device_type IN ('0','1')
+		AND
+		g.group_id = #groupID#
+	</select>
+	<!-- 拓扑分组内设备列表	end -->
+	<!-- 拓扑分组外设备列表	begin -->
+		<select id="getPMCount" parameterClass="topologyDeviceDomain" resultClass="int">
+			SELECT
+			count(*)
+			FROM
+			pm_info_tab p
+			WHERE p.IP not IN (
+								SELECT node_id FROM
+									topology_group_node_tab 
+								)
+		</select>
+		<select id="getPMList" parameterClass="topologyDeviceDomain" resultClass="topologyDeviceDomain">
+			SELECT
+			p.PM_ID AS deviceID,
+			p.PM_Name AS deviceName,
+			p.IP AS deviceIP,
+			'物理机' AS deviceType
+			FROM
+			pm_info_tab p
+			WHERE p.IP not IN (
+								SELECT node_id FROM
+									topology_group_node_tab 
+								)
+		</select>
+		<select id="getMMCount" parameterClass="topologyDeviceDomain" resultClass="int">
+			SELECT
+			count(*)
+			FROM
+			mm_info_tab m
+			WHERE m.IP not IN (
+								SELECT node_id FROM
+									topology_group_node_tab 
+								)
+		</select>
+		<select id="getMMList" parameterClass="topologyDeviceDomain" resultClass="topologyDeviceDomain">
+			SELECT
+			m.MM_ID AS deviceID,
+			m.MM_Name AS deviceName,
+			m.IP AS deviceIP,
+			'小型机' AS deviceType
+			FROM
+			mm_info_tab m
+			WHERE m.IP not IN (
+								SELECT node_id FROM
+									topology_group_node_tab 
+								)
+		</select>
+	<!-- 拓扑分组外设备列表	end -->
+	<!-- 組內设备添加	begin -->
+	<select id="getGroupUPDeviceCount" parameterClass="topologyDeviceDomain" resultClass="int">
+		SELECT count(*)
+		FROM topology_line_tab WHERE `from` IN (#groupID#) OR `to` IN(#groupID#)
+	</select>
+	<select id="getGroupUPDevice" parameterClass="topologyDeviceDomain" resultClass="topologyLineDomain">
+		SELECT
+		l.group_id AS groupID,
+		`from` AS fromNode,
+		`to` AS toNode,
+		`type` AS lineType,
+		`name` AS deviceName,
+		CASE device_type 
+			   WHEN 	2 then '路由设备'
+		       WHEN   3 then '存储设备'
+		       WHEN   4 then '交换机'
+		       WHEN   5 then '磁盘阵列'
+		       WHEN   6 then 'OA'
+		       WHEN   7 then 'DMZ'
+		       WHEN   8 then 'CMNET'
+		       WHEN   9 then 'SVC'
+		       WHEN   10 then '防火墙'
+				END AS deviceType
+		FROM topology_line_tab l
+		LEFT JOIN topology_group_node_tab ON `to`=node_id
+		WHERE `from` IN (#groupID#) OR `to` IN(#groupID#)
+	</select>
+	<insert id="insertGroupNode" parameterClass="topologyDeviceDomain">
+		INSERT
+		topology_group_node_tab
+		(group_id,node_id,node_type,device_type,name)
+		VALUES
+		(#groupID#,#deviceID#,'0',#deviceType#,#deviceName#)
+	</insert>
+	<insert id="insertLine" parameterClass="topologyLineDomain">
+		INSERT topology_line_tab
+		(group_id,`from`,`to`,`type`)
+		VALUES
+		(#groupID#,#fromNode#,#toNode#,'0')
+	</insert>
+	<!-- 組內设备添加	end -->
+	<!-- 組內设备删除	end -->
+	<delete id="deleteGroupNode" parameterClass="topologyDeviceDomain">
+		delete
+		from
+		topology_group_node_tab
+		where
+		node_id=#deviceID#
+	</delete>
+	<delete id="deleteLine" parameterClass="topologyLineDomain">
+		delete
+		from
+		topology_line_tab
+		where
+		`to`=#toNode#
+	</delete>
+	<!-- 組內设备删除	end -->
+	<!-- 设备连接上层设备线关系	begin -->
+	<select id="getDeviceUPDeviceLine" parameterClass="String" resultClass="String">
+		select
+		`from`
+		from
+		topology_line_tab
+		where
+		`to`=#toNode#
+	</select>
+	<!-- 设备连接上层设备线关系	end -->
+</sqlMap>
+
+

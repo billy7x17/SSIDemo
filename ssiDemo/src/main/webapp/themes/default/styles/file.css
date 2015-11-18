@@ -1,0 +1,8 @@
+@charset "utf-8";
+/* CSS Document */
+.customfile_h{ margin:9px 0; *margin:0px 5px; float:left;  display:block;}
+
+.fileBar{ border:1px solid #ccc; width:597px; height:51px; *height:42px; margin:19px; *margin-bottom:11px; background-color:#f5f5f5; padding-top:7px; *padding-top:16px; position:relative;}
+
+.fileBarBtn{width:84px; height:34px; background:url(../images/btn_focus.png) no-repeat left top; text-align:center; line-height:34px; color:#fff; border:none; font-weight:bold; position:absolute; right:10px; top:12px; cursor:pointer;}
+.fileBarBtn:hover{ text-decoration:underline;}

@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE struts PUBLIC
+    "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+    "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	<constant name="struts.custom.i18n.resources" value="ApplicationResources" />
+	<constant name="struts.i18n.encoding" value="UTF-8"></constant>
+	<constant name="struts.objectFactory" value="spring" />
+
+	<package name="alarmroster" extends="struts-default">
+		<interceptors>
+			<interceptor name="authenticate" class="authenticateInterceptor" />
+			<interceptor name="turnPageInter" class="turnPageInterceptor" />
+			<interceptor name="logInter" class="loginterceptor" />
+			<interceptor-stack name="kmStack">
+				<interceptor-ref name="turnPageInter" />
+				<interceptor-ref name="logInter" />
+				<interceptor-ref name="defaultStack" />
+			</interceptor-stack>
+		</interceptors>
+		<default-interceptor-ref name="kmStack" />
+
+		<global-results>
+			<result name="LOGIN" type="redirectAction">logout</result>
+			<result name="NOAUTHORITY">/WEB-INF/pages/authority/noauthority.jsp</result>
+			<result name="error" type="chain">ExceptionIntercepor</result>
+		</global-results>
+
+		<global-exception-mappings>
+			<exception-mapping exception="java.lang.Exception"
+				result="error" />
+		</global-exception-mappings>
+
+		<!-- 告警花名册管理 -->
+
+		<!-- 型号列表展示 -->
+		<action name="alarmrosterList" class="AlarmRosterBeforeSearchAction"
+			method="beforeSearch">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/list.jsp</result>
+		</action>
+		
+		<!-- 型号列表展示 -->
+		<action name="alarmrosterBaseList" class="AlarmRosteListAction"
+			method="list">
+		</action>
+		<!-- 联动获取oid-->
+		<action name="getOID" class="AlarmRosterBeforeEditAction"
+			method="getOID">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/ajaxOID.jsp</result>
+		</action>
+		<!-- 型号修改前准备-->
+		<action name="alarmrosterBeforeEdit" class="AlarmRosterBeforeEditAction"
+			method="beforeEdit">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/edit.jsp</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">alarmrosterList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+
+		<!-- 花名册修改-->
+		<action name="alarmrosterEdit" class="AlarmRosterEditAction"
+			method="edit">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmrosterList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/alarm/alarmroster/edit.jsp</result>
+		</action>
+
+		<!-- 花名册删除 -->
+		<action name="alarmrosterDelete" class="AlarmRosterDeleteAction"
+			method="delete">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmrosterList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="ERROR" type="redirectAction">
+				<param name="actionName">alarmrosterList</param>
+				<param name="errorMsg">${errorMsg}</param>
+			</result>
+		</action>
+
+		<!-- 查询花名册前准备 -->
+		<action name="alarmrosterBeforeSearch" class="AlarmRosterBeforeSearchAction"
+			method="beforeSearch">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/search.jsp</result>
+			<result name="ERROR">/WEB-INF/pages/alarm/alarmroster/search.jsp</result>
+		</action>
+
+		<!-- 花名册条件查询-->
+		<action name="alarmrosterSearch" class="AlarmRosterSearchAction"
+			method="search">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/list.jsp
+				</result>
+			<result name="ERROR">/WEB-INF/pages/alarm/alarmroster/list.jsp
+		    </result>
+		</action>
+
+		<!-- 花名册详细页面展示-->
+		<action name="alarmrosterDetail" class="AlarmRosterDetailAction"
+			method="detail">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/detail.jsp
+			</result>
+			<result name="ERROR">/WEB-INF/pages/alarm/alarmroster/detail.jsp
+			</result>
+		</action>
+
+		<!-- 添加花名册前准备-->
+		<action name="alarmrosterBeforeAdd" class="AlarmRosterBeforeAddAction"
+			method="beforeAdd">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/add.jsp
+			</result>
+		</action>
+		
+		<!-- 联动获取oid-->
+		<action name="getOID" class="AlarmRosterBeforeAddAction"
+			method="getOID">
+			<result name="SUCCESS">/WEB-INF/pages/alarm/alarmroster/ajaxOID.jsp</result>
+		</action>
+		<!-- 添加花名册-->
+		<action name="alarmrosterAdd" class="AlarmRosterAddAction"
+			method="add">
+			<result name="SUCCESS" type="redirectAction">
+				<param name="actionName">alarmrosterList</param>
+				<param name="msg">${msg}</param>
+			</result>
+			<result name="INPUT">/WEB-INF/pages/alarm/alarmroster/add.jsp</result>
+		</action>
+	</package>
+</struts>
